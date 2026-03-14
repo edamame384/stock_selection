@@ -1,0 +1,7 @@
+"macro_exit_min","final_capital","total_return_pct","win_rate_pct","num_roundtrips","avg_roundtrip_return_pct","max_drawdown_pct","output_dir"
+"-0.05","2524419.000000002","-15.852699999999942","58.97435897435898","39","0.20994164896889883","-20.54143952336801","projects\shikiho_text_parser\output\macro_exit_search\exitn0p05"
+"0","2524419.000000002","-15.852699999999942","58.97435897435898","39","0.20994164896889883","-20.54143952336801","projects\shikiho_text_parser\output\macro_exit_search\exit0p00"
+"-0.1","2469504.500000002","-17.683183333333275","58.333333333333336","36","0.027069672684572128","-22.307280708439425","projects\shikiho_text_parser\output\macro_exit_search\exitn0p10"
+"-0.2","2458849.500000002","-18.038349999999937","58.333333333333336","36","0.017328264454421705","-22.6499049302194","projects\shikiho_text_parser\output\macro_exit_search\exitn0p20"
+"-0.15","2458849.500000002","-18.038349999999937","58.333333333333336","36","0.017328264454421705","-22.6499049302194","projects\shikiho_text_parser\output\macro_exit_search\exitn0p15"
+"-0.25","2447641.500000002","-18.411949999999933","62.16216216216216","37","0.16845532852717043","-23.010311525968795","projects\shikiho_text_parser\output\macro_exit_search\exitn0p25"

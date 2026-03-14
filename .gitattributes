@@ -1,0 +1,2 @@
+projects/shikiho_text_parser/data/prices_full/** filter=lfs diff=lfs merge=lfs -text
+projects/shikiho_text_parser/data/prices_4q2/** filter=lfs diff=lfs merge=lfs -text

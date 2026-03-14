@@ -1,0 +1,2 @@
+phase,horizon,threshold,limit,take_profit,stop_loss,objective_mean,final_capital_mean,max_drawdown_mean,folds
+init,20,0.62,-0.005,0.05,0.15,3247592.986610901,3308967.125,0.02045804612969966,2

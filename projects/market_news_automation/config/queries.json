@@ -1,0 +1,24 @@
+{
+  "queries": [
+    {
+      "name": "jp_market",
+      "query": "日経平均 OR 日本株 OR TOPIX"
+    },
+    {
+      "name": "us_market",
+      "query": "ダウ平均 OR Dow Jones OR NASDAQ OR S&P500"
+    },
+    {
+      "name": "volatility",
+      "query": "VIX OR 恐怖指数"
+    },
+    {
+      "name": "fx",
+      "query": "ドル円 OR USDJPY OR 為替"
+    },
+    {
+      "name": "geopolitics",
+      "query": "国際情勢 OR 世界情勢"
+    }
+  ]
+}

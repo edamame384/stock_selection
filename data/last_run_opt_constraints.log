@@ -1,0 +1,23 @@
+[TIME] jst_now=2026-03-08 09:03:50 expected_hour=23
+[WARN] Running outside the expected JST hour for night-session feature capture.
+[FUT] rows=588 ticker=NKD=F feature=fut_nk_night_ret
+[GROUP] start=groupA symbols=2
+[DATA][groupA] 4506.T -> data\prices\4506_T.csv
+[DATA][groupA] 3905.T -> data\prices\3905_T.csv
+[SECTOR][groupA] symbols=2 unique=2 index_loaded=2
+[ML][groupA] trained_rows=9209 symbols=2 features=22
+[OPTRET][groupA] threshold=0.75 stop_loss=20.00% limit=-0.50% win_rate=94.59% avg_fill=3.85% avg_signal=3.32% fills=74/86 constraints(fill_rate>=20.00%, monthly_fills>=1.00)
+[BUY] 4506.T | signal_date=2026-03-06 trade_date=2026-03-09 close=1920.50 tp_prob=79.15% lmt=-0.50% lmt_price=1930.10 sl=20.00% sl_price=1536.40
+[BUY] 3905.T | signal_date=2026-03-06 trade_date=2026-03-09 close=1565.00 tp_prob=75.82% lmt=-0.50% lmt_price=1572.82 sl=20.00% sl_price=1252.00
+[DIV][groupA] candidates=2 selected=2 max_corr=0.70 lookback=252
+[PICK][groupA] 4506.T tp_prob=79.15% sector=UNKNOWN
+[PICK][groupA] 3905.T tp_prob=75.82% sector=UNKNOWN
+[GROUP] start=groupB symbols=2
+[DATA][groupB] 8316.T -> data\prices\8316_T.csv
+[DATA][groupB] 8331.T -> data\prices\8331_T.csv
+[SECTOR][groupB] symbols=2 unique=1 index_loaded=1
+[ML][groupB] trained_rows=12986 symbols=2 features=22
+[OPTRET][groupB] threshold=0.75 stop_loss=8.00% limit=-2.50% win_rate=100.00% avg_fill=5.00% avg_signal=3.33% fills=8/12 constraints(fill_rate>=20.00%, monthly_fills>=1.00)
+[HOLD] 8316.T | signal_date=2026-03-06 trade_date=2026-03-09 close=5423.00 tp_prob=64.19% lmt=-2.50% lmt_price=5558.57 sl=8.00%
+[HOLD] 8331.T | signal_date=2026-03-06 trade_date=2026-03-09 close=2116.50 tp_prob=64.12% lmt=-2.50% lmt_price=2169.41 sl=8.00%
+[DIV][groupB] candidates=0 selected=0 max_corr=0.70 lookback=252

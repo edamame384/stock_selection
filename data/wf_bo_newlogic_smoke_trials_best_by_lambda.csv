@@ -1,0 +1,2 @@
+lambda_dd,horizon,threshold,limit,take_profit,stop_loss,objective_mean,final_capital_mean,max_drawdown_mean,folds
+0.75,20,0.61,0.0,0.05,0.1,3099052.2640716946,3132514.0,0.014871882634802486,2
