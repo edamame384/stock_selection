@@ -68,3 +68,8 @@ pip install -r projects/market_news_automation/requirements.txt
 を履歴ニュース特徴量として参照できます。
 
 つまり、ニュース蓄積側はこのプロジェクト、売買側は `shikiho_text_parser` という分担で運用できます。
+
+ただし現時点では、標準運用でライブニュース停止フラグは使いません。
+
+- ライブニュース: 蓄積のみ
+- 履歴ニュース: 蓄積後に閾値最適化してから使用

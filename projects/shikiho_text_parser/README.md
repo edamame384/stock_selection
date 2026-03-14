@@ -122,6 +122,10 @@ python projects/shikiho_text_parser/run_pipeline.py --skip-bundle
 - `entry_limit_pct = 1.5`
 - `take_profit_pct = 8.0`
 - `stop_loss_pct = 5.0`
+- `live_news_json = 使わない`
+- `live_news_stop_threshold = 無効`
+- `historical_news_csv = projects/market_news_automation/output/daily_news_features.csv`
+- `historical_news_stop_threshold = 無効`
 
 意味:
 
@@ -129,6 +133,8 @@ python projects/shikiho_text_parser/run_pipeline.py --skip-bundle
 - 当日の高値が前営業日終値 `+1.5%` を上回ったら逆指値買い
 - 利確 `+8%`
 - 損切 `-5%`
+- ライブニュースは参照しない
+- ニュース閾値最適化は、履歴データ蓄積後に実施する
 
 ## 注意
 
