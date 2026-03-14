@@ -1,0 +1,39 @@
+name: stock-signal-runner
+
+on:
+  schedule:
+    - cron: "30 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-signal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run stock signal
+        run: |
+          mkdir -p data
+          python test.py > data/last_run_github.log 2>&1
+      - name: Commit updated prices and logs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/prices/ data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update stock prices and signal logs"
+          git push origin HEAD:${GITHUB_REF_NAME}
