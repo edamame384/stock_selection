@@ -7,16 +7,22 @@ on:
     - cron: "0 14 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   collect:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install pandas
+        run: pip install -r projects/market_news_automation/requirements.txt
       - name: Collect snapshot
         run: python projects/market_news_automation/collect_news_snapshot.py
       - name: Aggregate daily features
@@ -26,5 +32,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add projects/market_news_automation/output/
-          git diff --cached --quiet || git commit -m "Update market news snapshots"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update market news snapshots"
+          git push origin HEAD:${GITHUB_REF_NAME}
