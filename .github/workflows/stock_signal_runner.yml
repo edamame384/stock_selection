@@ -12,6 +12,8 @@ jobs:
   run-signal:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    env:
+      STOCK_ML_DISABLE_DIRECT_DISCORD: "1"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -23,10 +25,15 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run stock signal
+        id: run_signal
         run: |
           mkdir -p data
           python test.py > data/last_run_github.log 2>&1
+      - name: Notify signal detection
+        if: ${{ success() }}
+        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log
       - name: Commit updated prices and logs
+        if: ${{ success() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -37,3 +44,6 @@ jobs:
           fi
           git commit -m "Update stock prices and signal logs"
           git push origin HEAD:${GITHUB_REF_NAME}
+      - name: Notify workflow failure
+        if: ${{ failure() }}
+        run: python scripts/workflow_notify.py --mode failure

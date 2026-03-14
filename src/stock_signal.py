@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import os
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
@@ -125,6 +126,13 @@ DEFAULT_DISCORD_WEBHOOK_URL = (
     "https://discord.com/api/webhooks/1479858388090355762/"
     "WfKk_sdIufDciR-g-LksZCjlzdSrLHZQ__558rfwGrv-wH9E9nQzdeiSRE9gmfHbrjN8"
 )
+
+
+def resolve_default_discord_webhook_url() -> str:
+    disable = os.getenv("STOCK_ML_DISABLE_DIRECT_DISCORD", "").strip().lower()
+    if disable in {"1", "true", "yes", "on"}:
+        return ""
+    return os.getenv("STOCK_ML_DISCORD_WEBHOOK_URL", DEFAULT_DISCORD_WEBHOOK_URL)
 
 
 def fetch_sector(symbol: str) -> str:
@@ -1760,7 +1768,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--discord-webhook-url",
         type=str,
-        default=DEFAULT_DISCORD_WEBHOOK_URL,
+        default=resolve_default_discord_webhook_url(),
         help="Discord webhook URL for sending next-day signal notifications.",
     )
     parser.add_argument(
