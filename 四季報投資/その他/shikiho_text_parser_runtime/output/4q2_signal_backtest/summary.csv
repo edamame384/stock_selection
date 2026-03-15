@@ -1,0 +1,10 @@
+﻿period_start,2026-01-01
+period_end,2026-03-10
+initial_capital,3000000.0
+final_capital,3329600.0
+total_return_pct,10.986666666666656
+num_buys,27
+num_roundtrips,27
+win_rate_pct,59.25925925925925
+avg_roundtrip_return_pct,3.2310698979101184
+max_drawdown_pct,-12.2016641121086

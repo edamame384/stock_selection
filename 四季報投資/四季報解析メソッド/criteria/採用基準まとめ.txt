@@ -1,0 +1,30 @@
+採用基準の要約
+
+1. 4Q-2銘柄選定の基準
+- 四季報テキストから抽出した指標と価格系列を併用。
+- 主要指標:
+  - promising_score
+  - annual_return_pct
+  - quarter_return_pct
+  - trend_r2
+  - persistence_20d_pct
+  - positive_month_ratio_pct
+  - max_drawdown_pct
+  - sector_adjusted_per_score
+  - forecast_per
+  - headline_score_raw / shikiho_score_overall
+
+2. 売買メソッドの標準条件 condition2
+- promising_score_min = 0.66
+- trend_r2_min = 0.50
+- sector_per_score_min = 0.55
+- entry_mode = breakout_up
+- entry_limit_pct = 1.5
+- take_profit_pct = 8.0
+- stop_loss_pct = 5.0
+- シグナル予兆は前営業日終値基準。
+- 当日の高値が前営業日終値 +1.5% を上回ったら逆指値買い。
+
+3. 採用理由
+- condition1 比較で、最終資金・勝率・ドローダウンが改善した。
+- 取りこぼしを減らすため、promising_score と trend_r2 をやや緩めた。

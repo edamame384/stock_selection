@@ -1,0 +1,11 @@
+{
+  "raw_4q2_dir": "C:\\Users\\mitsu\\OneDrive\\ドキュメント\\stock_ml\\projects\\shikiho_text_parser\\data\\raw\\4Q-2",
+  "raw_4q2_files": 4223,
+  "price_dir": "C:\\Users\\mitsu\\OneDrive\\ドキュメント\\stock_ml\\projects\\shikiho_text_parser\\data\\prices_4q2",
+  "price_files": 4220,
+  "price_missing_files": 3,
+  "price_full_dir": "C:\\Users\\mitsu\\OneDrive\\ドキュメント\\stock_ml\\projects\\shikiho_text_parser\\data\\prices_full",
+  "full_price_files": 4411,
+  "sector_master": "C:\\Users\\mitsu\\OneDrive\\ドキュメント\\stock_ml\\projects\\shikiho_text_parser\\data\\reference\\sector_master_template.csv",
+  "sector_master_rows": 4428
+}
