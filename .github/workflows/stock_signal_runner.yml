@@ -24,11 +24,13 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Build 4Q-2 watchlist
+        run: python scripts/build_4q2_watchlist.py
       - name: Run stock signal
         id: run_signal
         run: |
           mkdir -p data
-          python test.py > data/last_run_github.log 2>&1
+          python test.py --watchlist data/tmp_watchlist_4q2_only.csv --no-sector-extra > data/last_run_github.log 2>&1
       - name: Notify signal detection
         if: ${{ success() }}
         run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log
@@ -37,7 +39,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/prices/ data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt
+          git add data/prices/ data/tmp_watchlist_4q2_only.csv data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
