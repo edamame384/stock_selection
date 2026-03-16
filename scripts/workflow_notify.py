@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import sys
@@ -15,7 +16,10 @@ import yfinance as yf
 from src.stock_signal import resolve_default_discord_webhook_url, send_discord_webhook
 
 BUY_RE = re.compile(
-    r"^\[BUY\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+\|\s+.*?tp_prob=(?P<tp>[\d.]+)%.*?lmt_price=(?P<lmt>[\d.]+)"
+    r"^\[BUY\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+\|\s+.*?close=(?P<close>[\d.]+)\s+tp_prob=(?P<tp>[\d.]+)%.*?lmt=(?P<lmt_ratio>[-\d.]+)%\s+lmt_price=(?P<lmt>[\d.]+)\s+sl=(?P<sl_ratio>[\d.]+)%\s+sl_price=(?P<sl>[\d.]+)"
+)
+HOLD_RE = re.compile(
+    r"^\[(?P<kind>HOLD)\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+\|\s+.*?close=(?P<close>[\d.]+)\s+tp_prob=(?P<tp>[\d.]+)%.*?lmt=(?P<lmt_ratio>[-\d.]+)%\s+lmt_price=(?P<lmt>[\d.]+)\s+sl=(?P<sl_ratio>[\d.]+)%"
 )
 PICK_RE = re.compile(
     r"^\[PICK\]\[(?P<group>[^\]]+)\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+tp_prob=(?P<tp>[\d.]+)%\s+sector=(?P<sector>.+)$"
@@ -58,20 +62,53 @@ def notify_failure(webhook_url: str) -> int:
     return 0
 
 
-def parse_signal_lines(log_path: Path) -> tuple[list[dict], list[dict]]:
+def load_state(path: Path) -> dict:
+    if not path.exists():
+        return {"symbols": {}, "updated_at": ""}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {"symbols": {}, "updated_at": ""}
+
+
+def save_state(path: Path, state: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def parse_signal_lines(log_path: Path) -> tuple[list[dict], list[dict], dict[str, dict]]:
     buy_rows: list[dict] = []
     pick_rows: list[dict] = []
+    detail_rows: dict[str, dict] = {}
     for line in log_path.read_text(encoding="utf-8", errors="ignore").splitlines():
         line = line.strip()
         buy_match = BUY_RE.match(line)
         if buy_match:
-            buy_rows.append(
-                {
-                    "symbol": buy_match.group("symbol"),
-                    "tp_prob": float(buy_match.group("tp")),
-                    "lmt_price": float(buy_match.group("lmt")),
-                }
-            )
+            row = {
+                "symbol": buy_match.group("symbol"),
+                "tp_prob": float(buy_match.group("tp")),
+                "close_price": float(buy_match.group("close")),
+                "entry_price": float(buy_match.group("lmt")),
+                "entry_ratio_pct": float(buy_match.group("lmt_ratio")),
+                "stop_loss_ratio_pct": float(buy_match.group("sl_ratio")),
+                "stop_loss_price": float(buy_match.group("sl")),
+                "kind": "BUY",
+            }
+            buy_rows.append(row)
+            detail_rows[row["symbol"]] = row
+            continue
+        hold_match = HOLD_RE.match(line)
+        if hold_match:
+            detail_rows[hold_match.group("symbol")] = {
+                "symbol": hold_match.group("symbol"),
+                "tp_prob": float(hold_match.group("tp")),
+                "close_price": float(hold_match.group("close")),
+                "entry_price": float(hold_match.group("lmt")),
+                "entry_ratio_pct": float(hold_match.group("lmt_ratio")),
+                "stop_loss_ratio_pct": float(hold_match.group("sl_ratio")),
+                "stop_loss_price": None,
+                "kind": "HOLD",
+            }
             continue
         pick_match = PICK_RE.match(line)
         if pick_match:
@@ -83,42 +120,104 @@ def parse_signal_lines(log_path: Path) -> tuple[list[dict], list[dict]]:
                     "sector": pick_match.group("sector").strip(),
                 }
             )
-    return buy_rows, pick_rows
+    return buy_rows, pick_rows, detail_rows
 
 
-def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int) -> int:
+def format_buy_line(symbol: str, company_name: str, sector: str, detail: dict, take_profit_ratio: float) -> str:
+    entry_price = detail.get("entry_price")
+    close_price = detail.get("close_price")
+    stop_loss_price = detail.get("stop_loss_price")
+    tp_prob = detail.get("tp_prob")
+    if isinstance(entry_price, (int, float)):
+        tp_price = entry_price * (1.0 + take_profit_ratio)
+        entry_text = f"{entry_price:,.2f}円"
+        tp_text_price = f"{tp_price:,.2f}円"
+    else:
+        entry_text = "N/A"
+        tp_text_price = "N/A"
+    if stop_loss_price is None and isinstance(close_price, (int, float)):
+        sl_ratio = float(detail.get("stop_loss_ratio_pct", 0.0)) / 100.0
+        stop_loss_price = close_price * (1.0 - sl_ratio)
+    sl_text_price = f"{stop_loss_price:,.2f}円" if isinstance(stop_loss_price, (int, float)) else "N/A"
+    tp_text = f"{tp_prob:.2f}%" if isinstance(tp_prob, (int, float)) else "N/A"
+    return (
+        f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
+        f"逆指値{entry_text}、利確{tp_text_price}、損切{sl_text_price}、上昇シグナル{tp_text}"
+    )
+
+
+def format_sell_line(symbol: str, state_row: dict) -> str:
+    company_name = state_row.get("company_name", symbol.removesuffix(".T"))
+    sector = state_row.get("sector", "UNKNOWN")
+    return f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}：購入シグナル消失"
+
+
+def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, state_path: Path, take_profit_ratio: float) -> int:
     if not log_path.exists():
         return 0
-    buy_rows, pick_rows = parse_signal_lines(log_path)
+    buy_rows, pick_rows, detail_rows = parse_signal_lines(log_path)
     workflow = os.getenv("GITHUB_WORKFLOW", "stock-signal-runner")
     run_url = build_run_url()
-    if not buy_rows and not pick_rows:
-        lines = [f"[NO_SIGNAL] {workflow}", "シグナル無し"]
-        if run_url:
-            lines.append(run_url)
-        send_discord_webhook(webhook_url, "\n".join(lines))
-        return 0
-
-    buy_map = {row["symbol"]: row for row in buy_rows}
+    previous_state = load_state(state_path)
+    previous_symbols = set((previous_state.get("symbols") or {}).keys())
     chosen_symbols = [row["symbol"] for row in pick_rows] if pick_rows else [row["symbol"] for row in buy_rows]
     pick_map = {row["symbol"]: row for row in pick_rows}
-
-    lines = [f"[SIGNAL] {workflow}", f"count={len(chosen_symbols)}"]
-    for symbol in chosen_symbols[:max_lines]:
+    current_state_symbols: dict[str, dict] = {}
+    for symbol in chosen_symbols:
         pick = pick_map.get(symbol, {})
-        buy = buy_map.get(symbol, {})
+        detail = detail_rows.get(symbol, {})
         company_name = fetch_symbol_name(symbol)
         sector = str(pick.get("sector", "UNKNOWN"))
-        lmt_price = buy.get("lmt_price")
-        tp_prob = pick.get("tp_prob", buy.get("tp_prob"))
-        lmt_text = f"{lmt_price:,.2f}円" if isinstance(lmt_price, (int, float)) else "N/A"
-        tp_text = f"{tp_prob:.2f}%" if isinstance(tp_prob, (int, float)) else "N/A"
-        lines.append(f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}：逆指値{lmt_text}、上昇シグナル{tp_text}")
-    if len(chosen_symbols) > max_lines:
-        lines.append(f"... and {len(chosen_symbols) - max_lines} more")
+        current_state_symbols[symbol] = {
+            "company_name": company_name,
+            "sector": sector,
+            "tp_prob": pick.get("tp_prob", detail.get("tp_prob")),
+            "entry_price": detail.get("entry_price"),
+            "entry_ratio_pct": detail.get("entry_ratio_pct"),
+            "stop_loss_ratio_pct": detail.get("stop_loss_ratio_pct"),
+            "stop_loss_price": detail.get("stop_loss_price"),
+            "close_price": detail.get("close_price"),
+        }
+
+    disappeared_symbols = sorted(previous_symbols - set(current_state_symbols.keys()))
+
+    lines = []
+    if chosen_symbols:
+        lines.extend([f"[SIGNAL] {workflow}", f"count={len(chosen_symbols)}"])
+        for symbol in chosen_symbols[:max_lines]:
+            state_row = current_state_symbols[symbol]
+            lines.append(
+                format_buy_line(
+                    symbol=symbol,
+                    company_name=state_row["company_name"],
+                    sector=state_row["sector"],
+                    detail=state_row,
+                    take_profit_ratio=take_profit_ratio,
+                )
+            )
+        if len(chosen_symbols) > max_lines:
+            lines.append(f"... and {len(chosen_symbols) - max_lines} more")
+    else:
+        lines.extend([f"[NO_SIGNAL] {workflow}", "シグナル無し"])
+
+    if disappeared_symbols:
+        lines.append("")
+        lines.append(f"[BUY_SIGNAL_LOST] count={len(disappeared_symbols)}")
+        for symbol in disappeared_symbols[:max_lines]:
+            lines.append(format_sell_line(symbol, (previous_state.get("symbols") or {}).get(symbol, {})))
+        if len(disappeared_symbols) > max_lines:
+            lines.append(f"... and {len(disappeared_symbols) - max_lines} more")
+
     if run_url:
         lines.append(run_url)
     send_discord_webhook(webhook_url, "\n".join(lines))
+    save_state(
+        state_path,
+        {
+            "updated_at": os.getenv("GITHUB_RUN_ID", ""),
+            "symbols": current_state_symbols,
+        },
+    )
     return 0
 
 
@@ -128,6 +227,8 @@ def main() -> int:
     parser.add_argument("--webhook-url", default=resolve_default_discord_webhook_url())
     parser.add_argument("--log-path", type=Path, default=Path("data/last_run_github.log"))
     parser.add_argument("--max-lines", type=int, default=12)
+    parser.add_argument("--state-path", type=Path, default=Path("data/last_signal_state_4q2.json"))
+    parser.add_argument("--take-profit-ratio", type=float, default=0.05)
     args = parser.parse_args()
 
     if not args.webhook_url:
@@ -136,7 +237,7 @@ def main() -> int:
 
     if args.mode == "failure":
         return notify_failure(args.webhook_url)
-    return notify_signal_from_log(args.webhook_url, args.log_path, args.max_lines)
+    return notify_signal_from_log(args.webhook_url, args.log_path, args.max_lines, args.state_path, args.take_profit_ratio)
 
 
 if __name__ == "__main__":
