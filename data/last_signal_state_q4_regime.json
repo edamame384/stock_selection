@@ -1,0 +1,137 @@
+{
+  "updated_at": "23168859761",
+  "symbols": {
+    "8393.T": {
+      "company_name": "MIYAZAKI BANK",
+      "sector": "銀行業",
+      "method": "breakout_1.5",
+      "tp_prob": 81.68,
+      "entry_price": 9307.55,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 8842.17,
+      "close_price": 9170.0
+    },
+    "6745.T": {
+      "company_name": "HOCHIKI CORP",
+      "sector": "電気機器",
+      "method": "breakout_1.5",
+      "tp_prob": 80.42,
+      "entry_price": 6506.15,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 6180.84,
+      "close_price": 6410.0
+    },
+    "1980.T": {
+      "company_name": "DAI-DAN CO LTD",
+      "sector": "建設業",
+      "method": "breakout_1.5",
+      "tp_prob": 71.51,
+      "entry_price": 3116.05,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 2960.25,
+      "close_price": 3070.0
+    },
+    "1847.T": {
+      "company_name": "ICHIKEN CO LTD",
+      "sector": "建設業",
+      "method": "breakout_1.5",
+      "tp_prob": 69.7,
+      "entry_price": 6303.15,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 5987.99,
+      "close_price": 6210.0
+    },
+    "146A.T": {
+      "company_name": "COLUMBIA WORKS INC",
+      "sector": "不動産業",
+      "method": "breakout_1.5",
+      "tp_prob": 66.22,
+      "entry_price": 4516.75,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 4290.91,
+      "close_price": 4450.0
+    },
+    "1893.T": {
+      "company_name": "PENTA OCEAN CONSTRUCTION",
+      "sector": "建設業",
+      "method": "breakout_1.5",
+      "tp_prob": 65.96,
+      "entry_price": 1862.52,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 1769.4,
+      "close_price": 1835.0
+    },
+    "6822.T": {
+      "company_name": "OI ELECTRIC CO LTD",
+      "sector": "電気機器",
+      "method": "breakout_1.5",
+      "tp_prob": 64.46,
+      "entry_price": 5237.4,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 4975.53,
+      "close_price": 5160.0
+    },
+    "2975.T": {
+      "company_name": "STAR MICA HLDGS CO",
+      "sector": "不動産業",
+      "method": "breakout_1.5",
+      "tp_prob": 62.8,
+      "entry_price": 1687.94,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 1603.55,
+      "close_price": 1663.0
+    },
+    "8345.T": {
+      "company_name": "BANK OF IWATE LTD",
+      "sector": "銀行業",
+      "method": "breakout_1.5",
+      "tp_prob": 61.38,
+      "entry_price": 6800.5,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 6460.47,
+      "close_price": 6700.0
+    },
+    "7989.T": {
+      "company_name": "TACHIKAWA CORP",
+      "sector": "金属製品",
+      "method": "breakout_1.5",
+      "tp_prob": 60.2,
+      "entry_price": 2598.4,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 2468.48,
+      "close_price": 2560.0
+    },
+    "8343.T": {
+      "company_name": "AKITA BANK",
+      "sector": "銀行業",
+      "method": "breakout_1.5",
+      "tp_prob": 59.68,
+      "entry_price": 5298.3,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 5033.38,
+      "close_price": 5220.0
+    },
+    "8336.T": {
+      "company_name": "MUSASHINO BANK",
+      "sector": "銀行業",
+      "method": "breakout_1.5",
+      "tp_prob": 56.69,
+      "entry_price": 6191.5,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 5881.92,
+      "close_price": 6100.0
+    }
+  }
+}

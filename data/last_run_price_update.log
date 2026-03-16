@@ -1,0 +1,73 @@
+[TIME] jst_now=2026-03-17 07:28:55 expected_hour=23
+[WARN] Running outside the expected JST hour for night-session feature capture.
+[SECTOR_SIGNAL] bullish=0 extra_enabled=False extra_max=10 signal_source=local ret_source=local
+[FUT] rows_nk=589 ticker_nk=NKD=F feature_nk=fut_nk_night_ret rows_dow=6026 ticker_dow=YM=F feature_dow=ret_dow_fut
+[GROUP] start=q4_regime symbols=60
+[SECTOR][q4_regime] symbols=60 unique=8 index_loaded=7
+[ML][q4_regime] trained_rows=281246 symbols=60 features=28
+[OPTRET][q4_regime] threshold=0.75 stop_loss=20.00% limit=-0.50% win_rate=89.71% avg_fill=2.88% avg_signal=1.24% fills=68/158 fill_rate=43.04% max_dd=37.77% constraints(fill_rate>=10.00%, monthly_fills>=0.00, max_dd<=100.00%)
+[FALLBACK][q4_regime] threshold=0.75->0.57 buy_signals=3
+[HOLD] 4221.T | signal_date=2026-03-16 trade_date=2026-03-17 close=4680.00 tp_prob=49.60% lmt=-0.50% lmt_price=4703.40 tp=5.00% tp_price=4914.00 sl=20.00%
+[HOLD] 3486.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2245.00 tp_prob=50.32% lmt=-0.50% lmt_price=2256.22 tp=5.00% tp_price=2357.25 sl=20.00%
+[HOLD] 8361.T | signal_date=2026-03-16 trade_date=2026-03-17 close=6000.00 tp_prob=50.89% lmt=-0.50% lmt_price=6030.00 tp=5.00% tp_price=6300.00 sl=20.00%
+[HOLD] 9691.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3815.00 tp_prob=55.58% lmt=-0.50% lmt_price=3834.07 tp=5.00% tp_price=4005.75 sl=20.00%
+[HOLD] 7419.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1089.00 tp_prob=49.22% lmt=-0.50% lmt_price=1094.44 tp=5.00% tp_price=1143.45 sl=20.00%
+[HOLD] 343A.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1286.00 tp_prob=48.70% lmt=-0.50% lmt_price=1292.43 tp=5.00% tp_price=1350.30 sl=20.00%
+[HOLD] 1384.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3015.00 tp_prob=47.26% lmt=-0.50% lmt_price=3030.07 tp=5.00% tp_price=3165.75 sl=20.00%
+[HOLD] 1893.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1796.00 tp_prob=55.74% lmt=-0.50% lmt_price=1804.98 tp=5.00% tp_price=1885.80 sl=20.00%
+[HOLD] 4016.T | signal_date=2026-03-16 trade_date=2026-03-17 close=922.00 tp_prob=41.39% lmt=-0.50% lmt_price=926.61 tp=5.00% tp_price=968.10 sl=20.00%
+[HOLD] 7110.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2128.00 tp_prob=49.64% lmt=-0.50% lmt_price=2138.64 tp=5.00% tp_price=2234.40 sl=20.00%
+[HOLD] 4495.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2271.00 tp_prob=47.07% lmt=-0.50% lmt_price=2282.35 tp=5.00% tp_price=2384.55 sl=20.00%
+[HOLD] 8550.T | signal_date=2026-03-16 trade_date=2026-03-17 close=885.00 tp_prob=51.26% lmt=-0.50% lmt_price=889.42 tp=5.00% tp_price=929.25 sl=20.00%
+[HOLD] 2981.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2231.00 tp_prob=47.84% lmt=-0.50% lmt_price=2242.15 tp=5.00% tp_price=2342.55 sl=20.00%
+[HOLD] 9409.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3255.00 tp_prob=48.76% lmt=-0.50% lmt_price=3271.27 tp=5.00% tp_price=3417.75 sl=20.00%
+[HOLD] 2975.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1636.00 tp_prob=50.28% lmt=-0.50% lmt_price=1644.18 tp=5.00% tp_price=1717.80 sl=20.00%
+[HOLD] 6542.T | signal_date=2026-01-13 trade_date=2026-01-14 close=4227422720.00 tp_prob=48.51% lmt=-0.50% lmt_price=4248559833.60 tp=5.00% tp_price=4438793856.00 sl=20.00%
+[HOLD] 8600.T | signal_date=2026-03-16 trade_date=2026-03-17 close=852.00 tp_prob=54.90% lmt=-0.50% lmt_price=856.26 tp=5.00% tp_price=894.60 sl=20.00%
+[HOLD] 3449.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2598.00 tp_prob=51.13% lmt=-0.50% lmt_price=2610.99 tp=5.00% tp_price=2727.90 sl=20.00%
+[BUY] 5105.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3666.00 tp_prob=57.32% lmt=-0.50% lmt_price=3684.33 tp=5.00% tp_price=3849.30 sl=20.00% sl_price=2932.80
+[HOLD] 1980.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2999.00 tp_prob=55.70% lmt=-0.50% lmt_price=3013.99 tp=5.00% tp_price=3148.95 sl=20.00%
+[HOLD] 7235.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1541.00 tp_prob=53.83% lmt=-0.50% lmt_price=1548.70 tp=5.00% tp_price=1618.05 sl=20.00%
+[HOLD] 8057.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2030.00 tp_prob=49.12% lmt=-0.50% lmt_price=2040.15 tp=5.00% tp_price=2131.50 sl=20.00%
+[HOLD] 5352.T | signal_date=2026-03-16 trade_date=2026-03-17 close=4175.00 tp_prob=38.59% lmt=-0.50% lmt_price=4195.88 tp=5.00% tp_price=4383.75 sl=20.00%
+[HOLD] 6822.T | signal_date=2026-03-16 trade_date=2026-03-17 close=5640.00 tp_prob=51.25% lmt=-0.50% lmt_price=5668.20 tp=5.00% tp_price=5922.00 sl=20.00%
+[HOLD] 146A.T | signal_date=2026-03-16 trade_date=2026-03-17 close=4265.00 tp_prob=51.20% lmt=-0.50% lmt_price=4286.32 tp=5.00% tp_price=4478.25 sl=20.00%
+[HOLD] 8515.T | signal_date=2026-03-16 trade_date=2026-03-17 close=476.00 tp_prob=49.54% lmt=-0.50% lmt_price=478.38 tp=5.00% tp_price=499.80 sl=20.00%
+[HOLD] 6231.T | signal_date=2026-03-16 trade_date=2026-03-17 close=15440.00 tp_prob=50.84% lmt=-0.50% lmt_price=15517.20 tp=5.00% tp_price=16212.00 sl=20.00%
+[HOLD] 8393.T | signal_date=2026-03-16 trade_date=2026-03-17 close=8700.00 tp_prob=50.91% lmt=-0.50% lmt_price=8743.50 tp=5.00% tp_price=9135.00 sl=20.00%
+[HOLD] 3922.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2172.00 tp_prob=45.61% lmt=-0.50% lmt_price=2182.86 tp=5.00% tp_price=2280.60 sl=20.00%
+[HOLD] 6745.T | signal_date=2026-03-16 trade_date=2026-03-17 close=6540.00 tp_prob=51.82% lmt=-0.50% lmt_price=6572.70 tp=5.00% tp_price=6867.00 sl=20.00%
+[HOLD] 7989.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2536.00 tp_prob=45.50% lmt=-0.50% lmt_price=2548.68 tp=5.00% tp_price=2662.80 sl=20.00%
+[HOLD] 8343.T | signal_date=2026-03-16 trade_date=2026-03-17 close=4965.00 tp_prob=50.81% lmt=-0.50% lmt_price=4989.82 tp=5.00% tp_price=5213.25 sl=20.00%
+[HOLD] 8345.T | signal_date=2026-03-16 trade_date=2026-03-17 close=6470.00 tp_prob=50.68% lmt=-0.50% lmt_price=6502.35 tp=5.00% tp_price=6793.50 sl=20.00%
+[HOLD] 1847.T | signal_date=2026-03-16 trade_date=2026-03-17 close=5870.00 tp_prob=51.23% lmt=-0.50% lmt_price=5899.35 tp=5.00% tp_price=6163.50 sl=20.00%
+[HOLD] 6332.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3020.00 tp_prob=54.98% lmt=-0.50% lmt_price=3035.10 tp=5.00% tp_price=3171.00 sl=20.00%
+[HOLD] 3935.T | signal_date=2026-03-16 trade_date=2026-03-17 close=702.00 tp_prob=48.31% lmt=-0.50% lmt_price=705.51 tp=5.00% tp_price=737.10 sl=20.00%
+[HOLD] 6853.T | signal_date=2026-03-16 trade_date=2026-03-17 close=755.00 tp_prob=47.99% lmt=-0.50% lmt_price=758.77 tp=5.00% tp_price=792.75 sl=20.00%
+[HOLD] 1815.T | signal_date=2026-03-16 trade_date=2026-03-17 close=4435.00 tp_prob=50.63% lmt=-0.50% lmt_price=4457.17 tp=5.00% tp_price=4656.75 sl=20.00%
+[HOLD] 1961.T | signal_date=2026-03-16 trade_date=2026-03-17 close=6610.00 tp_prob=55.62% lmt=-0.50% lmt_price=6643.05 tp=5.00% tp_price=6940.50 sl=20.00%
+[HOLD] 4301.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2017.00 tp_prob=43.58% lmt=-0.50% lmt_price=2027.08 tp=5.00% tp_price=2117.85 sl=20.00%
+[BUY] 2970.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1023.00 tp_prob=58.69% lmt=-0.50% lmt_price=1028.11 tp=5.00% tp_price=1074.15 sl=20.00% sl_price=818.40
+[HOLD] 1975.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3725.00 tp_prob=56.97% lmt=-0.50% lmt_price=3743.62 tp=5.00% tp_price=3911.25 sl=20.00%
+[HOLD] 3712.T | signal_date=2026-03-16 trade_date=2026-03-17 close=5430.00 tp_prob=46.09% lmt=-0.50% lmt_price=5457.15 tp=5.00% tp_price=5701.50 sl=20.00%
+[HOLD] 1736.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2427.00 tp_prob=48.13% lmt=-0.50% lmt_price=2439.13 tp=5.00% tp_price=2548.35 sl=20.00%
+[HOLD] 5971.T | signal_date=2026-03-16 trade_date=2026-03-17 close=7260.00 tp_prob=46.26% lmt=-0.50% lmt_price=7296.30 tp=5.00% tp_price=7623.00 sl=20.00%
+[HOLD] 3242.T | signal_date=2026-03-16 trade_date=2026-03-17 close=535.00 tp_prob=43.21% lmt=-0.50% lmt_price=537.67 tp=5.00% tp_price=561.75 sl=20.00%
+[HOLD] 6331.T | signal_date=2026-03-16 trade_date=2026-03-17 close=3245.00 tp_prob=55.80% lmt=-0.50% lmt_price=3261.22 tp=5.00% tp_price=3407.25 sl=20.00%
+[HOLD] 256A.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2207.00 tp_prob=54.46% lmt=-0.50% lmt_price=2218.03 tp=5.00% tp_price=2317.35 sl=20.00%
+[HOLD] 8336.T | signal_date=2026-03-16 trade_date=2026-03-17 close=6160.00 tp_prob=51.18% lmt=-0.50% lmt_price=6190.80 tp=5.00% tp_price=6468.00 sl=20.00%
+[HOLD] 7191.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1120.00 tp_prob=46.64% lmt=-0.50% lmt_price=1125.60 tp=5.00% tp_price=1176.00 sl=20.00%
+[BUY] 3465.T | signal_date=2026-03-16 trade_date=2026-03-17 close=6550.00 tp_prob=57.22% lmt=-0.50% lmt_price=6582.75 tp=5.00% tp_price=6877.50 sl=20.00% sl_price=5240.00
+[HOLD] 6091.T | signal_date=2026-03-16 trade_date=2026-03-17 close=905.00 tp_prob=42.14% lmt=-0.50% lmt_price=909.52 tp=5.00% tp_price=950.25 sl=20.00%
+[HOLD] 7130.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2928.00 tp_prob=50.53% lmt=-0.50% lmt_price=2942.64 tp=5.00% tp_price=3074.40 sl=20.00%
+[HOLD] 6488.T | signal_date=2026-03-16 trade_date=2026-03-17 close=967.00 tp_prob=46.96% lmt=-0.50% lmt_price=971.83 tp=5.00% tp_price=1015.35 sl=20.00%
+[HOLD] 4633.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2327.00 tp_prob=54.93% lmt=-0.50% lmt_price=2338.63 tp=5.00% tp_price=2443.35 sl=20.00%
+[HOLD] 3277.T | signal_date=2026-03-16 trade_date=2026-03-17 close=1428.00 tp_prob=47.89% lmt=-0.50% lmt_price=1435.14 tp=5.00% tp_price=1499.40 sl=20.00%
+[HOLD] 3467.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2773.00 tp_prob=47.27% lmt=-0.50% lmt_price=2786.86 tp=5.00% tp_price=2911.65 sl=20.00%
+[HOLD] 6743.T | signal_date=2026-03-16 trade_date=2026-03-17 close=810.00 tp_prob=48.69% lmt=-0.50% lmt_price=814.05 tp=5.00% tp_price=850.50 sl=20.00%
+[HOLD] 7242.T | signal_date=2026-03-16 trade_date=2026-03-17 close=4290.00 tp_prob=56.05% lmt=-0.50% lmt_price=4311.45 tp=5.00% tp_price=4504.50 sl=20.00%
+[HOLD] 6489.T | signal_date=2026-03-16 trade_date=2026-03-17 close=2037.00 tp_prob=47.76% lmt=-0.50% lmt_price=2047.18 tp=5.00% tp_price=2138.85 sl=20.00%
+[DIV][q4_regime] candidates=3 selected=3 max_corr=0.70 lookback=252
+[PICK][q4_regime] 2970.T tp_prob=58.69% sector=Real Estate
+[PICK][q4_regime] 5105.T tp_prob=57.32% sector=Consumer Cyclical
+[PICK][q4_regime] 3465.T tp_prob=57.22% sector=Real Estate
