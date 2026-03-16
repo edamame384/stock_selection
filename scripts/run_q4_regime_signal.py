@@ -17,7 +17,7 @@ from projects.shikiho_text_parser.backtest_4q2_signals import calc_signal, load_
 from projects.shikiho_text_parser.backtest_q4_regime_switch import nikkei_regime_custom
 
 
-DEFAULT_SELECTED = ROOT / "projects" / "quarterly_ranker" / "output" / "q4_pre_analysis_20250930_full" / "q4_pre_selected_candidates_condition2_input.csv"
+DEFAULT_SELECTED = ROOT / "projects" / "shikiho_text_parser" / "data" / "q4_regime_selected_candidates_condition2_input.csv"
 DEFAULT_PRICE_DIR = ROOT / "data" / "prices"
 EXTERNAL_MARKET_DIR = ROOT / "data" / "external_market"
 

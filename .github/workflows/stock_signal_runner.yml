@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Build Q4 regime watchlist
-        run: python scripts/build_4q2_watchlist.py --input projects/quarterly_ranker/output/q4_pre_analysis_20250930_full/q4_pre_selected_candidates_condition2_input.csv --output data/tmp_watchlist_q4_regime.csv --group-name q4_regime
+        run: python scripts/build_4q2_watchlist.py --input projects/shikiho_text_parser/data/q4_regime_selected_candidates_condition2_input.csv --output data/tmp_watchlist_q4_regime.csv --group-name q4_regime
       - name: Update stock prices
         id: run_signal
         env:
