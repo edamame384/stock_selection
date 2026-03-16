@@ -22,24 +22,29 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Build 4Q-2 watchlist
-        run: python scripts/build_4q2_watchlist.py
-      - name: Run stock signal
+      - name: Build Q4 regime watchlist
+        run: python scripts/build_4q2_watchlist.py --input projects/quarterly_ranker/output/q4_pre_analysis_20250930_full/q4_pre_selected_candidates_condition2_input.csv --output data/tmp_watchlist_q4_regime.csv --group-name q4_regime
+      - name: Update stock prices
         id: run_signal
         env:
           STOCK_ML_DISABLE_DIRECT_DISCORD: "1"
         run: |
           mkdir -p data
-          python test.py --watchlist data/tmp_watchlist_4q2_only.csv --no-sector-extra > data/last_run_github.log 2>&1
+          python test.py --watchlist data/tmp_watchlist_q4_regime.csv --no-sector-extra > data/last_run_price_update.log 2>&1
+      - name: Build regime-switch signal log
+        run: |
+          python scripts/run_q4_regime_signal.py > data/last_run_github.log 2>&1
       - name: Notify signal detection
         if: ${{ success() }}
-        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log
+        env:
+          STOCK_ML_DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/1483032119466004601/iXlD3sc_dhLrppCBprbLO4899HNX7gD4s-MJFsLPam5ZmMOvP9PMzl8Yg5eqPSYdyxrR"
+        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log --state-path data/last_signal_state_q4_regime.json --take-profit-ratio 0.08
       - name: Commit updated prices and logs
         if: ${{ success() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/prices/ data/tmp_watchlist_4q2_only.csv data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt
+          git add data/prices/ data/external_market/ data/tmp_watchlist_q4_regime.csv data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt data/last_signal_state_q4_regime.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
@@ -48,4 +53,6 @@ jobs:
           git push origin HEAD:${GITHUB_REF_NAME}
       - name: Notify workflow failure
         if: ${{ failure() }}
+        env:
+          STOCK_ML_DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/1483032119466004601/iXlD3sc_dhLrppCBprbLO4899HNX7gD4s-MJFsLPam5ZmMOvP9PMzl8Yg5eqPSYdyxrR"
         run: python scripts/workflow_notify.py --mode failure

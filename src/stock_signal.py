@@ -75,6 +75,7 @@ class SignalResult:
     last_close: float
     buy: bool
     tp_probability: float
+    take_profit_ratio: float
     stop_loss_ratio: float
     limit_entry_ratio: float
     trade_date: date
@@ -123,8 +124,8 @@ class StrategyTuningResult:
 
 
 DEFAULT_DISCORD_WEBHOOK_URL = (
-    "https://discord.com/api/webhooks/1479858388090355762/"
-    "WfKk_sdIufDciR-g-LksZCjlzdSrLHZQ__558rfwGrv-wH9E9nQzdeiSRE9gmfHbrjN8"
+    "https://discord.com/api/webhooks/1483032119466004601/"
+    "iXlD3sc_dhLrppCBprbLO4899HNX7gD4s-MJFsLPam5ZmMOvP9PMzl8Yg5eqPSYdyxrR"
 )
 
 
@@ -1124,6 +1125,7 @@ def analyze_symbol(
     feat: pd.DataFrame,
     model: RandomForestClassifier,
     threshold: float,
+    take_profit: float,
     stop_loss_ratio: float,
     limit_entry_ratio: float,
 ) -> SignalResult:
@@ -1142,6 +1144,7 @@ def analyze_symbol(
         last_close=last_close,
         buy=buy,
         tp_probability=tp_probability,
+        take_profit_ratio=take_profit,
         stop_loss_ratio=stop_loss_ratio,
         limit_entry_ratio=limit_entry_ratio,
         trade_date=trade_date,
@@ -1158,12 +1161,14 @@ def save_price_data(symbol: str, raw_df: pd.DataFrame, output_dir: Path) -> Path
 
 def notify(result: SignalResult) -> None:
     limit_price = result.last_close * (1.0 - result.limit_entry_ratio)
+    tp_price = result.last_close * (1.0 + result.take_profit_ratio)
     if result.buy:
         sl_price = result.last_close * (1.0 - result.stop_loss_ratio)
         print(
             f"[BUY] {result.symbol} | signal_date={result.last_date.date()} trade_date={result.trade_date} "
             f"close={result.last_close:.2f} tp_prob={result.tp_probability:.2%} "
             f"lmt={result.limit_entry_ratio:.2%} lmt_price={limit_price:.2f} "
+            f"tp={result.take_profit_ratio:.2%} tp_price={tp_price:.2f} "
             f"sl={result.stop_loss_ratio:.2%} sl_price={sl_price:.2f}"
         )
     else:
@@ -1171,6 +1176,7 @@ def notify(result: SignalResult) -> None:
             f"[HOLD] {result.symbol} | signal_date={result.last_date.date()} trade_date={result.trade_date} "
             f"close={result.last_close:.2f} tp_prob={result.tp_probability:.2%} "
             f"lmt={result.limit_entry_ratio:.2%} lmt_price={limit_price:.2f} "
+            f"tp={result.take_profit_ratio:.2%} tp_price={tp_price:.2f} "
             f"sl={result.stop_loss_ratio:.2%}"
         )
 
@@ -1587,6 +1593,7 @@ def run(
                     feat=feat,
                     model=model,
                     threshold=strategy.threshold,
+                    take_profit=take_profit,
                     stop_loss_ratio=strategy.stop_loss_ratio,
                     limit_entry_ratio=strategy.limit_entry_ratio,
                 )
