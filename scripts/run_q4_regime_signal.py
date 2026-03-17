@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.stock_signal import download_daily_data, save_price_data
 from projects.shikiho_text_parser.backtest_4q2_signals import calc_signal, load_selected
 from projects.shikiho_text_parser.backtest_q4_regime_switch import nikkei_regime_custom
 
@@ -72,9 +73,16 @@ def main() -> int:
     latest_dates: list[pd.Timestamp] = []
     for ticker in selected["ticker"]:
         path = args.price_dir / f"{ticker.replace('.', '_')}.csv"
-        if not path.exists():
-            continue
-        df = pd.read_csv(path, parse_dates=["Date"]).sort_values("Date").set_index("Date")
+        df = None
+        try:
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                fresh_df = download_daily_data(ticker, period="max")
+            save_price_data(ticker, fresh_df, args.price_dir)
+            df = fresh_df.sort_index().copy()
+        except Exception:
+            if not path.exists():
+                continue
+            df = pd.read_csv(path, parse_dates=["Date"]).sort_values("Date").set_index("Date")
         if df.empty:
             continue
         price_map[ticker] = df

@@ -206,6 +206,10 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
         header_suffix += f" regime={meta['regime']}"
     if chosen_symbols:
         lines.extend([f"[SIGNAL] {workflow}{header_suffix}", f"count={len(chosen_symbols)}"])
+        if meta.get("signal_date") or meta.get("trade_date"):
+            lines.append(
+                f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
+            )
         for symbol in chosen_symbols[:max_lines]:
             state_row = current_state_symbols[symbol]
             lines.append(
@@ -222,6 +226,10 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
             lines.append(f"... and {len(chosen_symbols) - max_lines} more")
     else:
         lines.extend([f"[NO_SIGNAL] {workflow}{header_suffix}", "シグナル無し"])
+        if meta.get("signal_date") or meta.get("trade_date"):
+            lines.append(
+                f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
+            )
 
     if disappeared_symbols:
         lines.append("")
