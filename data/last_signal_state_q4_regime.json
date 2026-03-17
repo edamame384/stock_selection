@@ -1,11 +1,11 @@
 {
-  "updated_at": "23185167011",
+  "updated_at": "23208358200",
   "symbols": {
     "6745.T": {
       "company_name": "HOCHIKI CORP",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 83.26,
+      "tp_prob": 84.02,
       "entry_price": 6851.25,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
@@ -16,7 +16,7 @@
       "company_name": "TECHNOFLEX CORP",
       "sector": "金属製品",
       "method": "breakout_1.5",
-      "tp_prob": 77.07,
+      "tp_prob": 77.83,
       "entry_price": 2758.77,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
@@ -27,23 +27,12 @@
       "company_name": "MIYAZAKI BANK",
       "sector": "銀行業",
       "method": "breakout_1.5",
-      "tp_prob": 74.57,
+      "tp_prob": 74.51,
       "entry_price": 8881.25,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
       "stop_loss_price": 8437.19,
       "close_price": 8750.0
-    },
-    "8361.T": {
-      "company_name": "OGAKI KYORITSU BANK",
-      "sector": "銀行業",
-      "method": "breakout_1.5",
-      "tp_prob": 73.97,
-      "entry_price": 6161.05,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 5853.0,
-      "close_price": 6070.0
     },
     "6822.T": {
       "company_name": "OI ELECTRIC CO LTD",
@@ -55,6 +44,17 @@
       "stop_loss_ratio_pct": 5.0,
       "stop_loss_price": 5370.87,
       "close_price": 5570.0
+    },
+    "8361.T": {
+      "company_name": "OGAKI KYORITSU BANK",
+      "sector": "銀行業",
+      "method": "breakout_1.5",
+      "tp_prob": 73.8,
+      "entry_price": 6161.05,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 5853.0,
+      "close_price": 6070.0
     },
     "1980.T": {
       "company_name": "DAI-DAN CO LTD",
@@ -89,22 +89,11 @@
       "stop_loss_price": 5563.72,
       "close_price": 5770.0
     },
-    "1893.T": {
-      "company_name": "PENTA OCEAN CONSTRUCTION",
-      "sector": "建設業",
-      "method": "breakout_1.5",
-      "tp_prob": 60.32,
-      "entry_price": 1823.45,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 1732.28,
-      "close_price": 1796.5
-    },
     "8336.T": {
       "company_name": "MUSASHINO BANK",
       "sector": "銀行業",
       "method": "breakout_1.5",
-      "tp_prob": 57.46,
+      "tp_prob": 56.94,
       "entry_price": 6282.85,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
@@ -115,7 +104,7 @@
       "company_name": "AGRATIO URBAN DESIGN INC",
       "sector": "不動産業",
       "method": "breakout_1.5",
-      "tp_prob": 46.42,
+      "tp_prob": 45.84,
       "entry_price": 2828.8,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
