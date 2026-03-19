@@ -1,126 +1,93 @@
 {
-  "updated_at": "23259017881",
+  "updated_at": "23308672413",
   "symbols": {
     "6745.T": {
       "company_name": "HOCHIKI CORP",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 83.26,
-      "entry_price": 6820.8,
+      "tp_prob": 79.46,
+      "entry_price": 6546.75,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6479.76,
-      "close_price": 6720.0
+      "stop_loss_price": 6219.41,
+      "close_price": 6450.0
     },
     "3449.T": {
       "company_name": "TECHNOFLEX CORP",
       "sector": "金属製品",
       "method": "breakout_1.5",
-      "tp_prob": 79.9,
-      "entry_price": 2861.28,
+      "tp_prob": 74.47,
+      "entry_price": 2772.98,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2718.22,
-      "close_price": 2819.0
+      "stop_loss_price": 2634.33,
+      "close_price": 2732.0
     },
     "8393.T": {
       "company_name": "MIYAZAKI BANK",
       "sector": "銀行業",
       "method": "breakout_1.5",
-      "tp_prob": 78.71,
-      "entry_price": 9348.15,
+      "tp_prob": 74.16,
+      "entry_price": 9135.0,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 8880.74,
-      "close_price": 9210.0
+      "stop_loss_price": 8678.25,
+      "close_price": 9000.0
     },
     "6822.T": {
       "company_name": "OI ELECTRIC CO LTD",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 77.52,
-      "entry_price": 5856.55,
+      "tp_prob": 71.84,
+      "entry_price": 5501.3,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 5563.72,
-      "close_price": 5770.0
-    },
-    "8361.T": {
-      "company_name": "OGAKI KYORITSU BANK",
-      "sector": "銀行業",
-      "method": "breakout_1.5",
-      "tp_prob": 75.9,
-      "entry_price": 6384.35,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6065.13,
-      "close_price": 6290.0
+      "stop_loss_price": 5226.23,
+      "close_price": 5420.0
     },
     "2975.T": {
       "company_name": "STAR MICA HLDGS CO",
       "sector": "不動産業",
       "method": "breakout_1.5",
-      "tp_prob": 64.53,
-      "entry_price": 1708.24,
+      "tp_prob": 59.06,
+      "entry_price": 1647.34,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 1622.83,
-      "close_price": 1683.0
+      "stop_loss_price": 1564.98,
+      "close_price": 1623.0
     },
     "1847.T": {
       "company_name": "ICHIKEN CO LTD",
       "sector": "建設業",
       "method": "breakout_1.5",
-      "tp_prob": 63.11,
-      "entry_price": 6090.0,
+      "tp_prob": 57.85,
+      "entry_price": 5836.25,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 5785.5,
-      "close_price": 6000.0
+      "stop_loss_price": 5544.44,
+      "close_price": 5750.0
     },
     "8336.T": {
       "company_name": "MUSASHINO BANK",
       "sector": "銀行業",
       "method": "breakout_1.5",
-      "tp_prob": 59.36,
-      "entry_price": 6516.3,
+      "tp_prob": 57.08,
+      "entry_price": 6364.05,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6190.48,
-      "close_price": 6420.0
-    },
-    "7989.T": {
-      "company_name": "TACHIKAWA CORP",
-      "sector": "金属製品",
-      "method": "breakout_1.5",
-      "tp_prob": 59.03,
-      "entry_price": 2668.43,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2535.01,
-      "close_price": 2629.0
+      "stop_loss_price": 6045.85,
+      "close_price": 6270.0
     },
     "3467.T": {
       "company_name": "AGRATIO URBAN DESIGN INC",
       "sector": "不動産業",
       "method": "breakout_1.5",
-      "tp_prob": 49.51,
-      "entry_price": 2929.29,
+      "tp_prob": 46.32,
+      "entry_price": 2849.1,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2782.83,
-      "close_price": 2886.0
-    },
-    "3277.T": {
-      "company_name": "SANSEI LANDIC CO LTD",
-      "sector": "不動産業",
-      "method": "breakout_1.5",
-      "tp_prob": 44.6,
-      "entry_price": 1481.9,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 1407.8,
-      "close_price": 1460.0
+      "stop_loss_price": 2706.65,
+      "close_price": 2807.0
     }
   }
 }
