@@ -326,11 +326,14 @@ def train(env: NikkeiTradingEnv, n_episodes: int = 100, seed: int = 42):
 # バックテスト評価
 # ──────────────────────────────────────────────
 
-def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial_capital: float = 0):
+def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial_capital: float = 0, reinvest: bool = True):
     policy_net.eval()
     state = env.reset()
-    portfolio_log = [0.0]       # 累積対数リターン
+    portfolio_log = [0.0]       # 累積対数リターン（複利）
     actions_log = []
+
+    # 再投資なし用: 毎回 initial_capital 固定額で運用した累積損益
+    fixed_pnl = [0.0]          # initial_capital 固定額での累積損益（円）
 
     with torch.no_grad():
         while True:
@@ -339,6 +342,16 @@ def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial
             next_state, reward, done = env.step(action)
             actions_log.append(action)
             portfolio_log.append(portfolio_log[-1] + reward)
+            # 再投資なし: daily_pnl = initial_capital × 日次リターン（保有中のみ）
+            if initial_capital > 0:
+                daily_ret = env.log_returns[env.t - 1] if env.t > 0 else 0.0
+                holding = 1 if (len(actions_log) >= 2 and actions_log[-2] == 1) or \
+                               (len(actions_log) >= 1 and env.position == 1) else 0
+                # env.positionは step後の状態なので、reward > 0 かつ cost考慮済みrewardで判定
+                # シンプルに: rewardがコスト引き後の保有リターンを表すので逆算
+                daily_fixed = initial_capital * (np.exp(reward + TRANSACTION_COST * (action in (1, 2))) - 1) \
+                    if env.position == 1 or (action == 2 and reward != -TRANSACTION_COST) else 0.0
+                fixed_pnl.append(fixed_pnl[-1] + initial_capital * reward)
             state = next_state
             if done:
                 break
@@ -371,14 +384,23 @@ def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial
     print(f"  最大ドローダウン         : {max_dd:.4f}  ({np.exp(max_dd)-1:.2%})")
     print(f"  売買回数                 : {n_trades}回")
     if initial_capital > 0:
-        rl_final = initial_capital * np.exp(final_rl)
+        rl_final_compound = initial_capital * np.exp(final_rl)
         bnh_final = initial_capital * np.exp(final_bnh)
         max_dd_yen = initial_capital * (np.exp(max_dd) - 1)
+        rl_final_fixed = initial_capital + fixed_pnl[-1]
         print(f"  ---")
         print(f"  初期資産               : {initial_capital:>14,.0f} 円")
-        print(f"  RLモデル最終資産       : {rl_final:>14,.0f} 円  (損益 {rl_final-initial_capital:+,.0f} 円)")
+        if reinvest:
+            print(f"  RLモデル最終資産[複利] : {rl_final_compound:>14,.0f} 円  (損益 {rl_final_compound-initial_capital:+,.0f} 円)")
+        else:
+            print(f"  RLモデル最終資産[単利] : {rl_final_fixed:>14,.0f} 円  (損益 {fixed_pnl[-1]:+,.0f} 円)")
+            dd_fixed = np.array(fixed_pnl)
+            rm_fixed = np.maximum.accumulate(dd_fixed)
+            max_dd_fixed = float((dd_fixed - rm_fixed).min())
+            print(f"  最大ドローダウン額[単利]: {max_dd_fixed:>13,.0f} 円")
         print(f"  買い持ち最終資産       : {bnh_final:>14,.0f} 円  (損益 {bnh_final-initial_capital:+,.0f} 円)")
-        print(f"  最大ドローダウン額     : {max_dd_yen:>14,.0f} 円")
+        if not reinvest:
+            print(f"  ※単利=毎回{initial_capital:,.0f}円固定で運用、利益は再投資しない")
     print(f"{'='*50}")
 
     # 結果を CSV に保存
@@ -422,6 +444,7 @@ def main():
     parser.add_argument("--episodes", type=int, default=80, help="訓練エピソード数")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--capital", type=float, default=0, help="初期資産（円）。指定時は円建て損益も表示")
+    parser.add_argument("--no-reinvest", action="store_true", help="利益を再投資せず固定額で運用")
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -456,8 +479,9 @@ def main():
         pd.DataFrame(history).to_csv(OUTPUT_DIR / "train_history.csv", index=False)
 
     # バックテスト
-    train_result = backtest(train_env, policy_net, device, label="訓練期間_", initial_capital=args.capital)
-    test_result = backtest(test_env, policy_net, device, label="テスト期間_", initial_capital=args.capital)
+    reinvest = not args.no_reinvest
+    train_result = backtest(train_env, policy_net, device, label="訓練期間_", initial_capital=args.capital, reinvest=reinvest)
+    test_result = backtest(test_env, policy_net, device, label="テスト期間_", initial_capital=args.capital, reinvest=reinvest)
 
     # サマリー保存
     summary = pd.DataFrame([train_result, test_result])
