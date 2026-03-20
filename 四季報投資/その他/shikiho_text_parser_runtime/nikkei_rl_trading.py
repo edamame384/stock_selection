@@ -326,7 +326,12 @@ def train(env: NikkeiTradingEnv, n_episodes: int = 100, seed: int = 42):
 # バックテスト評価
 # ──────────────────────────────────────────────
 
-def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial_capital: float = 0, reinvest: bool = True):
+def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial_capital: float = 0, reinvest: bool = True, trend_filter: bool = False):
+    """
+    trend_filter=True のとき: 20日MA < 60日MAの下降トレンド中は強制的に現金保有
+      特徴量インデックス: cross_20_60 = env.features[t][11]
+      (ma20/ma60 - 1)*20 < 0 → 下降トレンド
+    """
     policy_net.eval()
     state = env.reset()
     portfolio_log = [0.0]       # 累積対数リターン（複利）
@@ -337,20 +342,24 @@ def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial
 
     with torch.no_grad():
         while True:
+            # RLモデルの判断
             q = policy_net(torch.FloatTensor(state).unsqueeze(0).to(device))
             action = q.argmax().item()
+
+            # トレンドフィルター: 20MA < 60MA（下降トレンド）なら強制売り/現金保有
+            if trend_filter:
+                cross_20_60 = float(env.features[env.t][11])  # (ma20/ma60-1)*20
+                if cross_20_60 < 0:
+                    # 下降トレンド中はポジション保有禁止
+                    if env.position == 1:
+                        action = 2  # 強制売り
+                    else:
+                        action = 0  # 買い禁止 → ホールド（現金）
+
             next_state, reward, done = env.step(action)
             actions_log.append(action)
             portfolio_log.append(portfolio_log[-1] + reward)
-            # 再投資なし: daily_pnl = initial_capital × 日次リターン（保有中のみ）
             if initial_capital > 0:
-                daily_ret = env.log_returns[env.t - 1] if env.t > 0 else 0.0
-                holding = 1 if (len(actions_log) >= 2 and actions_log[-2] == 1) or \
-                               (len(actions_log) >= 1 and env.position == 1) else 0
-                # env.positionは step後の状態なので、reward > 0 かつ cost考慮済みrewardで判定
-                # シンプルに: rewardがコスト引き後の保有リターンを表すので逆算
-                daily_fixed = initial_capital * (np.exp(reward + TRANSACTION_COST * (action in (1, 2))) - 1) \
-                    if env.position == 1 or (action == 2 and reward != -TRANSACTION_COST) else 0.0
                 fixed_pnl.append(fixed_pnl[-1] + initial_capital * reward)
             state = next_state
             if done:
@@ -445,6 +454,7 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--capital", type=float, default=0, help="初期資産（円）。指定時は円建て損益も表示")
     parser.add_argument("--no-reinvest", action="store_true", help="利益を再投資せず固定額で運用")
+    parser.add_argument("--trend-filter", action="store_true", help="下降トレンド(20MA<60MA)時は強制現金保有")
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -480,8 +490,8 @@ def main():
 
     # バックテスト
     reinvest = not args.no_reinvest
-    train_result = backtest(train_env, policy_net, device, label="訓練期間_", initial_capital=args.capital, reinvest=reinvest)
-    test_result = backtest(test_env, policy_net, device, label="テスト期間_", initial_capital=args.capital, reinvest=reinvest)
+    train_result = backtest(train_env, policy_net, device, label="訓練期間_", initial_capital=args.capital, reinvest=reinvest, trend_filter=args.trend_filter)
+    test_result = backtest(test_env, policy_net, device, label="テスト期間_", initial_capital=args.capital, reinvest=reinvest, trend_filter=args.trend_filter)
 
     # サマリー保存
     summary = pd.DataFrame([train_result, test_result])
