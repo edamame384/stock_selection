@@ -326,7 +326,7 @@ def train(env: NikkeiTradingEnv, n_episodes: int = 100, seed: int = 42):
 # バックテスト評価
 # ──────────────────────────────────────────────
 
-def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = ""):
+def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = "", initial_capital: float = 0):
     policy_net.eval()
     state = env.reset()
     portfolio_log = [0.0]       # 累積対数リターン
@@ -370,6 +370,15 @@ def backtest(env: NikkeiTradingEnv, policy_net, device, label: str = ""):
     print(f"  シャープレシオ           : {sharpe:.3f}")
     print(f"  最大ドローダウン         : {max_dd:.4f}  ({np.exp(max_dd)-1:.2%})")
     print(f"  売買回数                 : {n_trades}回")
+    if initial_capital > 0:
+        rl_final = initial_capital * np.exp(final_rl)
+        bnh_final = initial_capital * np.exp(final_bnh)
+        max_dd_yen = initial_capital * (np.exp(max_dd) - 1)
+        print(f"  ---")
+        print(f"  初期資産               : {initial_capital:>14,.0f} 円")
+        print(f"  RLモデル最終資産       : {rl_final:>14,.0f} 円  (損益 {rl_final-initial_capital:+,.0f} 円)")
+        print(f"  買い持ち最終資産       : {bnh_final:>14,.0f} 円  (損益 {bnh_final-initial_capital:+,.0f} 円)")
+        print(f"  最大ドローダウン額     : {max_dd_yen:>14,.0f} 円")
     print(f"{'='*50}")
 
     # 結果を CSV に保存
@@ -412,6 +421,7 @@ def main():
     parser.add_argument("--test-only", action="store_true", help="保存済みモデルのテストのみ実行")
     parser.add_argument("--episodes", type=int, default=80, help="訓練エピソード数")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--capital", type=float, default=0, help="初期資産（円）。指定時は円建て損益も表示")
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -446,8 +456,8 @@ def main():
         pd.DataFrame(history).to_csv(OUTPUT_DIR / "train_history.csv", index=False)
 
     # バックテスト
-    train_result = backtest(train_env, policy_net, device, label="訓練期間_")
-    test_result = backtest(test_env, policy_net, device, label="テスト期間_")
+    train_result = backtest(train_env, policy_net, device, label="訓練期間_", initial_capital=args.capital)
+    test_result = backtest(test_env, policy_net, device, label="テスト期間_", initial_capital=args.capital)
 
     # サマリー保存
     summary = pd.DataFrame([train_result, test_result])
