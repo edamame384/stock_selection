@@ -1,4 +1,4 @@
-[TIME] jst_now=2026-03-21 01:27:41 expected_hour=23
+[TIME] jst_now=2026-03-22 00:02:19 expected_hour=23
 [WARN] Running outside the expected JST hour for night-session feature capture.
 [SECTOR_SIGNAL] bullish=0 extra_enabled=False extra_max=10 signal_source=local ret_source=local
 [FUT] rows_nk=588 ticker_nk=NKD=F feature_nk=fut_nk_night_ret rows_dow=6030 ticker_dow=YM=F feature_dow=ret_dow_fut
