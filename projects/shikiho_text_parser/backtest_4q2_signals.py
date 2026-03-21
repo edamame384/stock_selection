@@ -230,6 +230,42 @@ def calc_signal(
     }
 
 
+def compute_top_signal(
+    prev_hist: pd.DataFrame,
+    prev_date: pd.Timestamp,
+    external_df: pd.DataFrame,
+    highest_close: float,
+    dd_threshold: float,
+    nk_threshold: float,
+    ma_window: int,
+) -> tuple[bool, dict]:
+    close = prev_hist["Close"].astype(float)
+    prev_close = float(close.iloc[-1])
+    prev_close_m1 = float(close.iloc[-2]) if len(close) >= 2 else prev_close
+    ma = close.rolling(ma_window).mean().iloc[-1] if len(close) >= ma_window else np.nan
+    drawdown_from_peak_pct = (prev_close / float(highest_close) - 1.0) * 100.0 if highest_close > 0 else 0.0
+    nk_ret = 0.0
+    if prev_date in external_df.index and "ret_n225" in external_df.columns:
+        nk_ret = float(external_df.loc[prev_date, "ret_n225"])
+    elif prev_date in external_df.index and "fut_nk_night_ret" in external_df.columns:
+        nk_ret = float(external_df.loc[prev_date, "fut_nk_night_ret"])
+
+    chart_top = (
+        drawdown_from_peak_pct <= -dd_threshold
+        and len(close) >= 2
+        and prev_close < prev_close_m1
+        and (pd.isna(ma) or prev_close < float(ma))
+    )
+    nikkei_weak = nk_ret <= nk_threshold
+    return chart_top or nikkei_weak, {
+        "drawdown_from_peak_pct": drawdown_from_peak_pct,
+        "nikkei_ret": nk_ret,
+        "chart_top": chart_top,
+        "nikkei_weak": nikkei_weak,
+        "prev_close": prev_close,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Backtest 4Q-2 selected stocks with breakout entry.")
     parser.add_argument("--selected-csv", type=Path, default=OUTPUT_DIR / "4q2_selection" / "4q2_selected_candidates.csv")
@@ -237,6 +273,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR / "4q2_signal_backtest")
     parser.add_argument("--initial-capital", type=float, default=3_000_000.0)
     parser.add_argument("--start-date", type=str, default="2026-01-01")
+    parser.add_argument("--end-date", type=str, default="")
     parser.add_argument("--promising-score-min", type=float, default=0.66)
     parser.add_argument("--trend-r2-min", type=float, default=0.50)
     parser.add_argument("--sector-per-score-min", type=float, default=0.55)
@@ -254,6 +291,12 @@ def main() -> int:
     parser.add_argument("--live-news-stop-threshold", type=float, default=-9.0)
     parser.add_argument("--historical-news-csv", type=Path, default=DAILY_FEATURES_CSV)
     parser.add_argument("--historical-news-stop-threshold", type=float, default=-9.0)
+    parser.add_argument("--early-exit-enable", action="store_true")
+    parser.add_argument("--early-dd-threshold", type=float, default=2.0)
+    parser.add_argument("--early-nk-threshold", type=float, default=0.0)
+    parser.add_argument("--early-ma-window", type=int, default=5)
+    parser.add_argument("--early-tp-buffer-pct", type=float, default=1.0)
+    parser.add_argument("--early-sl-buffer-pct", type=float, default=2.0)
     args = parser.parse_args()
 
     selected = load_selected(args.selected_csv)
@@ -277,6 +320,7 @@ def main() -> int:
     price_map = {}
     all_dates = set()
     start_date = pd.Timestamp(args.start_date)
+    end_date_limit = pd.Timestamp(args.end_date) if str(args.end_date).strip() else None
     for ticker in selected["ticker"]:
         price_path = args.price_dir / f"{ticker.replace('.', '_')}.csv"
         if not price_path.exists():
@@ -287,12 +331,16 @@ def main() -> int:
         df["Date"] = pd.to_datetime(df["Date"])
         df = df.sort_values("Date").set_index("Date")
         df = df[df.index >= pd.Timestamp("2025-01-01")].copy()
+        if end_date_limit is not None:
+            df = df[df.index <= end_date_limit].copy()
         if df.empty:
             continue
         price_map[ticker] = df
         all_dates.update(df[df.index >= start_date].index.tolist())
 
     dates = sorted(all_dates)
+    if not dates:
+        raise SystemExit("No tradable dates found for the selected universe and date range.")
     latest_date = max(dates)
 
     cash = float(args.initial_capital)
@@ -333,27 +381,69 @@ def main() -> int:
             df = price_map[ticker]
             if date not in df.index:
                 continue
+            day = df.loc[date]
+            day_open = float(day["Open"]) if "Open" in day.index and not pd.isna(day["Open"]) else float(day["Close"])
+            day_high = float(day["High"]) if "High" in day.index and not pd.isna(day["High"]) else float(day["Close"])
+            day_low = float(day["Low"]) if "Low" in day.index and not pd.isna(day["Low"]) else float(day["Close"])
             price = float(df.loc[date, "Close"])
             entry_price = positions[ticker]["entry_price"]
             ret = price / entry_price - 1.0
             take_profit = args.take_profit_pct / 100.0 if args.take_profit_pct >= 0 else None
             stop_loss = args.stop_loss_pct / 100.0 if args.stop_loss_pct >= 0 else None
             exit_reason = None
-            if take_profit is not None and ret >= take_profit:
+            exit_price = None
+
+            if args.early_exit_enable:
+                prev_idx = df.index[df.index < date]
+                if len(prev_idx) > 0:
+                    prev_date = prev_idx[-1]
+                    prev_hist = df.loc[:prev_date].copy()
+                    top_flag, top_metrics = compute_top_signal(
+                        prev_hist=prev_hist,
+                        prev_date=prev_date,
+                        external_df=external_df,
+                        highest_close=float(positions[ticker].get("highest_close", entry_price)),
+                        dd_threshold=args.early_dd_threshold,
+                        nk_threshold=args.early_nk_threshold,
+                        ma_window=args.early_ma_window,
+                    )
+                    prev_close = float(prev_hist["Close"].iloc[-1])
+                    unrealized_prev_ret = (prev_close / entry_price - 1.0) * 100.0
+                    if top_flag and unrealized_prev_ret < args.take_profit_pct:
+                        if unrealized_prev_ret > 0:
+                            early_tp_price = prev_close * (1.0 + args.early_tp_buffer_pct / 100.0)
+                            if day_high >= early_tp_price:
+                                exit_reason = "early_take_profit_top"
+                                exit_price = max(day_open, early_tp_price)
+                        else:
+                            early_sl_price = prev_close * (1.0 - args.early_sl_buffer_pct / 100.0)
+                            if day_low <= early_sl_price:
+                                exit_reason = "early_stop_top"
+                                exit_price = min(day_open, early_sl_price)
+                        if exit_reason is not None:
+                            positions[ticker]["top_metrics"] = top_metrics
+
+            if exit_reason is None and take_profit is not None and ret >= take_profit:
                 exit_reason = "take_profit"
-            elif stop_loss is not None and ret <= -stop_loss:
+                exit_price = price
+            elif exit_reason is None and stop_loss is not None and ret <= -stop_loss:
                 exit_reason = "stop_loss"
+                exit_price = price
             elif (
+                exit_reason is None
+                and
                 args.macro_exit_min > -9.0
                 and metrics_today.get(ticker, {}).get("macro_confirm_score") is not None
                 and float(metrics_today.get(ticker, {}).get("macro_confirm_score", 0.0)) <= args.macro_exit_min
             ):
                 exit_reason = "macro_exit"
-            elif not signal_today.get(ticker, False):
+                exit_price = price
+            elif exit_reason is None and not signal_today.get(ticker, False):
                 exit_reason = "sell_signal"
+                exit_price = price
             if exit_reason is not None:
                 shares = positions[ticker]["shares"]
-                cash += shares * price
+                cash += shares * float(exit_price)
                 trades.append(
                     {
                         "date": date.date().isoformat(),
@@ -361,7 +451,7 @@ def main() -> int:
                         "simple_sector": positions[ticker]["simple_sector"],
                         "sector_33": positions[ticker]["sector_33"],
                         "action": "SELL",
-                        "price": price,
+                        "price": float(exit_price),
                         "shares": shares,
                         "cash_after": cash,
                         "signal_score": metrics_today.get(ticker, {}).get("signal_score"),
@@ -370,6 +460,9 @@ def main() -> int:
                     }
                 )
                 del positions[ticker]
+                continue
+
+            positions[ticker]["highest_close"] = max(float(positions[ticker].get("highest_close", entry_price)), price)
 
         candidates = []
         live_news_block = False
@@ -450,6 +543,7 @@ def main() -> int:
                     "entry_date": date,
                     "simple_sector": c["simple_sector"],
                     "sector_33": c["sector_33"],
+                    "highest_close": float(fill_price),
                 }
                 trades.append(
                     {
@@ -569,6 +663,12 @@ def main() -> int:
         "live_news_stop_threshold": args.live_news_stop_threshold,
         "historical_news_csv": str(args.historical_news_csv) if args.historical_news_csv else "",
         "historical_news_stop_threshold": args.historical_news_stop_threshold,
+        "early_exit_enable": args.early_exit_enable,
+        "early_dd_threshold": args.early_dd_threshold,
+        "early_nk_threshold": args.early_nk_threshold,
+        "early_ma_window": args.early_ma_window,
+        "early_tp_buffer_pct": args.early_tp_buffer_pct,
+        "early_sl_buffer_pct": args.early_sl_buffer_pct,
         "period_start": str(start_date.date()),
         "period_end": str(latest_date.date()),
         "initial_capital": float(args.initial_capital),

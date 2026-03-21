@@ -33,7 +33,24 @@ projects/shikiho_text_parser/
       data_inventory.csv
       futures_log_manifest.json
   output/
+  methods/
 ```
+
+## 名前付き手法
+
+固定した手法は `methods/` に置きます。
+
+- `methods/method_condition2.py`
+  - 上向き相場用
+- `methods/method_breakout_1p5.py`
+  - 横ばい相場用
+- `methods/method_regime_switch.py`
+  - 日経レジームで `condition2` と `breakout_1.5` を切り替える
+
+現在の切替方針:
+- `上向き` : `condition2`
+- `横ばい` : `breakout_1.5`
+- `下向き` : 新規買い停止
 
 ## 依存ライブラリ
 
