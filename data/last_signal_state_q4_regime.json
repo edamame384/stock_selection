@@ -1,93 +1,82 @@
 {
-  "updated_at": "23405758374",
+  "updated_at": "23450284132",
   "symbols": {
     "6745.T": {
       "company_name": "HOCHIKI CORP",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 79.46,
-      "entry_price": 6546.75,
+      "tp_prob": 74.64,
+      "entry_price": 6130.6,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6219.41,
-      "close_price": 6450.0
+      "stop_loss_price": 5824.07,
+      "close_price": 6040.0
     },
     "3449.T": {
       "company_name": "TECHNOFLEX CORP",
       "sector": "金属製品",
       "method": "breakout_1.5",
-      "tp_prob": 74.47,
-      "entry_price": 2772.98,
+      "tp_prob": 69.32,
+      "entry_price": 2637.98,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2634.33,
-      "close_price": 2732.0
-    },
-    "8393.T": {
-      "company_name": "MIYAZAKI BANK",
-      "sector": "銀行業",
-      "method": "breakout_1.5",
-      "tp_prob": 74.16,
-      "entry_price": 9135.0,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 8678.25,
-      "close_price": 9000.0
+      "stop_loss_price": 2506.09,
+      "close_price": 2599.0
     },
     "6822.T": {
       "company_name": "OI ELECTRIC CO LTD",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 71.84,
-      "entry_price": 5501.3,
+      "tp_prob": 63.73,
+      "entry_price": 5115.6,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 5226.23,
-      "close_price": 5420.0
-    },
-    "2975.T": {
-      "company_name": "STAR MICA HLDGS CO",
-      "sector": "不動産業",
-      "method": "breakout_1.5",
-      "tp_prob": 59.06,
-      "entry_price": 1647.34,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 1564.98,
-      "close_price": 1623.0
-    },
-    "1847.T": {
-      "company_name": "ICHIKEN CO LTD",
-      "sector": "建設業",
-      "method": "breakout_1.5",
-      "tp_prob": 57.85,
-      "entry_price": 5836.25,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 5544.44,
-      "close_price": 5750.0
+      "stop_loss_price": 4859.82,
+      "close_price": 5040.0
     },
     "8336.T": {
       "company_name": "MUSASHINO BANK",
       "sector": "銀行業",
       "method": "breakout_1.5",
-      "tp_prob": 57.08,
-      "entry_price": 6364.05,
+      "tp_prob": 54.93,
+      "entry_price": 6161.05,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6045.85,
-      "close_price": 6270.0
+      "stop_loss_price": 5853.0,
+      "close_price": 6070.0
+    },
+    "2975.T": {
+      "company_name": "STAR MICA HLDGS CO",
+      "sector": "不動産業",
+      "method": "breakout_1.5",
+      "tp_prob": 54.24,
+      "entry_price": 1559.04,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 1481.09,
+      "close_price": 1536.0
+    },
+    "1847.T": {
+      "company_name": "ICHIKEN CO LTD",
+      "sector": "建設業",
+      "method": "breakout_1.5",
+      "tp_prob": 53.41,
+      "entry_price": 5552.05,
+      "entry_ratio_pct": 1.5,
+      "stop_loss_ratio_pct": 5.0,
+      "stop_loss_price": 5274.45,
+      "close_price": 5470.0
     },
     "3467.T": {
       "company_name": "AGRATIO URBAN DESIGN INC",
       "sector": "不動産業",
       "method": "breakout_1.5",
-      "tp_prob": 46.32,
-      "entry_price": 2849.1,
+      "tp_prob": 44.04,
+      "entry_price": 2780.08,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2706.65,
-      "close_price": 2807.0
+      "stop_loss_price": 2641.08,
+      "close_price": 2739.0
     }
   }
 }
