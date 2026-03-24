@@ -2,18 +2,41 @@
 
 このフォルダには、売買手法を名前付きで固定した実行ラッパーを置きます。
 
+## 運用用CSV
+
+- 運用で使う `selected_csv` は `operational/` 配下のCSVを使います
+- 研究用CSVには将来検証列が含まれることがあるため、そのまま運用に流用しません
+
 ## 現在の正式候補
 
-- `method_phase_adaptive_practical_v34.py`
-  - 日本語別名: `実務向け局面切替v3.4`
+- `method_phase_adaptive_practical_v35.py`
+  - 日本語別名: `実務向け局面切替v3.5`
   - 現在の正式候補
   - 個別株専用の因果版
+  - `v3.4` の難局面ロジックを維持しつつ、標準テーブルを `10営業日` ごとに再評価
   - `raw_post_crash_high_vol` は `no_trade`
   - `weak_uptrend` は `q3_post_high_vol`
   - `rebound_confirmed_post_crash_high_vol` と `generic_high_vol` は `condition2`
   - 決算ルール:
     - 決算前 `1` 営業日で売却
     - 決算後 `5` 営業日は新規購入禁止
+
+- `method_phase_adaptive_practical_v34.py`
+  - 日本語別名: `実務向け局面切替v3.4`
+  - 旧正式候補
+  - 個別株専用の因果版
+  - 四季報データは四半期固定、価格系指標は月次で再評価して標準テーブルを再構築
+  - `raw_post_crash_high_vol` は `no_trade`
+  - `weak_uptrend` は `q3_post_high_vol`
+  - `rebound_confirmed_post_crash_high_vol` と `generic_high_vol` は `condition2`
+  - 決算ルール:
+    - 決算前 `1` 営業日で売却
+    - 決算後 `5` 営業日は新規購入禁止
+
+- `method_phase_adaptive_practical_v34_regime_monthly_candidate.py`
+  - 日本語別名: `実務向け局面切替v3.4候補_月次基準レジーム連動`
+  - 月次再評価の標準テーブル基準までレジーム連動にした比較用候補版
+  - 正式候補ではない
 
 ## 手法一覧
 
