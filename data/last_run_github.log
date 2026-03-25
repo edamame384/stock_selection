@@ -1,15 +1,15 @@
-[META] regime=sideways method=breakout_1.5 signal_date=2026-03-24 trade_date=2026-03-25
-[BUY] 6745.T | method=breakout_1.5 close=6390.00 tp_prob=79.39% lmt=1.5% lmt_price=6485.85 tp=8.0% tp_price=7004.72 sl=5.0% sl_price=6161.56
-[PICK][regime_switch] 6745.T tp_prob=79.39% sector=電気機器 method=breakout_1.5 company=HOCHIKI CORP
-[BUY] 3449.T | method=breakout_1.5 close=2647.00 tp_prob=68.52% lmt=1.5% lmt_price=2686.70 tp=8.0% tp_price=2901.64 sl=5.0% sl_price=2552.37
-[PICK][regime_switch] 3449.T tp_prob=68.52% sector=金属製品 method=breakout_1.5 company=TECHNOFLEX CORP
-[BUY] 6822.T | method=breakout_1.5 close=5210.00 tp_prob=65.13% lmt=1.5% lmt_price=5288.15 tp=8.0% tp_price=5711.20 sl=5.0% sl_price=5023.74
-[PICK][regime_switch] 6822.T tp_prob=65.13% sector=電気機器 method=breakout_1.5 company=OI ELECTRIC CO LTD
-[BUY] 2975.T | method=breakout_1.5 close=1598.00 tp_prob=57.95% lmt=1.5% lmt_price=1621.97 tp=8.0% tp_price=1751.73 sl=5.0% sl_price=1540.87
-[PICK][regime_switch] 2975.T tp_prob=57.95% sector=不動産業 method=breakout_1.5 company=STAR MICA HLDGS CO
-[BUY] 8336.T | method=breakout_1.5 close=6250.00 tp_prob=56.77% lmt=1.5% lmt_price=6343.75 tp=8.0% tp_price=6851.25 sl=5.0% sl_price=6026.56
-[PICK][regime_switch] 8336.T tp_prob=56.77% sector=銀行業 method=breakout_1.5 company=MUSASHINO BANK
-[BUY] 1847.T | method=breakout_1.5 close=5650.00 tp_prob=55.46% lmt=1.5% lmt_price=5734.75 tp=8.0% tp_price=6193.53 sl=5.0% sl_price=5448.01
-[PICK][regime_switch] 1847.T tp_prob=55.46% sector=建設業 method=breakout_1.5 company=ICHIKEN CO LTD
-[BUY] 3467.T | method=breakout_1.5 close=2787.00 tp_prob=45.43% lmt=1.5% lmt_price=2828.80 tp=8.0% tp_price=3055.11 sl=5.0% sl_price=2687.36
-[PICK][regime_switch] 3467.T tp_prob=45.43% sector=不動産業 method=breakout_1.5 company=AGRATIO URBAN DESIGN INC
+[META] regime=sideways method=breakout_1.5 signal_date=2026-03-25 trade_date=2026-03-26
+[BUY] 6745.T | method=breakout_1.5 close=6610.00 tp_prob=84.39% lmt=1.5% lmt_price=6709.15 tp=8.0% tp_price=7245.88 sl=5.0% sl_price=6373.69
+[PICK][regime_switch] 6745.T tp_prob=84.39% sector=電気機器 method=breakout_1.5 company=HOCHIKI CORP
+[BUY] 3449.T | method=breakout_1.5 close=2735.00 tp_prob=73.82% lmt=1.5% lmt_price=2776.02 tp=8.0% tp_price=2998.11 sl=5.0% sl_price=2637.22
+[PICK][regime_switch] 3449.T tp_prob=73.82% sector=金属製品 method=breakout_1.5 company=TECHNOFLEX CORP
+[BUY] 6822.T | method=breakout_1.5 close=5380.00 tp_prob=68.76% lmt=1.5% lmt_price=5460.70 tp=8.0% tp_price=5897.56 sl=5.0% sl_price=5187.66
+[PICK][regime_switch] 6822.T tp_prob=68.76% sector=電気機器 method=breakout_1.5 company=OI ELECTRIC CO LTD
+[BUY] 2975.T | method=breakout_1.5 close=1661.00 tp_prob=61.39% lmt=1.5% lmt_price=1685.91 tp=8.0% tp_price=1820.79 sl=5.0% sl_price=1601.62
+[PICK][regime_switch] 2975.T tp_prob=61.39% sector=不動産業 method=breakout_1.5 company=STAR MICA HLDGS CO
+[BUY] 8336.T | method=breakout_1.5 close=6460.00 tp_prob=59.03% lmt=1.5% lmt_price=6556.90 tp=8.0% tp_price=7081.45 sl=5.0% sl_price=6229.05
+[PICK][regime_switch] 8336.T tp_prob=59.03% sector=銀行業 method=breakout_1.5 company=MUSASHINO BANK
+[BUY] 3467.T | method=breakout_1.5 close=2839.00 tp_prob=47.91% lmt=1.5% lmt_price=2881.58 tp=8.0% tp_price=3112.11 sl=5.0% sl_price=2737.51
+[PICK][regime_switch] 3467.T tp_prob=47.91% sector=不動産業 method=breakout_1.5 company=AGRATIO URBAN DESIGN INC
+[BUY] 3277.T | method=breakout_1.5 close=1441.00 tp_prob=40.93% lmt=1.5% lmt_price=1462.61 tp=8.0% tp_price=1579.62 sl=5.0% sl_price=1389.48
+[PICK][regime_switch] 3277.T tp_prob=40.93% sector=不動産業 method=breakout_1.5 company=SANSEI LANDIC CO LTD
