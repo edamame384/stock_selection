@@ -1,82 +1,71 @@
 {
-  "updated_at": "23555524404",
+  "updated_at": "23609495373",
   "symbols": {
     "6745.T": {
       "company_name": "HOCHIKI CORP",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 84.39,
-      "entry_price": 6709.15,
+      "tp_prob": 82.93,
+      "entry_price": 6699.0,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6373.69,
-      "close_price": 6610.0
+      "stop_loss_price": 6364.05,
+      "close_price": 6600.0
     },
     "3449.T": {
       "company_name": "TECHNOFLEX CORP",
       "sector": "金属製品",
       "method": "breakout_1.5",
-      "tp_prob": 73.82,
-      "entry_price": 2776.02,
+      "tp_prob": 67.71,
+      "entry_price": 2651.18,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2637.22,
-      "close_price": 2735.0
+      "stop_loss_price": 2518.62,
+      "close_price": 2612.0
     },
     "6822.T": {
       "company_name": "OI ELECTRIC CO LTD",
       "sector": "電気機器",
       "method": "breakout_1.5",
-      "tp_prob": 68.76,
-      "entry_price": 5460.7,
+      "tp_prob": 64.25,
+      "entry_price": 5257.7,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 5187.66,
-      "close_price": 5380.0
+      "stop_loss_price": 4994.81,
+      "close_price": 5180.0
     },
     "2975.T": {
       "company_name": "STAR MICA HLDGS CO",
       "sector": "不動産業",
       "method": "breakout_1.5",
-      "tp_prob": 61.39,
-      "entry_price": 1685.91,
+      "tp_prob": 61.46,
+      "entry_price": 1695.05,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 1601.62,
-      "close_price": 1661.0
+      "stop_loss_price": 1610.3,
+      "close_price": 1670.0
     },
     "8336.T": {
       "company_name": "MUSASHINO BANK",
       "sector": "銀行業",
       "method": "breakout_1.5",
-      "tp_prob": 59.03,
-      "entry_price": 6556.9,
+      "tp_prob": 55.5,
+      "entry_price": 6414.8,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 6229.05,
-      "close_price": 6460.0
+      "stop_loss_price": 6094.06,
+      "close_price": 6320.0
     },
     "3467.T": {
       "company_name": "AGRATIO URBAN DESIGN INC",
       "sector": "不動産業",
       "method": "breakout_1.5",
-      "tp_prob": 47.91,
-      "entry_price": 2881.58,
+      "tp_prob": 48.08,
+      "entry_price": 2894.78,
       "entry_ratio_pct": 1.5,
       "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 2737.51,
-      "close_price": 2839.0
-    },
-    "3277.T": {
-      "company_name": "SANSEI LANDIC CO LTD",
-      "sector": "不動産業",
-      "method": "breakout_1.5",
-      "tp_prob": 40.93,
-      "entry_price": 1462.61,
-      "entry_ratio_pct": 1.5,
-      "stop_loss_ratio_pct": 5.0,
-      "stop_loss_price": 1389.48,
-      "close_price": 1441.0
+      "stop_loss_price": 2750.04,
+      "close_price": 2852.0
     }
   }
 }
