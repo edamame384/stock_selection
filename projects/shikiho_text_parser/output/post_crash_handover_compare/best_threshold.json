@@ -1,0 +1,9 @@
+{
+  "baseline_variant": "baseline_q3_post_high_vol",
+  "baseline_total_return_pct": 5.843893411254908,
+  "best_variant": "etf_until_1d_then_q3_post_high_vol",
+  "best_threshold_days": 1,
+  "best_total_return_pct": 11.772110077921582,
+  "best_delta_vs_baseline_pt": 5.928216666666674,
+  "interpretation": "ETF rebound is superior until the best threshold; after that, q3_post_high_vol is better than continuing ETF use within post-crash high_vol."
+}

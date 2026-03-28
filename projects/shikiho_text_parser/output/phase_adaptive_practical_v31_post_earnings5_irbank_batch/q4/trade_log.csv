@@ -1,0 +1,13 @@
+﻿date,ticker,action,price,shares,reason,nikkei_phase
+2025-10-01,2975.T,BUY,1260.0,2300,condition2_entry,uptrend
+2025-10-02,2975.T,SELL,1172.0,2300,stop_loss,uptrend
+2025-11-07,8393.T,BUY,5085.15,500,q3_post_high_vol_entry,high_vol
+2025-11-10,8550.T,BUY,586.0,100,q3_post_high_vol_entry,high_vol
+2025-11-14,8393.T,SELL,5200.0,500,sell_signal,high_vol
+2025-11-14,1847.T,BUY,4293.45,200,q3_post_high_vol_entry,high_vol
+2025-11-17,8550.T,SELL,614.0,100,sell_signal,normal
+2025-11-17,8345.T,BUY,4821.249999999999,200,condition2_entry,normal
+2025-11-18,8345.T,SELL,4460.0,200,stop_loss,high_vol
+2025-11-18,1384.T,BUY,2905.9449999999997,100,q3_post_high_vol_entry,high_vol
+2025-11-20,1384.T,SELL,2964.0,100,sell_signal,high_vol
+2025-11-21,1847.T,SELL,4290.0,200,sell_signal,high_vol

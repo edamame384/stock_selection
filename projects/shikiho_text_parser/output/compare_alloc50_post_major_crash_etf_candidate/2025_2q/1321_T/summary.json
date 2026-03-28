@@ -1,0 +1,19 @@
+{
+  "variant": "alloc50_post_major_crash_etf_1321.T_prev_high_break_tp6_sl3",
+  "dataset": "2025-04-01",
+  "etf_ticker": "1321.T",
+  "etf_rule": "post_major_crash_mode + prev_high_break + tp6/sl3",
+  "final_capital": 3075963.3498535156,
+  "total_return_pct": 2.5321116617838646,
+  "num_buys": 36,
+  "max_drawdown_pct": -1.7520036560053298,
+  "phase_pnl": {
+    "capitulation_end": 20900.0,
+    "crash": 3651.0,
+    "downtrend": 3900.0,
+    "normal": 65800.0,
+    "settling": 0.0,
+    "stable": 17700.0,
+    "uptrend": -35987.650146484375
+  }
+}

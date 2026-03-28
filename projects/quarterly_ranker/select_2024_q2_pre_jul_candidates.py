@@ -27,6 +27,7 @@ from projects.quarterly_ranker.extract_q2_shikiho_features import (
     extract_compound_percentage,
     extract_metric_from_sources,
 )
+from projects.quarterly_ranker.operational_csv_utils import write_operational_csv
 
 
 def normalize_symbol(raw: str) -> str:
@@ -351,6 +352,8 @@ def main() -> int:
     selected["training_cutoff_date"] = "2024-06-30"
     selected_csv = args.out_dir / "q2_2024_pre_selected_candidates.csv"
     selected.to_csv(selected_csv, index=False, encoding="utf-8-sig")
+    operational_selected_csv = args.out_dir / "operational" / "q2_2024_pre_selected_candidates_operational.csv"
+    write_operational_csv(selected, operational_selected_csv)
 
     manifest = pd.DataFrame(
         [
@@ -372,6 +375,7 @@ def main() -> int:
     print(f"[OUT] base={base_csv}")
     print(f"[OUT] detail={detail_csv}")
     print(f"[OUT] selected={selected_csv}")
+    print(f"[OUT] selected_operational={operational_selected_csv}")
     print(f"[OUT] manifest={manifest_csv}")
     print(f"[INFO] images={len(library)} selected={len(selected)}")
     return 0

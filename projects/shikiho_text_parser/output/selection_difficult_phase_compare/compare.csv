@@ -1,0 +1,6 @@
+﻿phase_family,plan,q2_2024_pct,q3_pct,q4_pct,4q2_pct,total_pct,table
+post_crash_high_vol,baseline_pre1_post5_except_crash,-1.1542965108235714,17.728935839843807,38.711299991862006,12.842083333333365,17.03200566,ETF replaces stocks only in post-crash high_vol; otherwise baseline tables
+post_crash_high_vol,1489_rebound_etf,5.22392015584312,17.728935839843807,38.711299991862006,12.842083333333365,18.626559830220568,"post-crash high_vol uses ETF, crash uses no_trade/monitoring"
+post_surge_high_vol,no_trade,,,16.72841666666669,5.649033333333331,,standard tables; difficult phase itself no_trade
+post_surge_high_vol,1489_rebound_etf,,,16.72841666666669,5.649033333333331,,standard tables; difficult phase uses 1489 rebound
+post_surge_high_vol,1306_rebound_etf,,,16.72841666666669,5.649033333333331,,standard tables; difficult phase uses 1306 rebound

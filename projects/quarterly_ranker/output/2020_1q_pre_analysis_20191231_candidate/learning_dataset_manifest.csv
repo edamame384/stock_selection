@@ -1,0 +1,2 @@
+﻿dataset_id,learning_date,training_cutoff_date,image_count_total,selected_count,output_dir,source_image_dir,source_library_csv,selector_style,realized_start,realized_end
+2020_1q_pre_analysis_20191231_candidate,2019-12-31,2019-12-31,3784,26,projects\quarterly_ranker\output\2020_1q_pre_analysis_20191231_candidate,C:\Users\mitsu\OneDrive\ドキュメント\四季報DB2025\2020-1Q\2020新春号,projects\quarterly_ranker\output\2020_1q_pre_analysis_20191231_candidate\image_library.csv,q3,2020-01-01,2020-03-31

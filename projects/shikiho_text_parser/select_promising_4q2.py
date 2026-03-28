@@ -16,6 +16,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from projects.shikiho_text_parser.parse_shikiho_text import collect_input_files, parse_shikiho_text
 from projects.shikiho_text_parser.paths import OUTPUT_DIR, PRICE_DIR, RAW_4Q2_DIR, SECTOR_MASTER_PATH
+from projects.quarterly_ranker.operational_csv_utils import write_operational_csv
 from projects.quarterly_ranker.rank_quarterly_promising_stocks import calc_max_drawdown, calc_r2_log_trend
 
 
@@ -266,10 +267,13 @@ def main() -> int:
 
     universe_path = args.output_dir / "4q2_scored_universe.csv"
     selected_path = args.output_dir / "4q2_selected_candidates.csv"
+    operational_selected_path = args.output_dir / "operational" / "4q2_selected_candidates_operational.csv"
     summary_path = args.output_dir / "4q2_selection_summary.json"
 
     scored.to_csv(universe_path, index=False, encoding="utf-8-sig")
-    scored[scored["selected"]].copy().to_csv(selected_path, index=False, encoding="utf-8-sig")
+    selected_df = scored[scored["selected"]].copy()
+    selected_df.to_csv(selected_path, index=False, encoding="utf-8-sig")
+    write_operational_csv(selected_df, operational_selected_path)
 
     summary = {
         "selection_date": "2025-12-31",
@@ -281,6 +285,7 @@ def main() -> int:
 
     print(f"[OUT] universe={universe_path}")
     print(f"[OUT] selected={selected_path}")
+    print(f"[OUT] selected_operational={operational_selected_path}")
     print(f"[OUT] summary={summary_path}")
     print(f"[INFO] universe={len(scored)} selected={int(scored['selected'].sum())}")
     return 0

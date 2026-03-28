@@ -1,0 +1,24 @@
+{
+  "dataset": "4q2",
+  "final_capital": 3052459.7475585938,
+  "total_return_pct": 1.7486582519531169,
+  "num_buys": 84,
+  "max_drawdown_pct": -8.992134180147094,
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "phase_shift_days": 1,
+  "phase_proxy_mode": "difficult_v11",
+  "rebuild_interval_trading_days": 10,
+  "high_vol_take_profit_pct": null,
+  "weak_uptrend_take_profit_pct": null,
+  "phase_pnl": {
+    "crash": -58291.00244140625,
+    "downtrend": -120700.0,
+    "high_vol": 68069.0,
+    "normal": 198040.0,
+    "settling": 8772.75,
+    "stable": -10831.0,
+    "surge": -32600.0
+  },
+  "variant": "normal_after_shock_candidate"
+}

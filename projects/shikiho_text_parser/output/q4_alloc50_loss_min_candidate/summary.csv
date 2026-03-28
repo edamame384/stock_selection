@@ -1,0 +1,2 @@
+﻿dataset,final_capital,total_return_pct,num_buys,max_drawdown_pct,earnings_pre_days,earnings_post_days,phase_shift_days,phase_proxy_mode,rebuild_interval_trading_days,high_vol_take_profit_pct,weak_uptrend_take_profit_pct,phase_pnl,variant
+q4,3154768.6746826177,5.158955822753919,57,-7.249203233359481,1,5,1,difficult_v11,10,,,"{'high_vol': 35623.77429199219, 'normal': 56599.750000000466, 'stable': 11700.0, 'surge': 79066.650390625, 'uptrend': -28221.5}",cap_end_no_trade

@@ -1,0 +1,24 @@
+{
+  "method_name": "phase_table_switch",
+  "selected_csv": "projects\\quarterly_ranker\\output\\q3_pre_analysis_20250630_aligned\\q3_pre_shikiho_feature_ranking.csv",
+  "period_start": "2025-07-01",
+  "period_end": "2025-09-30",
+  "initial_capital": 3000000.0,
+  "final_capital": 3227440.4753418,
+  "total_return_pct": 7.581349178060015,
+  "num_buys": 33,
+  "max_drawdown_pct": -11.10006182620642,
+  "phase_pnl": {
+    "high_vol": 23950.0,
+    "normal": 67110.00000000047,
+    "overheated_range": 28390.000000000466,
+    "settling": -34265.024658203125,
+    "stable": -242198.49999999953,
+    "uptrend": 384454.00000000186
+  },
+  "table_counts": {
+    "high_vol": 20,
+    "normal": 30,
+    "uptrend": 20
+  }
+}

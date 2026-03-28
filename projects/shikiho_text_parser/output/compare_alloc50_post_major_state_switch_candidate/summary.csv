@@ -1,0 +1,2 @@
+﻿variant,dataset,concentrated_mode,dispersed_mode,final_capital,total_return_pct,num_buys,max_drawdown_pct,phase_pnl
+alloc50_post_major_state_switch_2516_or_stock_prev_high_break_top2_tp6_sl3,q3,ETF 2516.T prev_high_break tp6/sl3,stock prev_high_break top2 tp6/sl3,3099205.143469238,3.306838115641275,80,-6.413855754497854,"{'capitulation_end': 17289.0, 'crash': 53163.0, 'downtrend': 119585.589807129, 'normal': -72461.32509765634, 'settling': 54332.39999999991, 'stable': -6627.5, 'uptrend': -66076.02124023438}"

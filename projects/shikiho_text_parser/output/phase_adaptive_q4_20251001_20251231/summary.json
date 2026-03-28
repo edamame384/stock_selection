@@ -1,0 +1,16 @@
+{
+  "method_name": "phase_adaptive_q4",
+  "selected_csv": "projects\\quarterly_ranker\\output\\q4_pre_analysis_20250930_full\\q4_pre_selected_candidates_condition2_input.csv",
+  "phase_csv": "C:\\Users\\mitsu\\OneDrive\\ドキュメント\\stock_ml\\projects\\shikiho_text_parser\\output\\nikkei_market_phase_map\\nikkei_market_phase_daily_labels.csv",
+  "period_start": "2025-10-01",
+  "period_end": "2025-12-30",
+  "initial_capital": 3000000.0,
+  "final_capital": 3089500.8251953125,
+  "total_return_pct": 2.9833608398437406,
+  "selected_count": 60,
+  "num_buys": 12,
+  "num_roundtrips": 12,
+  "win_rate_pct": 66.66666666666666,
+  "avg_roundtrip_return_pct": 1.8962456137794907,
+  "max_drawdown_pct": -2.0311666666666617
+}

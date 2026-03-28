@@ -9,9 +9,107 @@
 
 ## 現在の正式候補
 
+- `method_phase_adaptive_practical_v36.py`
+  - 日本語別名: `実務向け局面切替v3.6`
+  - 現在の正式候補
+  - 基本処方は `v3.5 + 50万分割ルール`
+  - `major_crash` 後だけ、セクター集中に加えて価格集中を使って `concentrated / dispersed` を判定
+  - `concentrated` は ETF候補群から `2516.T` 基準で、他ETFがより強いときだけ採用
+  - 候補ETF:
+    - `1306.T`
+    - `1321.T`
+    - `1328.T`
+    - `1489.T`
+    - `1593.T`
+    - `2516.T`
+  - `dispersed` は個別株 `prev_high_break top2 tp6/sl3`
+  - 通常区間は `v3.5 + 50万分割ルール`
+
+## v3.6 Method名称
+
+- `condition2`
+  - 運用名称: `上昇時メソッド`
+
+- `breakout_1.5`
+  - 運用名称: `安定局面メソッド`
+
+- `q3_post_high_vol`
+  - 運用名称: `反発局面メソッド`
+
+- `no_trade`
+  - 運用名称: `no_trade`
+
+- `post_major_multi_etf_entry`
+  - 運用名称: `crash時ETFメソッド`
+
+- `post_major_prev_high_break_entry`
+  - 運用名称: `暴落後全体上昇時メソッド`
+
+## v3.6 Condition名称
+
+- `major_crash`
+  - 運用名称: `大暴落`
+
+- `post_major_crash_mode`
+  - 運用名称: `大暴落後回復モード`
+
+- `concentrated`
+  - 運用名称: `集中相場`
+
+- `dispersed`
+  - 運用名称: `分散相場`
+
+- `crash`
+  - 運用名称: `暴落局面`
+
+- `high_vol`
+  - 運用名称: `高ボラ局面`
+
+- `capitulation_end`
+  - 運用名称: `投げ売り終盤局面`
+
+- `settling`
+  - 運用名称: `落ち着き始め局面`
+
+- `normal`
+  - 運用名称: `通常局面`
+
+- `uptrend`
+  - 運用名称: `上昇局面`
+
+- `stable`
+  - 運用名称: `安定局面`
+
+- `downtrend`
+  - 運用名称: `下降局面`
+
+- `surge`
+  - 運用名称: `急騰局面`
+
+- `reversal_up`
+  - 運用名称: `上方反転局面`
+
+- `reversal_down`
+  - 運用名称: `下方反転局面`
+
+- `overheated_range`
+  - 運用名称: `過熱持ち合い局面`
+
+- `weak_uptrend`
+  - 運用名称: `弱い上昇局面`
+
+- `raw_post_crash_high_vol`
+  - 運用名称: `暴落直後高ボラ局面`
+
+- `rebound_confirmed_post_crash_high_vol`
+  - 運用名称: `暴落後反発確認済み高ボラ局面`
+
+- `generic_high_vol`
+  - 運用名称: `一般高ボラ局面`
+
 - `method_phase_adaptive_practical_v35.py`
   - 日本語別名: `実務向け局面切替v3.5`
-  - 現在の正式候補
+  - 旧正式候補
   - 個別株専用の因果版
   - `v3.4` の難局面ロジックを維持しつつ、標準テーブルを `10営業日` ごとに再評価
   - `raw_post_crash_high_vol` は `no_trade`

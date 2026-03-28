@@ -1,0 +1,12 @@
+{
+  "rule_name": "breakout15",
+  "entry_limit_pct": 1.5,
+  "take_profit_pct": 8.0,
+  "stop_loss_pct": 5.0,
+  "selected_rows": 116,
+  "selected_unique_tickers": 116,
+  "final_capital": 2347538.6320800786,
+  "total_return_pct": -21.748712263997383,
+  "num_roundtrips": 22,
+  "max_drawdown_pct": -24.787610177047604
+}

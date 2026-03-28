@@ -18,6 +18,9 @@ if str(ROOT) not in sys.path:
 from projects.shikiho_text_parser.backtest_phase_adaptive import compute_metrics, eval_signal  # noqa: E402
 from projects.shikiho_text_parser.backtest_phase_adaptive_practical_v2 import practical_v2_mapping  # noqa: E402
 from projects.shikiho_text_parser.compare_phase_adaptive_practical_v3 import TableSpec, build_snapshot, load_price_map, normalize_static  # noqa: E402
+from projects.quarterly_ranker.select_2024_q2_pre_jul_candidates import select_candidates as select_q2_candidates  # noqa: E402
+from projects.quarterly_ranker.select_4q_pre_oct_candidates import select_candidates as select_q4_candidates  # noqa: E402
+from projects.shikiho_text_parser.select_promising_4q2 import score_universe as score_4q2_universe  # noqa: E402
 from projects.shikiho_text_parser.methods.method_post_crash_broad import SELECTION_RULE, TRADING_RULE  # noqa: E402
 from projects.shikiho_text_parser.search_phase_method_optimization import PHASE_CSV, load_phase_map  # noqa: E402
 
@@ -221,6 +224,37 @@ def build_monthly_crash_tables(detail_df: pd.DataFrame, price_map: dict[str, pd.
         prior_trade_dates = [d for d in trade_dates if d < month_key]
         basis_date = prior_trade_dates[-1] if prior_trade_dates else trade_dates[0] - pd.Timedelta(days=1)
         tables[month_key] = build_post_crash_broad_table(build_snapshot(detail_df, price_map, basis_date))
+    return tables
+
+
+def build_standard_table_for_dataset(spec_name: str, snapshot: pd.DataFrame) -> pd.DataFrame:
+    if snapshot.empty:
+        return snapshot
+    if spec_name == "q2_2024":
+        return select_q2_candidates(snapshot.copy()).drop_duplicates(subset=["ticker"], keep="first").reset_index(drop=True)
+    if spec_name == "q3":
+        return build_post_crash_broad_table(snapshot.copy()).drop_duplicates(subset=["ticker"], keep="first").reset_index(drop=True)
+    if spec_name == "q4":
+        return select_q4_candidates(snapshot.copy()).drop_duplicates(subset=["ticker"], keep="first").reset_index(drop=True)
+    if spec_name == "4q2":
+        scored = score_4q2_universe(snapshot.copy())
+        return scored[scored["selected"] == True].copy().drop_duplicates(subset=["ticker"], keep="first").reset_index(drop=True)
+    raise ValueError(f"Unsupported dataset for monthly standard rebuild: {spec_name}")
+
+
+def build_monthly_standard_tables(
+    spec_name: str,
+    detail_df: pd.DataFrame,
+    price_map: dict[str, pd.DataFrame],
+    trade_dates: list[pd.Timestamp],
+) -> dict[pd.Timestamp, pd.DataFrame]:
+    month_starts = sorted({pd.Timestamp(d.year, d.month, 1) for d in trade_dates})
+    tables: dict[pd.Timestamp, pd.DataFrame] = {}
+    for month_key in month_starts:
+        prior_trade_dates = [d for d in trade_dates if d < month_key]
+        basis_date = prior_trade_dates[-1] if prior_trade_dates else trade_dates[0] - pd.Timedelta(days=1)
+        snapshot = build_snapshot(detail_df, price_map, basis_date)
+        tables[month_key] = build_standard_table_for_dataset(spec_name, snapshot)
     return tables
 
 
@@ -448,9 +482,6 @@ def run_dataset(
     weak_uptrend_take_profit_pct: float | None = None,
 ) -> dict:
     detail_df = normalize_static(pd.read_csv(spec.detail_csv)).drop_duplicates(subset=["ticker"], keep="first")
-    selected_df = pd.read_csv(spec.selected_csv).drop_duplicates(subset=["ticker"], keep="first")
-    standard_tickers = set(selected_df["ticker"].astype(str))
-    standard_table = detail_df[detail_df["ticker"].astype(str).isin(standard_tickers)].copy().drop_duplicates(subset=["ticker"], keep="first")
 
     start_date = pd.Timestamp(spec.start_date)
     end_date = pd.Timestamp(spec.end_date)
@@ -468,15 +499,18 @@ def run_dataset(
             "phase_pnl": {},
         }
 
+    standard_tables = build_monthly_standard_tables(spec.name, detail_df, price_map_all, trade_dates)
     crash_tables = build_monthly_crash_tables(detail_df, price_map_all, trade_dates)
-    union_tickers = set(standard_table["ticker"].astype(str))
+    union_tickers: set[str] = set()
+    for tbl in standard_tables.values():
+        if not tbl.empty:
+            union_tickers.update(tbl["ticker"].astype(str).tolist())
     for tbl in crash_tables.values():
         if not tbl.empty:
             union_tickers.update(tbl["ticker"].astype(str).tolist())
     price_map = {ticker: df for ticker, df in price_map_all.items() if ticker in union_tickers}
     dates = sorted(set().union(*[set(df[(df.index >= start_date) & (df.index <= end_date)].index.tolist()) for df in price_map.values()]))
     metrics_cache = prepare_metric_cache(price_map, dates)
-    standard_lookup = standard_table.set_index("ticker").to_dict("index")
     mapping = practical_v2_mapping()
 
     cash = float(spec.initial_capital)
@@ -490,6 +524,7 @@ def run_dataset(
         phase_name = projected_phase_name(date, phase_map, phase_shift_days, phase_proxy_mode)
         is_weak_uptrend = weak_uptrend_flag(date, phase_map, phase_shift_days, phase_proxy_mode)
         month_key = pd.Timestamp(date.year, date.month, 1)
+        standard_lookup = standard_tables[month_key].set_index("ticker").to_dict("index") if month_key in standard_tables and not standard_tables[month_key].empty else {}
         active_lookup = crash_tables[month_key].set_index("ticker").to_dict("index") if phase_name == "crash" and not crash_tables[month_key].empty else standard_lookup
         rule_name = "q2_defensive" if phase_name == "crash" else mapping.get(phase_name, "condition2")
 
@@ -693,28 +728,28 @@ def batch_specs() -> list[TableSpec]:
         TableSpec(
             "q2_2024",
             ROOT / "projects" / "quarterly_ranker" / "output" / "q2_2024_pre_analysis_20240630_aligned" / "q2_2024_pre_shikiho_feature_ranking.csv",
-            ROOT / "projects" / "quarterly_ranker" / "output" / "q2_2024_pre_analysis_20240630_aligned" / "q2_2024_pre_selected_candidates.csv",
+            ROOT / "projects" / "quarterly_ranker" / "output" / "q2_2024_pre_analysis_20240630_aligned" / "operational" / "q2_2024_pre_selected_candidates_operational.csv",
             "2024-07-01",
             "2024-09-30",
         ),
         TableSpec(
             "q3",
             ROOT / "projects" / "quarterly_ranker" / "output" / "q3_pre_analysis_20250630_aligned" / "q3_pre_shikiho_feature_ranking.csv",
-            ROOT / "projects" / "quarterly_ranker" / "output" / "q3_pre_analysis_20250630_aligned" / "threshold_search_post_high_vol" / "best_selected_candidates.csv",
+            ROOT / "projects" / "quarterly_ranker" / "output" / "q3_pre_analysis_20250630_aligned" / "threshold_search_post_high_vol" / "operational" / "best_selected_candidates_operational.csv",
             "2025-07-01",
             "2025-09-30",
         ),
         TableSpec(
             "q4",
             ROOT / "projects" / "quarterly_ranker" / "output" / "q4_pre_analysis_20250930_full" / "q4_pre_shikiho_feature_ranking.csv",
-            ROOT / "projects" / "quarterly_ranker" / "output" / "q4_pre_analysis_20250930_full" / "q4_pre_selected_candidates.csv",
+            ROOT / "projects" / "quarterly_ranker" / "output" / "q4_pre_analysis_20250930_full" / "operational" / "q4_pre_selected_candidates_operational.csv",
             "2025-10-01",
             "2025-12-31",
         ),
         TableSpec(
             "4q2",
             ROOT / "projects" / "shikiho_text_parser" / "output" / "4q2_selection" / "4q2_scored_universe.csv",
-            ROOT / "projects" / "shikiho_text_parser" / "output" / "4q2_selection" / "4q2_selected_candidates.csv",
+            ROOT / "projects" / "shikiho_text_parser" / "output" / "4q2_selection" / "operational" / "4q2_selected_candidates_operational.csv",
             "2026-01-01",
             "2026-03-10",
         ),
@@ -723,17 +758,18 @@ def batch_specs() -> list[TableSpec]:
 
 def collect_relevant_tickers(spec: TableSpec) -> list[str]:
     detail_df = normalize_static(pd.read_csv(spec.detail_csv)).drop_duplicates(subset=["ticker"], keep="first")
-    selected_df = pd.read_csv(spec.selected_csv).drop_duplicates(subset=["ticker"], keep="first")
-    standard_tickers = set(selected_df["ticker"].astype(str))
-    standard_table = detail_df[detail_df["ticker"].astype(str).isin(standard_tickers)].copy().drop_duplicates(subset=["ticker"], keep="first")
     start_date = pd.Timestamp(spec.start_date)
     end_date = pd.Timestamp(spec.end_date)
     price_map_all = load_price_map(detail_df["ticker"].astype(str).tolist(), end_date)
     trade_dates = sorted(set().union(*[set(df[(df.index >= start_date) & (df.index <= end_date)].index.tolist()) for df in price_map_all.values()]))
     if not trade_dates:
-        return sorted(standard_table["ticker"].astype(str).tolist())
+        return []
+    standard_tables = build_monthly_standard_tables(spec.name, detail_df, price_map_all, trade_dates)
     crash_tables = build_monthly_crash_tables(detail_df, price_map_all, trade_dates)
-    union_tickers = set(standard_table["ticker"].astype(str))
+    union_tickers: set[str] = set()
+    for tbl in standard_tables.values():
+        if not tbl.empty:
+            union_tickers.update(tbl["ticker"].astype(str).tolist())
     for tbl in crash_tables.values():
         if not tbl.empty:
             union_tickers.update(tbl["ticker"].astype(str).tolist())

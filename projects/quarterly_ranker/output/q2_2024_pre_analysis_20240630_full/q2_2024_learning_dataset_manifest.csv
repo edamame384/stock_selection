@@ -1,0 +1,2 @@
+﻿dataset_id,learning_date,training_cutoff_date,image_count_total,selected_count,output_dir,source_image_dir
+q2_2024_pre_analysis_20240630_full,2024-06-30,2024-06-30,3919,25,projects\quarterly_ranker\output\q2_2024_pre_analysis_20240630_full,C:\Users\mitsu\OneDrive\ドキュメント\四季報DB2025\2024-2Q

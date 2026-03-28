@@ -27,6 +27,7 @@ from projects.quarterly_ranker.extract_q2_shikiho_features import (
     extract_compound_percentage,
     extract_metric_from_sources,
 )
+from projects.quarterly_ranker.operational_csv_utils import write_operational_csv
 
 
 def normalize_symbol(raw: str) -> str:
@@ -373,10 +374,13 @@ def main() -> int:
     selected = select_candidates(detail)
     selected = attach_realized_returns(selected, args.price_dir)
     selected.to_csv(args.out_dir / "q4_pre_selected_candidates.csv", index=False, encoding="utf-8-sig")
+    operational_selected_csv = args.out_dir / "operational" / "q4_pre_selected_candidates_operational.csv"
+    write_operational_csv(selected, operational_selected_csv)
     print(f"[OUT] library={library_csv}")
     print(f"[OUT] base={base_csv}")
     print(f"[OUT] detail={args.out_dir / 'q4_pre_shikiho_feature_ranking.csv'}")
     print(f"[OUT] selected={args.out_dir / 'q4_pre_selected_candidates.csv'}")
+    print(f"[OUT] selected_operational={operational_selected_csv}")
     print(f"[INFO] library_resolved={int(library['resolved'].sum())}/{len(library)} selected={len(selected)}")
     return 0
 

@@ -1,0 +1,18 @@
+{
+  "dataset": "q3",
+  "final_capital": 3741174.5753784184,
+  "total_return_pct": 24.70581917928061,
+  "num_buys": 104,
+  "max_drawdown_pct": -2.448554796037894,
+  "phase_pnl": {
+    "normal": 497744.99999999953,
+    "overheated_range": 19486.0,
+    "settling": 108329.00000000047,
+    "stable": -75830.8251953125,
+    "uptrend": 191445.40057373093
+  },
+  "split_add_count": 6,
+  "variant": "alloc50_split_top2_under300k_q3",
+  "split_rule": "initial 100 shares, add 100 shares next day if signal continues",
+  "split_target_rule": "100-share lot cost <= 300000 and top 2 candidates of the day"
+}

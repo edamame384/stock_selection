@@ -1,0 +1,23 @@
+{
+  "theme_text_covered_tickers": 92,
+  "theme_counts": [
+    {
+      "theme": "ai_datacenter",
+      "source_count": 1
+    }
+  ],
+  "top_themes": [
+    {
+      "theme": "ai_datacenter",
+      "source_count": 1,
+      "all_count": 1,
+      "all_avg_return_pct": -19.554455445544548,
+      "all_median_return_pct": -19.554455445544548,
+      "all_win_rate_pct": 0.0,
+      "top20_count": 1,
+      "top20_avg_return_pct": -19.554455445544548,
+      "top20_median_return_pct": -19.554455445544548,
+      "top20_win_rate_pct": 0.0
+    }
+  ]
+}

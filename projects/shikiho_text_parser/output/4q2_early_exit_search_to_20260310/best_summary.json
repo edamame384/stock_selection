@@ -1,0 +1,17 @@
+{
+  "rule_name": "early_dd2.0_nk0.0_ma5_tpb1.0_slb2.0",
+  "use_early_exit": true,
+  "dd_threshold": 2.0,
+  "nk_threshold": 0.0,
+  "ma_window": 5,
+  "early_take_profit_buffer_pct": 1.0,
+  "early_stop_buffer_pct": 2.0,
+  "initial_capital": 3000000.0,
+  "final_capital": 3198721.7250000043,
+  "total_return_pct": 6.624057500000147,
+  "num_buys": 43,
+  "num_roundtrips": 43,
+  "win_rate_pct": 74.4186046511628,
+  "avg_roundtrip_return_pct": 0.8063236920684564,
+  "max_drawdown_pct": -10.441522102154032
+}

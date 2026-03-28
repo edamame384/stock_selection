@@ -1,0 +1,12 @@
+{
+  "mapping_name": "practical_phase_adaptive_v3",
+  "mapping_ja": "実務向け局面切替v3",
+  "crash_table_name": "post_crash_broad",
+  "crash_table_ja": "暴落後拡張",
+  "crash_table_refresh": "monthly",
+  "dataset": "q2_2024",
+  "final_capital": 3184483.493652344,
+  "total_return_pct": 6.149449788411476,
+  "num_buys": 24,
+  "max_drawdown_pct": -7.837973894987382
+}

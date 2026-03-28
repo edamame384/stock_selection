@@ -1,0 +1,16 @@
+{
+  "initial_capital": 3000000.0,
+  "final_capital": 3241278.5,
+  "total_return_pct": 8.042616666666657,
+  "num_buys": 28,
+  "num_roundtrips": 28,
+  "win_rate_pct": 64.28571428571429,
+  "avg_roundtrip_return_pct": 2.6359440766106923,
+  "max_drawdown_pct": -7.437536009970181,
+  "dd_threshold": 2.0,
+  "nk_threshold": -0.005,
+  "ma_window": 10,
+  "early_tp_buffer_pct": 1.0,
+  "early_sl_buffer_pct": 2.0,
+  "early_exit_enabled": true
+}

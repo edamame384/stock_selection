@@ -1,0 +1,24 @@
+{
+  "method_name": "phase_table_switch",
+  "selected_csv": "projects\\shikiho_text_parser\\output\\4q2_selection\\4q2_scored_universe.csv",
+  "period_start": "2026-01-01",
+  "period_end": "2026-03-10",
+  "initial_capital": 3000000.0,
+  "final_capital": 3039365.000000001,
+  "total_return_pct": 1.312166666666692,
+  "num_buys": 31,
+  "max_drawdown_pct": -7.694589690260479,
+  "phase_pnl": {
+    "crash": 0.0,
+    "high_vol": -73883.0,
+    "normal": 267551.00000000047,
+    "settling": -15000.0,
+    "surge": 25600.0,
+    "uptrend": -164902.99999999953
+  },
+  "table_counts": {
+    "high_vol": 20,
+    "normal": 30,
+    "uptrend": 20
+  }
+}

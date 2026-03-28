@@ -1,0 +1,16 @@
+﻿metric,value
+vol10_low_threshold_pct,0.969
+vol10_mid_threshold_pct,1.163
+vol10_high_threshold_pct,1.38
+phase_days_stable,199.0
+phase_days_uptrend,200.0
+phase_days_surge,29.0
+phase_days_downtrend,35.0
+phase_days_crash,46.0
+phase_days_high_vol,175.0
+phase_days_settling,45.0
+phase_days_reversal_up,4.0
+phase_days_reversal_down,3.0
+phase_days_overheated_range,10.0
+phase_days_capitulation_end,4.0
+phase_days_normal,473.0

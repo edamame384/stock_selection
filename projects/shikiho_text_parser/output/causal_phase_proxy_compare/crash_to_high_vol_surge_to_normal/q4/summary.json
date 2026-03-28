@@ -1,0 +1,19 @@
+{
+  "mapping_name": "practical_phase_adaptive_v31_pre1_post5_except_crash",
+  "mapping_ja": "実務向け局面切替v3.1_決算前1営業日_決算後5営業日見送り_crash除外",
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "phase_shift_days": 1,
+  "phase_proxy_mode": "crash_to_high_vol_surge_to_normal",
+  "dataset": "q4",
+  "final_capital": 3659873.9997558612,
+  "total_return_pct": 21.99579999186203,
+  "num_buys": 44,
+  "max_drawdown_pct": -6.905845628285922,
+  "phase_pnl": {
+    "high_vol": 778631.4997558594,
+    "normal": -170007.49999999814,
+    "stable": 51250.0,
+    "uptrend": 0.0
+  }
+}

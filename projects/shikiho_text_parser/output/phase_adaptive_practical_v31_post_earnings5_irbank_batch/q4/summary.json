@@ -1,0 +1,17 @@
+{
+  "mapping_name": "practical_phase_adaptive_v31_post_earnings5",
+  "mapping_ja": "実務向け局面切替v3.1_決算後5営業日",
+  "earnings_post_days": 5,
+  "dataset": "q4",
+  "final_capital": 2790690.5,
+  "total_return_pct": -6.976983333333331,
+  "num_buys": 6,
+  "max_drawdown_pct": -4.759611416781295,
+  "phase_pnl": {
+    "high_vol": 18840.5,
+    "normal": -25750.0,
+    "stable": 0.0,
+    "surge": 0.0,
+    "uptrend": -202400.0
+  }
+}

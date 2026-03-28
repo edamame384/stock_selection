@@ -1,0 +1,25 @@
+﻿date,ticker,name,dataset,signal,exit_variant,action,price,shares,reason
+2024-08-19,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl3,BUY,2769.5,1000,entry
+2024-08-26,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl3,SELL,2760.5,1000,sell_signal
+2024-08-27,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl3,BUY,2763.5,1000,entry
+2024-08-29,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl3,SELL,2795.5,1000,sell_signal
+2024-08-19,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4,BUY,2769.5,1000,entry
+2024-08-26,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4,SELL,2760.5,1000,sell_signal
+2024-08-27,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4,BUY,2763.5,1000,entry
+2024-08-29,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4,SELL,2795.5,1000,sell_signal
+2024-08-19,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp5_sl4,BUY,2769.5,1000,entry
+2024-08-26,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp5_sl4,SELL,2760.5,1000,sell_signal
+2024-08-27,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp5_sl4,BUY,2763.5,1000,entry
+2024-08-29,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp5_sl4,SELL,2795.5,1000,sell_signal
+2024-08-19,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4_time5,BUY,2769.5,1000,entry
+2024-08-26,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4_time5,SELL,2760.5,1000,sell_signal
+2024-08-27,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4_time5,BUY,2763.5,1000,entry
+2024-08-29,1306.T,TOPIX ETF,q2_2024,crash_reclaim,tp6_sl4_time5,SELL,2795.5,1000,sell_signal
+2025-04-24,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp6_sl3,BUY,2767.5,1000,entry
+2025-04-28,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp6_sl3,SELL,2814.0,1000,sell_signal
+2025-04-24,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp6_sl4,BUY,2767.5,1000,entry
+2025-04-28,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp6_sl4,SELL,2814.0,1000,sell_signal
+2025-04-24,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp5_sl4,BUY,2767.5,1000,entry
+2025-04-28,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp5_sl4,SELL,2814.0,1000,sell_signal
+2025-04-24,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp6_sl4_time5,BUY,2767.5,1000,entry
+2025-04-28,1306.T,TOPIX ETF,2025_2q,crash_reclaim,tp6_sl4_time5,SELL,2814.0,1000,sell_signal

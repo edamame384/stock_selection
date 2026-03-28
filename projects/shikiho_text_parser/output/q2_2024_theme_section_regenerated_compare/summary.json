@@ -1,0 +1,77 @@
+{
+  "themes": [
+    {
+      "theme": "retail_consumer",
+      "source_count": 5,
+      "count": 5,
+      "avg_return_pct": 3.1301898251818705,
+      "median_return_pct": 2.308172177167811,
+      "win_rate_pct": 60.0
+    },
+    {
+      "theme": "power_energy",
+      "source_count": 1,
+      "count": 1,
+      "avg_return_pct": -2.4423337856173677,
+      "median_return_pct": -2.4423337856173677,
+      "win_rate_pct": 0.0
+    },
+    {
+      "theme": "finance",
+      "source_count": 161,
+      "count": 161,
+      "avg_return_pct": -3.131618684508252,
+      "median_return_pct": -4.103942652329751,
+      "win_rate_pct": 30.434782608695656
+    },
+    {
+      "theme": "real_estate",
+      "source_count": 4,
+      "count": 4,
+      "avg_return_pct": -3.537192225716282,
+      "median_return_pct": -3.3359475422639506,
+      "win_rate_pct": 25.0
+    },
+    {
+      "theme": "ai_datacenter",
+      "source_count": 9,
+      "count": 9,
+      "avg_return_pct": -4.5381734498588004,
+      "median_return_pct": -4.808877928483357,
+      "win_rate_pct": 33.33333333333333
+    },
+    {
+      "theme": "healthcare_bio",
+      "source_count": 2,
+      "count": 2,
+      "avg_return_pct": -5.512715127817769,
+      "median_return_pct": -5.512715127817769,
+      "win_rate_pct": 0.0
+    },
+    {
+      "theme": "auto_battery",
+      "source_count": 1,
+      "count": 1,
+      "avg_return_pct": -5.608247422680412,
+      "median_return_pct": -5.608247422680412,
+      "win_rate_pct": 0.0
+    },
+    {
+      "theme": "construction_infra",
+      "source_count": 6,
+      "count": 6,
+      "avg_return_pct": -7.185476408089797,
+      "median_return_pct": -4.368602718076025,
+      "win_rate_pct": 16.666666666666664
+    },
+    {
+      "theme": "cyber_security",
+      "source_count": 6,
+      "count": 6,
+      "avg_return_pct": -11.403827662021714,
+      "median_return_pct": -8.683196863764053,
+      "win_rate_pct": 0.0
+    }
+  ],
+  "covered_tickers": 848
+}

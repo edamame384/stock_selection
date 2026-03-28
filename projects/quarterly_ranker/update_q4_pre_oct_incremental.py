@@ -10,6 +10,7 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+from projects.quarterly_ranker.operational_csv_utils import write_operational_csv
 from projects.quarterly_ranker.select_4q_pre_oct_candidates import (
     attach_realized_returns,
     build_4q_library,
@@ -119,6 +120,8 @@ def main() -> int:
     selected = add_learning_date(selected, args.learning_date)
     selected_csv = args.out_dir / "q4_pre_selected_candidates.csv"
     selected.to_csv(selected_csv, index=False, encoding="utf-8-sig")
+    operational_selected_csv = args.out_dir / "operational" / "q4_pre_selected_candidates_operational.csv"
+    write_operational_csv(selected, operational_selected_csv)
 
     summary = pd.DataFrame(
         [
@@ -159,6 +162,7 @@ def main() -> int:
     print(f"[OUT] base={base_csv}")
     print(f"[OUT] detail={detail_csv}")
     print(f"[OUT] selected={selected_csv}")
+    print(f"[OUT] selected_operational={operational_selected_csv}")
     print(f"[OUT] manifest={summary_csv}")
     return 0
 

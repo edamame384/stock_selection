@@ -1,0 +1,11 @@
+﻿date,ticker,action,price,shares,reason,nikkei_phase
+2024-07-01,7721.T,BUY,3613.3999999999996,800,breakout_1p5_entry,stable
+2024-07-03,7721.T,SELL,3845.0,800,sell_signal,uptrend
+2024-07-11,7721.T,BUY,3850.0,800,condition2_entry,uptrend
+2024-07-12,7721.T,SELL,3750.0,800,sell_signal,uptrend
+2024-07-16,3431.T,BUY,2496.8999999999996,1200,condition2_entry,normal
+2024-07-30,3431.T,SELL,2364.25,1200,crash_early_exit,crash
+2024-08-14,9651.T,BUY,1324.5749999999998,2200,q3_post_high_vol_entry,capitulation_end
+2024-08-16,9651.T,SELL,1291.0,2200,sell_signal,crash
+2024-08-30,2749.T,BUY,722.68,3900,condition2_entry,normal
+2024-09-09,2749.T,SELL,685.0,3900,crash_early_exit,crash

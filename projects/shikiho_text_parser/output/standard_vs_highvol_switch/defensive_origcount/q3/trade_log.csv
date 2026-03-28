@@ -1,0 +1,15 @@
+﻿date,ticker,action,price,shares,phase,table_regime,rule_name,reason,pnl
+2025-07-01,1980.T,BUY,1503.8916253662107,1900,uptrend,standard,normal,entry,0.0
+2025-07-02,7419.T,BUY,1089.4333746337888,100,settling,standard,normal,entry,0.0
+2025-07-04,1980.T,SELL,1466.6666259765625,1900,uptrend,standard,normal,sell_signal,-70727.49884033157
+2025-07-10,7419.T,SELL,1153.3333740234375,100,uptrend,standard,normal,sell_signal,6389.999938964873
+2025-07-17,4718.T,BUY,2575.055,1100,uptrend,standard,normal,entry,0.0
+2025-07-22,4718.T,SELL,2518.0,1100,uptrend,standard,normal,sell_signal,-62760.5
+2025-07-29,8041.T,BUY,3878.4,700,high_vol,high_vol,defensive,entry,0.0
+2025-07-29,8006.T,BUY,1207.5,100,high_vol,high_vol,defensive,entry,0.0
+2025-08-06,8041.T,SELL,3840.0,700,settling,high_vol,defensive,sell_signal,-26880.0
+2025-08-06,8006.T,SELL,1203.75,100,settling,high_vol,defensive,sell_signal,-375.0
+2025-08-06,1961.T,BUY,4846.624999999999,500,settling,standard,normal,entry,0.0
+2025-08-07,4718.T,BUY,2666.4049999999997,100,uptrend,standard,normal,entry,0.0
+2025-08-08,4718.T,SELL,2703.0,100,uptrend,standard,normal,sell_signal,3659.5
+2025-09-09,1961.T,SELL,5250.0,500,stable,standard,normal,take_profit,201687.50000000047

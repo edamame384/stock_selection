@@ -1,0 +1,27 @@
+﻿ticker,name,date,action,price,shares,reason,phase
+1306.T,TOPIX ETF,2024-07-11,BUY,3054.2400000000002,900,defensive_entry,uptrend
+1306.T,TOPIX ETF,2024-07-12,SELL,3007.0,900,sell_signal,normal
+1306.T,TOPIX ETF,2024-08-07,BUY,2516.415,1100,defensive_entry,crash
+1306.T,TOPIX ETF,2024-08-08,SELL,2532.32,1100,crash_early_exit,crash
+1306.T,TOPIX ETF,2024-09-12,BUY,2687.0,1100,defensive_entry,high_vol
+1306.T,TOPIX ETF,2024-09-13,SELL,2665.0,1100,sell_signal,high_vol
+1306.T,TOPIX ETF,2024-09-19,BUY,2706.5,1000,defensive_entry,high_vol
+1306.T,TOPIX ETF,2024-09-27,SELL,2861.5,1000,take_profit,surge
+1489.T,Nikkei High Dividend 50,2024-07-11,BUY,2480.56,1200,defensive_entry,uptrend
+1489.T,Nikkei High Dividend 50,2024-07-16,SELL,2450.0,1200,sell_signal,overheated_range
+1489.T,Nikkei High Dividend 50,2024-08-07,BUY,2071.51,1400,defensive_entry,crash
+1489.T,Nikkei High Dividend 50,2024-08-08,SELL,2096.22,1400,crash_early_exit,crash
+1489.T,Nikkei High Dividend 50,2024-08-27,BUY,2272.5,1300,defensive_entry,high_vol
+1489.T,Nikkei High Dividend 50,2024-09-04,SELL,2241.0,1300,sell_signal,high_vol
+1489.T,Nikkei High Dividend 50,2024-09-18,BUY,2171.5,1300,defensive_entry,high_vol
+1489.T,Nikkei High Dividend 50,2024-09-27,SELL,2302.0,1300,take_profit,surge
+1328.T,Gold Price ETF,2024-07-16,BUY,9440.47,300,defensive_entry,overheated_range
+1328.T,Gold Price ETF,2024-07-19,SELL,9355.0,300,sell_signal,normal
+1328.T,Gold Price ETF,2024-08-09,BUY,8723.0,300,defensive_entry,crash
+1328.T,Gold Price ETF,2024-08-22,SELL,8885.0,300,sell_signal,high_vol
+1328.T,Gold Price ETF,2024-09-12,BUY,8776.9,300,defensive_entry,high_vol
+1328.T,Gold Price ETF,2024-09-24,SELL,9235.0,300,take_profit,high_vol
+1540.T,Physical Gold ETF,2024-08-09,BUY,10860.0,200,defensive_entry,crash
+1540.T,Physical Gold ETF,2024-08-22,SELL,11020.0,200,sell_signal,high_vol
+1540.T,Physical Gold ETF,2024-09-12,BUY,10887.8,200,defensive_entry,high_vol
+1540.T,Physical Gold ETF,2024-09-24,SELL,11440.0,200,take_profit,high_vol

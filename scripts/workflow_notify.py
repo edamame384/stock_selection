@@ -15,6 +15,29 @@ import yfinance as yf
 
 from src.stock_signal import resolve_default_discord_webhook_url, send_discord_webhook
 
+METHOD_LABELS = {
+    "condition2": "上昇時メソッド",
+    "breakout_1.5": "安定局面メソッド",
+    "q3_post_high_vol": "反発局面メソッド",
+    "no_trade": "no_trade",
+    "post_major_multi_etf_entry": "crash時ETFメソッド",
+    "post_major_prev_high_break_entry": "暴落後全体上昇時メソッド",
+    "post_major_multi_etf": "crash時ETFメソッド",
+    "post_major_stock_prev_high_break": "暴落後全体上昇時メソッド",
+}
+
+REGIME_LABELS = {
+    "up": "上昇局面",
+    "sideways": "安定局面",
+    "down": "下降局面",
+    "crash": "暴落局面",
+    "high_vol": "高ボラ局面",
+    "capitulation_end": "投げ売り終盤局面",
+    "settling": "落ち着き始め局面",
+    "normal": "通常局面",
+    "post_major_crash": "大暴落後回復モード",
+}
+
 BUY_RE = re.compile(
     r"^\[BUY\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+\|\s+.*?close=(?P<close>[\d.]+)\s+tp_prob=(?P<tp>[\d.]+)%.*?lmt=(?P<lmt_ratio>[-\d.]+)%\s+lmt_price=(?P<lmt>[\d.]+)(?:\s+tp=(?P<tp_ratio>[\d.]+)%\s+tp_price=(?P<tp_price>[\d.]+))?\s+sl=(?P<sl_ratio>[\d.]+)%\s+sl_price=(?P<sl>[\d.]+)"
 )
@@ -39,6 +62,19 @@ def fetch_symbol_name(symbol: str) -> str:
     except Exception:
         pass
     return symbol.removesuffix(".T")
+
+
+def display_method_name(method_name: str | None) -> str:
+    if not method_name:
+        return ""
+    raw = method_name.removesuffix("_entry")
+    return METHOD_LABELS.get(raw, METHOD_LABELS.get(method_name, method_name))
+
+
+def display_regime_name(regime_name: str | None) -> str:
+    if not regime_name:
+        return ""
+    return REGIME_LABELS.get(regime_name, regime_name)
 
 
 def build_run_url() -> str:
@@ -155,7 +191,7 @@ def format_buy_line(symbol: str, company_name: str, sector: str, detail: dict, t
         stop_loss_price = close_price * (1.0 - sl_ratio)
     sl_text_price = f"{stop_loss_price:,.2f}円" if isinstance(stop_loss_price, (int, float)) else "N/A"
     tp_text = f"{tp_prob:.2f}%" if isinstance(tp_prob, (int, float)) else "N/A"
-    method_text = f"、手法{method_name}" if method_name else ""
+    method_text = f"、手法{display_method_name(method_name)}" if method_name else ""
     return (
         f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
         f"逆指値{entry_text}、利確{tp_text_price}、損切{sl_text_price}、上昇シグナル{tp_text}{method_text}"
@@ -165,7 +201,7 @@ def format_buy_line(symbol: str, company_name: str, sector: str, detail: dict, t
 def format_sell_line(symbol: str, state_row: dict) -> str:
     company_name = state_row.get("company_name", symbol.removesuffix(".T"))
     sector = state_row.get("sector", "UNKNOWN")
-    return f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}：購入シグナル消失"
+    return f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}：早期利確（購入シグナル消失）"
 
 
 def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, state_path: Path, take_profit_ratio: float) -> int:
@@ -201,9 +237,9 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
     lines = []
     header_suffix = ""
     if meta.get("method"):
-        header_suffix += f" method={meta['method']}"
+        header_suffix += f" method={display_method_name(meta['method'])}"
     if meta.get("regime"):
-        header_suffix += f" regime={meta['regime']}"
+        header_suffix += f" regime={display_regime_name(meta['regime'])}"
     if chosen_symbols:
         lines.extend([f"[SIGNAL] {workflow}{header_suffix}", f"count={len(chosen_symbols)}"])
         if meta.get("signal_date") or meta.get("trade_date"):

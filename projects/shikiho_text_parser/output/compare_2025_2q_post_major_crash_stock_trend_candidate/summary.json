@@ -1,0 +1,17 @@
+{
+  "variant": "2025_2q_low_concentration_post_major_stock_prev_high_break_tp6_sl3",
+  "dataset": "2025_2q",
+  "final_capital": 3426416.2877929676,
+  "total_return_pct": 14.213876259765579,
+  "num_buys": 134,
+  "max_drawdown_pct": -3.5364785431955648,
+  "phase_pnl": {
+    "capitulation_end": 32491.599999999627,
+    "crash": -7799.0,
+    "downtrend": 56027.700000000186,
+    "normal": 289057.99999999907,
+    "settling": 67142.0,
+    "stable": 26496.5,
+    "uptrend": -37000.51220703125
+  }
+}

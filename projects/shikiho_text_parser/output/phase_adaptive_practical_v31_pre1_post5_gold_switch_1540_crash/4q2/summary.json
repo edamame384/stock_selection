@@ -1,0 +1,23 @@
+{
+  "mapping_name": "practical_phase_adaptive_v31_pre1_post5_gold_switch",
+  "mapping_ja": "実務向け局面切替v3.1_決算前1営業日_決算後5営業日見送り_金ETF切替",
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "gold_ticker": "1540.T",
+  "gold_phases": [
+    "crash"
+  ],
+  "dataset": "4q2",
+  "final_capital": 3545362.500000001,
+  "total_return_pct": 18.178750000000022,
+  "num_buys": 50,
+  "max_drawdown_pct": -7.692723022796722,
+  "phase_pnl": {
+    "crash": -66034.0,
+    "high_vol": 181720.00000000047,
+    "normal": 335316.00000000047,
+    "settling": 138234.0,
+    "surge": 48400.0,
+    "uptrend": -92273.5
+  }
+}

@@ -1,0 +1,2 @@
+﻿dataset_id,learning_date,training_cutoff_date,image_count_total,selected_count,output_dir,source_image_dir,source_library_csv,selector_style,realized_start,realized_end
+2025_2q_pre_analysis_20250331_candidate,2025-03-31,2025-03-31,3908,5,C:\Users\mitsu\OneDrive\ドキュメント\stock_ml\projects\quarterly_ranker\output\2025_2q_pre_analysis_20250331_candidate,C:\Users\mitsu\OneDrive\ドキュメント\四季報DB2025\2025-2Q,C:\Users\mitsu\OneDrive\ドキュメント\stock_ml\projects\quarterly_ranker\output\2025_2q_pre_analysis_20250331_candidate\image_library.csv,q2,2025-04-01,2025-06-30

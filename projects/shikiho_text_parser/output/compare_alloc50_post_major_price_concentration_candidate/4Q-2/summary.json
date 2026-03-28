@@ -1,0 +1,18 @@
+{
+  "variant": "alloc50_post_major_price_concentration_2516_or_stock_prev_high_break_top2_tp6_sl3",
+  "dataset": "4q2",
+  "concentrated_mode": "ETF 2516.T prev_high_break tp6/sl3 with sector+price concentration",
+  "dispersed_mode": "stock prev_high_break top2 tp6/sl3 after sector+price dispersion",
+  "final_capital": 3234196.500000001,
+  "total_return_pct": 7.806550000000034,
+  "num_buys": 66,
+  "max_drawdown_pct": -5.235434425202912,
+  "phase_pnl": {
+    "crash": -46672.0,
+    "high_vol": 47054.5,
+    "normal": 132428.00000000047,
+    "settling": 102689.50000000047,
+    "stable": -18403.5,
+    "surge": 17100.0
+  }
+}

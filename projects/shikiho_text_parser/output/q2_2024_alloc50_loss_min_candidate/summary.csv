@@ -1,0 +1,2 @@
+﻿dataset,final_capital,total_return_pct,num_buys,max_drawdown_pct,earnings_pre_days,earnings_post_days,phase_shift_days,phase_proxy_mode,rebuild_interval_trading_days,high_vol_take_profit_pct,weak_uptrend_take_profit_pct,phase_pnl,variant
+q2_2024,2995702.9306030273,-0.1432356465657536,51,-6.883390494198038,1,5,1,difficult_v11,10,,,"{'capitulation_end': 14600.0, 'crash': -5923.394348144531, 'downtrend': -51325.0, 'normal': -17111.6259765625, 'overheated_range': -7008.349609375, 'stable': 25171.300537109375, 'surge': 0.0, 'uptrend': 37300.0}",combo_highvol10_no_trade

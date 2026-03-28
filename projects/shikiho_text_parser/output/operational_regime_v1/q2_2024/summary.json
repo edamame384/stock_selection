@@ -1,0 +1,56 @@
+{
+  "mapping_name": "operational_regime_v1",
+  "mapping_ja": "運用実務レジームv1",
+  "dataset": "q2_2024",
+  "core_count": 24,
+  "recovery_count": 24,
+  "defensive_count": 24,
+  "initial_capital": 3000000.0,
+  "final_capital": 2858267.2500000005,
+  "total_return_pct": -4.724424999999988,
+  "num_buys": 12,
+  "phase_pnl": {
+    "capitulation_end": 0.0,
+    "crash": -2500.0,
+    "high_vol": -254400.0,
+    "normal": 82196.00195312547,
+    "overheated_range": -23833.251953125,
+    "stable": -242.5,
+    "surge": 0.0,
+    "uptrend": 57047.0
+  },
+  "max_drawdown_pct": -7.429174799188177,
+  "table_assignment": {
+    "defensive": [
+      "high_vol",
+      "crash"
+    ],
+    "recovery": [
+      "settling",
+      "reversal_up",
+      "capitulation_end"
+    ],
+    "core": "others"
+  },
+  "rule_assignment": {
+    "condition2": [
+      "normal",
+      "uptrend"
+    ],
+    "breakout_1p5": [
+      "stable"
+    ],
+    "q3_post_high_vol": [
+      "settling",
+      "reversal_up",
+      "capitulation_end"
+    ],
+    "no_trade": [
+      "high_vol",
+      "crash",
+      "surge",
+      "downtrend",
+      "reversal_down"
+    ]
+  }
+}

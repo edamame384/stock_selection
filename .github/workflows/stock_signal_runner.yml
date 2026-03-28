@@ -22,29 +22,21 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Build Q4 regime watchlist
-        run: python scripts/build_4q2_watchlist.py --input projects/shikiho_text_parser/data/q4_regime_selected_candidates_condition2_input.csv --output data/tmp_watchlist_q4_regime.csv --group-name q4_regime
-      - name: Update stock prices
-        id: run_signal
-        env:
-          STOCK_ML_DISABLE_DIRECT_DISCORD: "1"
+      - name: Build v3.6 signal log
         run: |
           mkdir -p data
-          python test.py --watchlist data/tmp_watchlist_q4_regime.csv --no-sector-extra > data/last_run_price_update.log 2>&1
-      - name: Build regime-switch signal log
-        run: |
-          python scripts/run_q4_regime_signal.py > data/last_run_github.log 2>&1
+          python scripts/run_v36_signal.py --dataset 4Q-2 > data/last_run_github.log 2>&1
       - name: Notify signal detection
         if: ${{ success() }}
         env:
           STOCK_ML_DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/1483032119466004601/iXlD3sc_dhLrppCBprbLO4899HNX7gD4s-MJFsLPam5ZmMOvP9PMzl8Yg5eqPSYdyxrR"
-        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log --state-path data/last_signal_state_q4_regime.json --take-profit-ratio 0.08
+        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log --state-path data/last_signal_state_v36.json --take-profit-ratio 0.06
       - name: Commit updated prices and logs
         if: ${{ success() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/prices/ data/external_market/ data/tmp_watchlist_q4_regime.csv data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt data/last_signal_state_q4_regime.json
+          git add data/prices/ data/external_market/ data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt data/last_signal_state_v36.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

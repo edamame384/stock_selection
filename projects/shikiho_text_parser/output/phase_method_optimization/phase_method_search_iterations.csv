@@ -1,0 +1,6 @@
+﻿step,applied_phase,applied_method,objective_total_pnl,objective_total_return_pct
+1,high_vol,q3_post_high_vol,1006013.6749267597,11.17792972140843
+2,uptrend,no_trade,1093150.3497924805,12.146114997694223
+3,settling,q3_post_high_vol,1296536.9249267578,14.405965832519541
+4,overheated_range,q3_post_high_vol,1416589.6749267578,15.739885276963971
+5,crash,condition2,1433889.6749267578,15.932107499186188

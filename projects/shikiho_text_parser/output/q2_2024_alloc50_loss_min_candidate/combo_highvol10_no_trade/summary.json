@@ -1,0 +1,25 @@
+{
+  "dataset": "q2_2024",
+  "final_capital": 2995702.9306030273,
+  "total_return_pct": -0.1432356465657536,
+  "num_buys": 51,
+  "max_drawdown_pct": -6.883390494198038,
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "phase_shift_days": 1,
+  "phase_proxy_mode": "difficult_v11",
+  "rebuild_interval_trading_days": 10,
+  "high_vol_take_profit_pct": null,
+  "weak_uptrend_take_profit_pct": null,
+  "phase_pnl": {
+    "capitulation_end": 14600.0,
+    "crash": -5923.394348144531,
+    "downtrend": -51325.0,
+    "normal": -17111.6259765625,
+    "overheated_range": -7008.349609375,
+    "stable": 25171.300537109375,
+    "surge": 0.0,
+    "uptrend": 37300.0
+  },
+  "variant": "combo_highvol10_no_trade"
+}

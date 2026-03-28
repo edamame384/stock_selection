@@ -1,0 +1,32 @@
+{
+  "mapping_name": "practical_phase_adaptive_v2",
+  "mapping_ja": "実務向け局面切替v2",
+  "mapping": {
+    "uptrend": "condition2",
+    "normal": "condition2",
+    "stable": "breakout_1p5",
+    "overheated_range": "q3_post_high_vol",
+    "reversal_up": "q3_post_high_vol",
+    "capitulation_end": "q3_post_high_vol",
+    "high_vol": "q3_post_high_vol",
+    "settling": "q3_post_high_vol",
+    "surge": "no_trade",
+    "downtrend": "no_trade",
+    "crash": "no_trade",
+    "reversal_down": "no_trade"
+  },
+  "dataset": "q3",
+  "final_capital": 3447369.251342775,
+  "total_return_pct": 14.912308378092497,
+  "num_buys": 27,
+  "phase_pnl": {
+    "high_vol": 86563.0,
+    "normal": 45548.597656250466,
+    "overheated_range": -2989.048828125,
+    "settling": 71593.5,
+    "stable": -76579.90234375,
+    "uptrend": 323233.10485839937
+  },
+  "max_drawdown_pct": -2.9293496069461855,
+  "crash_exit_mode": "early"
+}

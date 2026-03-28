@@ -1,0 +1,23 @@
+{
+  "dataset": "q3",
+  "final_capital": 3850386.550781251,
+  "total_return_pct": 28.34621835937503,
+  "num_buys": 95,
+  "max_drawdown_pct": -2.2989203742027953,
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "phase_shift_days": 1,
+  "phase_proxy_mode": "difficult_v11",
+  "rebuild_interval_trading_days": 10,
+  "high_vol_take_profit_pct": null,
+  "weak_uptrend_take_profit_pct": null,
+  "phase_pnl": {
+    "normal": 518167.4877319336,
+    "overheated_range": 35499.66259765625,
+    "settling": 164168.9003295903,
+    "stable": -57471.662597655784,
+    "uptrend": 190022.16271972656
+  },
+  "variant": "alloc50_normal_after_postcrash_highvol_no_trade",
+  "lookback_days": 10
+}

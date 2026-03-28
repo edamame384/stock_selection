@@ -75,7 +75,7 @@ def load_price_map(tickers: list[str], end_date: pd.Timestamp) -> dict[str, pd.D
             continue
         df["Date"] = pd.to_datetime(df["Date"])
         df = df.sort_values("Date").set_index("Date")
-        df = df[(df.index >= pd.Timestamp("2023-01-01")) & (df.index <= end_date)].copy()
+        df = df[df.index <= end_date].copy()
         if not df.empty:
             price_map[ticker] = df
     return price_map

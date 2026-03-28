@@ -1,0 +1,19 @@
+{
+  "variant": "alloc50_post_major_state_switch_2516_or_stock_prev_high_break_top2_tp6_sl3",
+  "dataset": "q3",
+  "concentrated_mode": "ETF 2516.T prev_high_break tp6/sl3",
+  "dispersed_mode": "stock prev_high_break top2 tp6/sl3",
+  "final_capital": 3099205.143469238,
+  "total_return_pct": 3.306838115641275,
+  "num_buys": 80,
+  "max_drawdown_pct": -6.413855754497854,
+  "phase_pnl": {
+    "capitulation_end": 17289.0,
+    "crash": 53163.0,
+    "downtrend": 119585.589807129,
+    "normal": -72461.32509765634,
+    "settling": 54332.39999999991,
+    "stable": -6627.5,
+    "uptrend": -66076.02124023438
+  }
+}

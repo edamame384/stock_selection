@@ -1,0 +1,25 @@
+{
+  "dataset": "q2_2024",
+  "final_capital": 2758016.4510498047,
+  "total_return_pct": -8.066118298339841,
+  "num_buys": 19,
+  "max_drawdown_pct": -10.486720035690523,
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "gold_ticker": "1489.T",
+  "gold_phases": [
+    "crash"
+  ],
+  "gold_allocation_ratio": 1.0,
+  "gold_signal_name": "rebound_open",
+  "phase_pnl": {
+    "capitulation_end": -62900.0,
+    "crash": -24881.0,
+    "high_vol": -101272.650390625,
+    "normal": -94346.748046875,
+    "overheated_range": -6111.650390625,
+    "stable": -6838.1749267578125,
+    "surge": 0.0,
+    "uptrend": 54366.6748046875
+  }
+}

@@ -1,0 +1,2 @@
+﻿variant,dataset,concentrated_mode,dispersed_mode,final_capital,total_return_pct,num_buys,max_drawdown_pct,phase_pnl
+alloc50_post_major_price_concentration_2516_or_stock_prev_high_break_top2_tp6_sl3,q4,ETF 2516.T prev_high_break tp6/sl3 with sector+price concentration,stock prev_high_break top2 tp6/sl3 after sector+price dispersion,3154768.6746826177,5.158955822753919,57,-7.249203233359481,"{'high_vol': 35623.77429199219, 'normal': 56599.750000000466, 'stable': 11700.0, 'surge': 79066.650390625, 'uptrend': -28221.5}"
