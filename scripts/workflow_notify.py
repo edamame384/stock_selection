@@ -30,11 +30,21 @@ REGIME_LABELS = {
     "up": "上昇局面",
     "sideways": "安定局面",
     "down": "下降局面",
+    "stable": "安定局面",
+    "uptrend": "上昇局面",
+    "downtrend": "下降局面",
     "crash": "暴落局面",
     "high_vol": "高ボラ局面",
     "capitulation_end": "投げ売り終盤局面",
     "settling": "落ち着き始め局面",
     "normal": "通常局面",
+    "reversal_up": "上方反転局面",
+    "reversal_down": "下方反転局面",
+    "overheated_range": "過熱持ち合い局面",
+    "weak_uptrend": "弱い上昇局面",
+    "raw_post_crash_high_vol": "暴落直後高ボラ局面",
+    "rebound_confirmed_post_crash_high_vol": "暴落後反発確認済み高ボラ局面",
+    "generic_high_vol": "一般高ボラ局面",
     "post_major_crash": "大暴落後回復モード",
 }
 
@@ -246,6 +256,8 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
             lines.append(
                 f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
             )
+        if meta.get("regime"):
+            lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(meta.get('regime'))}")
         for symbol in chosen_symbols[:max_lines]:
             state_row = current_state_symbols[symbol]
             lines.append(
@@ -266,6 +278,8 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
             lines.append(
                 f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
             )
+        if meta.get("regime"):
+            lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(meta.get('regime'))}")
 
     if disappeared_symbols:
         lines.append("")
