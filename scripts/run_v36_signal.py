@@ -26,6 +26,7 @@ from projects.shikiho_text_parser.compare_alloc50_post_major_multi_etf_expanded_
     pick_best_etf,
     prepare_earnings_map,
     prev_high_break_signal,
+    q2026_2q_spec,
     q2_spec,
     q2025_2q_spec,
     q3_spec,
@@ -39,12 +40,13 @@ from src.stock_signal import download_daily_data, save_price_data
 DATASET_SPECS = {
     "q2_2024": q2_spec,
     "2025_2q": q2025_2q_spec,
+    "2026-2Q": q2026_2q_spec,
     "3Q": q3_spec,
     "4Q": q4_spec,
     "4Q-2": q4_2_spec,
 }
 
-DEFAULT_DATASET = "4Q-2"
+DEFAULT_DATASET = "2026-2Q"
 
 
 def next_business_day(ts: pd.Timestamp) -> pd.Timestamp:

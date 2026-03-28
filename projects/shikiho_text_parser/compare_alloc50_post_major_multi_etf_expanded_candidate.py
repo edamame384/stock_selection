@@ -100,6 +100,17 @@ def q4_2_spec() -> TableSpec:
     )
 
 
+def q2026_2q_spec() -> TableSpec:
+    return TableSpec(
+        "4q2",
+        ROOT / "projects" / "shikiho_text_parser" / "output" / "2026_2q_selection" / "2026_2q_scored_universe.csv",
+        ROOT / "projects" / "shikiho_text_parser" / "output" / "2026_2q_selection" / "operational" / "2026_2q_selected_candidates_operational.csv",
+        "2026-03-27",
+        "2026-06-30",
+        3_000_000.0,
+    )
+
+
 def build_post_major_state(phase_df: pd.DataFrame) -> pd.DataFrame:
     x = phase_df.copy().reset_index(drop=True)
     x["major_crash"] = (x["phase_name"].astype(str) == "crash") & ((x["ret5"] <= -0.08) | (x["dd20"] <= -0.14))
@@ -583,6 +594,7 @@ def main() -> int:
         "3Q": q3_spec(),
         "4Q": q4_spec(),
         "4Q-2": q4_2_spec(),
+        "2026-2Q": q2026_2q_spec(),
     }
     if args.datasets:
         wanted = set(args.datasets)
