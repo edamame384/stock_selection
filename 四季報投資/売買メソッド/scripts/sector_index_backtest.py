@@ -297,6 +297,7 @@ def run_backtest(
 ) -> dict:
     """
     指定期間でMAクロス戦略をバックテスト
+    シグナル発生の翌営業日の終値で売買を執行する
 
     Returns
     -------
@@ -326,8 +327,8 @@ def run_backtest(
         if position == 1 and (sig == -1 or i == len(dates) - 1):
             if entry_ticker and entry_ticker in prices:
                 price_series = prices[entry_ticker]
-                # 翌営業日の始値で成行き (終値で代替)
-                exit_dates = price_series.index[price_series.index >= dt]
+                # シグナル翌営業日の終値で執行 (> dt で当日を除外)
+                exit_dates = price_series.index[price_series.index > dt]
                 if len(exit_dates) > 0:
                     exit_price = price_series.loc[exit_dates[0]]
                     ret = (exit_price - entry_price) / entry_price
@@ -351,7 +352,8 @@ def run_backtest(
             )
             if ticker_today and ticker_today in prices:
                 price_series = prices[ticker_today]
-                entry_dates = price_series.index[price_series.index >= dt]
+                # シグナル翌営業日の終値で執行 (> dt で当日を除外)
+                entry_dates = price_series.index[price_series.index > dt]
                 if len(entry_dates) > 0:
                     entry_price = float(price_series.loc[entry_dates[0]])
                     if entry_price > 0:
