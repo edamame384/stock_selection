@@ -25,7 +25,11 @@ jobs:
       - name: Build v3.6 signal log
         run: |
           mkdir -p data
+          set +e
           python scripts/run_v36_signal.py --dataset 2026-2Q > data/last_run_github.log 2>&1
+          status=$?
+          cat data/last_run_github.log
+          exit $status
       - name: Notify signal detection
         if: ${{ success() }}
         env:
