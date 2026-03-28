@@ -41,6 +41,11 @@ TRAIN_END   = '2021-12-31'
 TEST_START  = '2022-01-01'
 TEST_END    = '2025-12-31'
 
+# 価格データ異常銘柄の除外リスト（データ破損確認済み）
+TICKER_BLACKLIST = {'4745'}
+# 価格異常検知: 最新終値 / 最初の終値 が この倍率以上なら除外
+PRICE_ANOMALY_RATIO = 500.0
+
 # 東証33業種コード（上3桁）マッピング
 SECTOR_CODE_MAP = {
     '水産・農林業':        '005',
@@ -117,7 +122,10 @@ def extract_shares_outstanding(ticker: str) -> float | None:
 # 2. 価格データ読み込み
 # ============================================================
 def load_price(ticker: str) -> pd.DataFrame | None:
-    """prices_full/{ticker}_T.csv を読み込み Date をインデックスに返す"""
+    """prices_full/{ticker}_T.csv を読み込み Date をインデックスに返す
+    ブラックリスト銘柄・価格異常銘柄は None を返す"""
+    if ticker in TICKER_BLACKLIST:
+        return None
     csv = PRICE_DIR / f'{ticker}_T.csv'
     if not csv.exists():
         return None
@@ -126,6 +134,12 @@ def load_price(ticker: str) -> pd.DataFrame | None:
         df = df[['Close']].copy()
         df = df[df['Close'] > 0].dropna()
         df.index = pd.to_datetime(df.index)
+        if len(df) < 100:
+            return df
+        # 価格異常検知: 最初と最新の比率チェック
+        ratio = df['Close'].iloc[-1] / df['Close'].iloc[0]
+        if ratio > PRICE_ANOMALY_RATIO:
+            return None
         return df
     except Exception:
         return None
@@ -211,7 +225,7 @@ def build_sector_index(info: dict, date_range: pd.DatetimeIndex) -> pd.Series:
     })
 
     # 時価総額 = 発行済株式数 × 株価
-    mktcap_df = price_df.multiply(share_series, axis=1)
+    mktcap_df = price_df.multiply(share_series, axis=1).ffill()
 
     # ウェイト = 各銘柄の時価総額 / セクター合計時価総額
     total_mktcap = mktcap_df.sum(axis=1).replace(0, np.nan)
@@ -258,7 +272,8 @@ def get_largest_cap_series(info: dict, date_range: pd.DatetimeIndex) -> pd.Serie
     })
 
     mktcap_df = price_df.multiply(share_series, axis=1)
-    largest = mktcap_df.idxmax(axis=1)
+    mktcap_df = mktcap_df.dropna(how='all').ffill()
+    largest = mktcap_df.idxmax(axis=1, skipna=True)
     return largest
 
 
@@ -403,23 +418,189 @@ def run_backtest(
 FAST_RANGE = [5, 10, 20, 25]
 SLOW_RANGE = [25, 50, 75, 100]
 
-def optimize_params(index: pd.Series, largest_cap: pd.Series, prices: dict) -> tuple[int, int]:
-    """学習期間でシャープレシオを最大化するMAパラメータを探索"""
-    best_sharpe = -np.inf
-    best_fast, best_slow = 25, 75  # デフォルト
+def find_global_best_ma(sector_results: dict) -> tuple[int, int]:
+    """
+    全業種インデックスにわたって学習期間のシャープレシオ平均を最大化する
+    (fast, slow) の組み合わせを1つ選ぶ（全業種統一パラメータ）
+    """
+    best_avg_sharpe = -np.inf
+    best_fast, best_slow = 25, 75
 
     for fast, slow in product(FAST_RANGE, SLOW_RANGE):
         if fast >= slow:
             continue
-        res = run_backtest(
-            index, largest_cap, prices,
-            fast, slow, TRAIN_START, TRAIN_END,
-        )
-        if res and res['num_trades'] >= 3 and res['sharpe'] > best_sharpe:
-            best_sharpe = res['sharpe']
-            best_fast, best_slow = fast, slow
+        sharpes = []
+        for sector, info in sector_results.items():
+            res = run_backtest(
+                info['index'], info['largest_cap'], info['prices'],
+                fast, slow, TRAIN_START, TRAIN_END,
+            )
+            if res and res['num_trades'] >= 3:
+                sharpes.append(res['sharpe'])
+        if len(sharpes) >= 5:
+            avg = np.mean(sharpes)
+            if avg > best_avg_sharpe:
+                best_avg_sharpe = avg
+                best_fast, best_slow = fast, slow
 
+    print(f"  → 全業種統一MA: fast={best_fast}, slow={best_slow}  (学習期間平均Sharpe: {best_avg_sharpe:.3f})")
     return best_fast, best_slow
+
+
+# ============================================================
+# 8b. 限られた資産向けポートフォリオバックテスト
+#     同時1ポジション・シグナル強度（MA乖離率）優先
+# ============================================================
+def run_portfolio_backtest(
+    sector_results: dict,
+    fast: int,
+    slow: int,
+    start: str,
+    end: str,
+    initial_capital: float = 1_000_000.0,
+) -> dict:
+    """
+    全業種を単一資金で売買するポートフォリオバックテスト。
+
+    ルール:
+    - 同時保有は1ポジションのみ
+    - シグナル日の翌営業日終値で執行
+    - 買いシグナルが複数業種で同時発生 → MA乖離率（fast-slow)/slow が最大の業種を優先
+    - 保有中に他業種で買いシグナル → 待機リストに追加し、現在ポジションがクローズされた翌日に入場
+    """
+    # 全業種のインデックスとシグナルを事前計算
+    sector_names = list(sector_results.keys())
+    all_dates_full = pd.date_range(start=start, end=end, freq='B')
+
+    sector_signals = {}
+    sector_ma_fast = {}
+    sector_ma_slow = {}
+    sector_indices  = {}
+    for sname, info in sector_results.items():
+        idx = info['index'].loc[start:end]
+        if len(idx) < slow + 5:
+            continue
+        maf = idx.rolling(fast, min_periods=fast).mean()
+        mas = idx.rolling(slow, min_periods=slow).mean()
+        sig = pd.Series(0, index=idx.index)
+        sig[(maf > mas) & (maf.shift(1) <= mas.shift(1))] =  1
+        sig[(maf < mas) & (maf.shift(1) >= mas.shift(1))] = -1
+        sector_signals[sname] = sig
+        sector_ma_fast[sname] = maf
+        sector_ma_slow[sname] = mas
+        sector_indices[sname]  = idx
+
+    active_sectors = list(sector_signals.keys())
+    dates = [d for d in all_dates_full if d in sector_signals.get(active_sectors[0], pd.Series()).index]
+    if not dates:
+        return None
+
+    # 状態変数
+    capital      = initial_capital
+    position     = None   # {'sector', 'ticker', 'entry_price', 'entry_date'}
+    pending_exit = False  # 翌日執行予定の売り
+    pending_entry = None  # 翌日執行予定の買い {'sector','ticker'}
+    equity_vals  = []
+    equity_dates = []
+    trades = []
+    waiting_sectors = []  # 買いシグナル待機リスト [(priority, sector, ticker)]
+
+    def signal_strength(sname, dt):
+        """MAクロス乖離率（大きいほど強いトレンド）"""
+        maf = sector_ma_fast[sname]
+        mas = sector_ma_slow[sname]
+        if dt not in maf.index or pd.isna(maf.loc[dt]) or pd.isna(mas.loc[dt]) or mas.loc[dt] == 0:
+            return 0.0
+        return float((maf.loc[dt] - mas.loc[dt]) / mas.loc[dt])
+
+    for i, dt in enumerate(dates):
+        is_last = (i == len(dates) - 1)
+
+        # ---- 翌日執行: 売り ----
+        if pending_exit and position:
+            ticker  = position['ticker']
+            sector  = position['sector']
+            prices  = sector_results[sector]['prices']
+            if ticker in prices:
+                exit_avail = prices[ticker].index[prices[ticker].index >= dt]
+                if len(exit_avail) > 0:
+                    exit_price = float(prices[ticker].loc[exit_avail[0]])
+                    ret = (exit_price - position['entry_price']) / position['entry_price']
+                    capital *= (1 + ret)
+                    trades.append({
+                        'sector':      sector,
+                        'ticker':      ticker,
+                        'entry_date':  position['entry_date'],
+                        'exit_date':   exit_avail[0],
+                        'entry_price': position['entry_price'],
+                        'exit_price':  exit_price,
+                        'return_pct':  ret * 100,
+                        'capital_after': capital,
+                    })
+            position     = None
+            pending_exit = False
+
+        # ---- 翌日執行: 買い ----
+        if pending_entry and position is None:
+            sname  = pending_entry['sector']
+            ticker = pending_entry['ticker']
+            prices = sector_results[sname]['prices']
+            if ticker in prices:
+                entry_avail = prices[ticker].index[prices[ticker].index >= dt]
+                if len(entry_avail) > 0:
+                    ep = float(prices[ticker].loc[entry_avail[0]])
+                    if ep > 0:
+                        position = {
+                            'sector':      sname,
+                            'ticker':      ticker,
+                            'entry_price': ep,
+                            'entry_date':  entry_avail[0],
+                        }
+            pending_entry = None
+
+        # ---- 今日のシグナル確認 ----
+        for sname in active_sectors:
+            if dt not in sector_signals[sname].index:
+                continue
+            sig = sector_signals[sname].loc[dt]
+
+            # 保有中業種の売りシグナル（または期末）
+            if position and position['sector'] == sname and (sig == -1 or is_last):
+                pending_exit  = True
+                pending_entry = None
+                waiting_sectors = []
+
+            # 買いシグナル → 待機リストへ
+            if sig == 1:
+                largest = sector_results[sname]['largest_cap']
+                ticker_now = largest.loc[dt] if dt in largest.index else None
+                if ticker_now and ticker_now in sector_results[sname]['prices']:
+                    strength = signal_strength(sname, dt)
+                    waiting_sectors.append((strength, sname, ticker_now))
+
+        # フリーかつ待機リストがある → 最強シグナルの業種を翌日エントリー
+        if position is None and not pending_exit and not pending_entry and waiting_sectors:
+            waiting_sectors.sort(key=lambda x: x[0], reverse=True)
+            _, best_sector, best_ticker = waiting_sectors.pop(0)
+            pending_entry = {'sector': best_sector, 'ticker': best_ticker}
+            waiting_sectors = []  # 他の待機は破棄（1ポジションのみ）
+
+        equity_vals.append(capital)
+        equity_dates.append(dt)
+
+    equity_curve = pd.Series(equity_vals, index=equity_dates)
+    total_ret  = (equity_curve.iloc[-1] / initial_capital - 1) * 100
+    dr         = equity_curve.pct_change().dropna()
+    sharpe     = (dr.mean() / dr.std() * np.sqrt(252)) if dr.std() > 0 else 0.0
+    max_dd     = ((equity_curve - equity_curve.cummax()) / equity_curve.cummax()).min() * 100
+    win_rate   = sum(1 for t in trades if t['return_pct'] > 0) / len(trades) * 100 if trades else 0.0
+
+    return dict(
+        total_return_pct=total_ret, sharpe=sharpe,
+        max_drawdown_pct=max_dd, win_rate_pct=win_rate,
+        num_trades=len(trades), equity_curve=equity_curve,
+        trades=trades, fast=fast, slow=slow,
+    )
 
 
 # ============================================================
@@ -514,81 +695,98 @@ def main():
     # 全データの日付レンジ
     all_dates = pd.date_range(start=TRAIN_START, end=TEST_END, freq='B')
 
-    all_results = {}
-    summary_rows = []
-
-    sectors_sorted = sorted(sector_info.items(), key=lambda x: x[1]['code'])
-    total_sectors = len(sectors_sorted)
-
-    for idx_s, (sector, info) in enumerate(sectors_sorted):
-        code = info['code']
-        n_tickers = len(info['prices'])
-        print(f"\n[{idx_s+1}/{total_sectors}] {sector} (コード上3桁: {code}) | 銘柄数: {n_tickers}")
-
-        if n_tickers < 2:
-            print("  → 銘柄数不足, スキップ")
+    # ── Phase 1: 全業種のインデックス・最大時価総額銘柄を構築 ──
+    print("\n全業種インデックス構築中...")
+    sector_built = {}
+    for sector, info in sorted(sector_info.items(), key=lambda x: x[1]['code']):
+        if len(info['prices']) < 2:
             continue
-
-        # セクターインデックス構築
         sector_idx = build_sector_index(info, all_dates)
         if len(sector_idx) < 500:
-            print("  → インデックスデータ不足, スキップ")
             continue
-
-        # 時価総額最大銘柄（日次）
         largest_cap = get_largest_cap_series(info, all_dates)
+        sector_built[sector] = {
+            'code':        info['code'],
+            'index':       sector_idx,
+            'largest_cap': largest_cap,
+            'prices':      info['prices'],
+            'shares':      info['shares'],
+            'n_tickers':   len(info['prices']),
+        }
+    print(f"有効業種数: {len(sector_built)}")
 
-        # MAパラメータ最適化
-        print(f"  MAパラメータ最適化中...", end='')
-        fast, slow = optimize_params(sector_idx, largest_cap, info['prices'])
-        print(f" best: MA({fast}/{slow})")
+    # ── Phase 2: 全業種統一MAパラメータを学習期間で最適化 ──
+    print("\n全業種統一MAパラメータ最適化中...")
+    global_fast, global_slow = find_global_best_ma(sector_built)
 
-        # 学習期間バックテスト
+    # ── Phase 3: 統一MAで各業種バックテスト ──
+    all_results = {}
+    summary_rows = []
+    total_sectors = len(sector_built)
+
+    for idx_s, (sector, info) in enumerate(sorted(sector_built.items(), key=lambda x: x[1]['code'])):
+        fast, slow = global_fast, global_slow
+        code       = info['code']
+        n_tickers  = info['n_tickers']
+        print(f"\n[{idx_s+1}/{total_sectors}] {sector} (コード: {code}) | 銘柄数: {n_tickers} | MA({fast}/{slow})")
+
         train_res = run_backtest(
-            sector_idx, largest_cap, info['prices'],
+            info['index'], info['largest_cap'], info['prices'],
             fast, slow, TRAIN_START, TRAIN_END,
         )
-
-        # テスト期間バックテスト
         test_res = run_backtest(
-            sector_idx, largest_cap, info['prices'],
+            info['index'], info['largest_cap'], info['prices'],
             fast, slow, TEST_START, TEST_END,
         )
 
-        # チャート出力
         chart_path = plot_sector_charts(
-            sector, code, sector_idx,
-            train_res, test_res, fast, slow
+            sector, code, info['index'], train_res, test_res, fast, slow
         )
         print(f"  チャート保存: {chart_path.name}")
 
-        # サマリー
         row = {
-            'sector': sector,
-            'code_3digit': code,
-            'n_tickers': n_tickers,
-            'fast_ma': fast,
-            'slow_ma': slow,
+            'sector': sector, 'code_3digit': code,
+            'n_tickers': n_tickers, 'fast_ma': fast, 'slow_ma': slow,
         }
         for prefix, res in [('train', train_res), ('test', test_res)]:
             if res:
-                row[f'{prefix}_return_pct']    = round(res['total_return_pct'], 2)
-                row[f'{prefix}_sharpe']        = round(res['sharpe'], 3)
-                row[f'{prefix}_max_dd_pct']    = round(res['max_drawdown_pct'], 2)
-                row[f'{prefix}_win_rate_pct']  = round(res['win_rate_pct'], 2)
-                row[f'{prefix}_num_trades']    = res['num_trades']
+                row[f'{prefix}_return_pct']   = round(res['total_return_pct'], 2)
+                row[f'{prefix}_sharpe']       = round(res['sharpe'], 3)
+                row[f'{prefix}_max_dd_pct']   = round(res['max_drawdown_pct'], 2)
+                row[f'{prefix}_win_rate_pct'] = round(res['win_rate_pct'], 2)
+                row[f'{prefix}_num_trades']   = res['num_trades']
             else:
-                for k in ['return_pct', 'sharpe', 'max_dd_pct', 'win_rate_pct', 'num_trades']:
+                for k in ['return_pct','sharpe','max_dd_pct','win_rate_pct','num_trades']:
                     row[f'{prefix}_{k}'] = None
 
         summary_rows.append(row)
         all_results[sector] = {
-            'train': train_res,
-            'test': test_res,
-            'index': sector_idx,
-            'fast': fast,
-            'slow': slow,
+            'train': train_res, 'test': test_res,
+            'index': info['index'], 'fast': fast, 'slow': slow,
         }
+
+    # ── Phase 4: 限られた資産向けポートフォリオバックテスト ──
+    print("\n限られた資産向けポートフォリオバックテスト実行中...")
+    pf_train = run_portfolio_backtest(sector_built, global_fast, global_slow, TRAIN_START, TRAIN_END)
+    pf_test  = run_portfolio_backtest(sector_built, global_fast, global_slow, TEST_START,  TEST_END)
+
+    if pf_train:
+        print(f"  学習期間: {pf_train['total_return_pct']:+.2f}% | "
+              f"Sharpe {pf_train['sharpe']:.3f} | 最大DD {pf_train['max_drawdown_pct']:.1f}% | "
+              f"勝率 {pf_train['win_rate_pct']:.1f}% | 取引数 {pf_train['num_trades']}")
+    if pf_test:
+        print(f"  テスト期間: {pf_test['total_return_pct']:+.2f}% | "
+              f"Sharpe {pf_test['sharpe']:.3f} | 最大DD {pf_test['max_drawdown_pct']:.1f}% | "
+              f"勝率 {pf_test['win_rate_pct']:.1f}% | 取引数 {pf_test['num_trades']}")
+
+    # ポートフォリオエクイティカーブ保存
+    _plot_portfolio_equity(pf_train, pf_test, global_fast, global_slow)
+
+    # 取引ログCSV
+    if pf_test and pf_test['trades']:
+        trade_df = pd.DataFrame(pf_test['trades'])
+        trade_df.to_csv(OUT_DIR / 'portfolio_trades_test.csv', index=False, encoding='utf-8-sig')
+        print(f"  取引ログ: portfolio_trades_test.csv ({len(pf_test['trades'])}件)")
 
     # ============================================================
     # サマリーCSV出力
@@ -662,6 +860,39 @@ def main():
 
     print(f"\n結果保存先: {OUT_DIR}")
     return all_results, summary_df
+
+
+def _plot_portfolio_equity(pf_train, pf_test, fast, slow):
+    """ポートフォリオ（単一資金・1ポジション）のエクイティカーブを保存"""
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    fig.suptitle(
+        f'限られた資産向けポートフォリオ (同時1ポジション, MAクロス乖離率優先)\n'
+        f'MA({fast}/{slow}) / 翌営業日終値執行', fontsize=11
+    )
+    for ax, res, label, color in [
+        (axes[0], pf_train, f'学習期間 (2001-2021)', 'steelblue'),
+        (axes[1], pf_test,  f'テスト期間 (2022-2025)', 'darkorange'),
+    ]:
+        if res:
+            eq = res['equity_curve']
+            ax.plot(eq.index, eq.values, color=color, lw=1.4)
+            ax.set_title(
+                f"{label}\n"
+                f"リターン {res['total_return_pct']:+.1f}% | "
+                f"Sharpe {res['sharpe']:.2f} | "
+                f"最大DD {res['max_drawdown_pct']:.1f}% | "
+                f"勝率 {res['win_rate_pct']:.1f}% | "
+                f"取引数 {res['num_trades']}",
+                fontsize=9
+            )
+        ax.set_ylabel('資産 (円)', fontsize=9)
+        ax.grid(True, alpha=0.3)
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'¥{x:,.0f}'))
+    plt.tight_layout()
+    fpath = OUT_DIR / 'portfolio_equity_single_capital.png'
+    plt.savefig(fpath, dpi=100, bbox_inches='tight')
+    plt.close()
+    print(f"  ポートフォリオチャート保存: {fpath.name}")
 
 
 def plot_all_sector_indices(all_results: dict):
