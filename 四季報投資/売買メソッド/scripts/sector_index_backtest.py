@@ -449,8 +449,11 @@ def find_global_best_ma(sector_results: dict) -> tuple[int, int]:
 
 # ============================================================
 # 8b. 限られた資産向けポートフォリオバックテスト
-#     同時1ポジション・シグナル強度（MA乖離率）優先
+#     同時最大4ポジション・損切り-5%・シグナル強度優先
 # ============================================================
+MAX_POSITIONS  = 4       # 同時保有上限
+STOP_LOSS_PCT  = 0.05    # 損切りライン（買値からの下落率）
+
 def run_portfolio_backtest(
     sector_results: dict,
     fast: int,
@@ -460,22 +463,22 @@ def run_portfolio_backtest(
     initial_capital: float = 1_000_000.0,
 ) -> dict:
     """
-    全業種を単一資金で売買するポートフォリオバックテスト。
+    全業種を限られた資産で売買するポートフォリオバックテスト。
 
     ルール:
-    - 同時保有は1ポジションのみ
-    - シグナル日の翌営業日終値で執行
-    - 買いシグナルが複数業種で同時発生 → MA乖離率（fast-slow)/slow が最大の業種を優先
-    - 保有中に他業種で買いシグナル → 待機リストに追加し、現在ポジションがクローズされた翌日に入場
+    - 同時保有上限: MAX_POSITIONS (=4)
+    - 資本配分: initial_capital を MAX_POSITIONS 等分し、1スロット分ずつ使用
+    - 損切り: 保有中の銘柄が買値 × (1 - STOP_LOSS_PCT) を下回った翌日に決済
+    - 売りシグナル: 業種インデックスの MA クロス下抜け翌日に決済
+    - 買いシグナル競合: MA 乖離率 (fast_MA - slow_MA) / slow_MA が大きい順に入場
+    - エントリー/エグジット: シグナル翌営業日終値で執行
     """
-    # 全業種のインデックスとシグナルを事前計算
-    sector_names = list(sector_results.keys())
     all_dates_full = pd.date_range(start=start, end=end, freq='B')
 
-    sector_signals = {}
-    sector_ma_fast = {}
-    sector_ma_slow = {}
-    sector_indices  = {}
+    # 全業種の MA・シグナルを事前計算
+    sector_signals  = {}
+    sector_ma_fast  = {}
+    sector_ma_slow  = {}
     for sname, info in sector_results.items():
         idx = info['index'].loc[start:end]
         if len(idx) < slow + 5:
@@ -488,112 +491,149 @@ def run_portfolio_backtest(
         sector_signals[sname] = sig
         sector_ma_fast[sname] = maf
         sector_ma_slow[sname] = mas
-        sector_indices[sname]  = idx
 
     active_sectors = list(sector_signals.keys())
-    dates = [d for d in all_dates_full if d in sector_signals.get(active_sectors[0], pd.Series()).index]
+    if not active_sectors:
+        return None
+    ref_idx = sector_signals[active_sectors[0]]
+    dates   = [d for d in all_dates_full if d in ref_idx.index]
     if not dates:
         return None
 
-    # 状態変数
-    capital      = initial_capital
-    position     = None   # {'sector', 'ticker', 'entry_price', 'entry_date'}
-    pending_exit = False  # 翌日執行予定の売り
-    pending_entry = None  # 翌日執行予定の買い {'sector','ticker'}
-    equity_vals  = []
-    equity_dates = []
-    trades = []
-    waiting_sectors = []  # 買いシグナル待機リスト [(priority, sector, ticker)]
-
-    def signal_strength(sname, dt):
-        """MAクロス乖離率（大きいほど強いトレンド）"""
+    def ma_strength(sname, dt):
+        """MA 乖離率（大 → トレンド強）"""
         maf = sector_ma_fast[sname]
         mas = sector_ma_slow[sname]
-        if dt not in maf.index or pd.isna(maf.loc[dt]) or pd.isna(mas.loc[dt]) or mas.loc[dt] == 0:
+        if dt not in maf.index or pd.isna(maf.get(dt)) or pd.isna(mas.get(dt)) or mas.get(dt) == 0:
             return 0.0
         return float((maf.loc[dt] - mas.loc[dt]) / mas.loc[dt])
+
+    slot_capital   = initial_capital / MAX_POSITIONS  # 1スロットの資金
+    cash           = initial_capital                  # 手元現金
+    positions      = []   # 保有中: [{'sector','ticker','entry_price','entry_date','alloc'}]
+    pending_exits  = []   # 翌日決済リスト: [{'pos': position_dict, 'reason': str}]
+    pending_entries = []  # 翌日エントリーリスト: [{'sector','ticker'}]  (強度順ソート済み)
+    trades         = []
+    equity_vals    = []
+    equity_dates   = []
+
+    def current_price(ticker, sector, dt):
+        """dt 以降で最初に取得できる終値"""
+        ps = sector_results[sector]['prices'].get(ticker)
+        if ps is None:
+            return None
+        avail = ps.index[ps.index >= dt]
+        return float(ps.loc[avail[0]]) if len(avail) > 0 else None
 
     for i, dt in enumerate(dates):
         is_last = (i == len(dates) - 1)
 
-        # ---- 翌日執行: 売り ----
-        if pending_exit and position:
-            ticker  = position['ticker']
-            sector  = position['sector']
-            prices  = sector_results[sector]['prices']
-            if ticker in prices:
-                exit_avail = prices[ticker].index[prices[ticker].index >= dt]
-                if len(exit_avail) > 0:
-                    exit_price = float(prices[ticker].loc[exit_avail[0]])
-                    ret = (exit_price - position['entry_price']) / position['entry_price']
-                    capital *= (1 + ret)
-                    trades.append({
-                        'sector':      sector,
-                        'ticker':      ticker,
-                        'entry_date':  position['entry_date'],
-                        'exit_date':   exit_avail[0],
-                        'entry_price': position['entry_price'],
-                        'exit_price':  exit_price,
-                        'return_pct':  ret * 100,
-                        'capital_after': capital,
-                    })
-            position     = None
-            pending_exit = False
+        # ======== 翌日執行: 決済 ========
+        still_open = []
+        for pe in pending_exits:
+            pos    = pe['pos']
+            reason = pe['reason']
+            cp = current_price(pos['ticker'], pos['sector'], dt)
+            if cp is not None:
+                ret = (cp - pos['entry_price']) / pos['entry_price']
+                cash += pos['alloc'] * (1 + ret)
+                trades.append({
+                    'sector':      pos['sector'],
+                    'ticker':      pos['ticker'],
+                    'entry_date':  pos['entry_date'],
+                    'exit_date':   dt,
+                    'entry_price': pos['entry_price'],
+                    'exit_price':  cp,
+                    'return_pct':  ret * 100,
+                    'exit_reason': reason,
+                })
+            else:
+                still_open.append(pe)   # 価格取得できず → 翌日に持ち越し
+        # 決済が確定したポジションを positions から除去
+        exiting_tickers = {pe['pos']['ticker'] for pe in pending_exits if pe not in still_open}
+        positions = [p for p in positions if p['ticker'] not in exiting_tickers]
+        pending_exits = still_open
 
-        # ---- 翌日執行: 買い ----
-        if pending_entry and position is None:
-            sname  = pending_entry['sector']
-            ticker = pending_entry['ticker']
-            prices = sector_results[sname]['prices']
-            if ticker in prices:
-                entry_avail = prices[ticker].index[prices[ticker].index >= dt]
-                if len(entry_avail) > 0:
-                    ep = float(prices[ticker].loc[entry_avail[0]])
-                    if ep > 0:
-                        position = {
-                            'sector':      sname,
-                            'ticker':      ticker,
-                            'entry_price': ep,
-                            'entry_date':  entry_avail[0],
-                        }
-            pending_entry = None
+        # ======== 翌日執行: エントリー ========
+        for pe in pending_entries[:]:
+            free_slots = MAX_POSITIONS - len(positions)
+            if free_slots <= 0:
+                break
+            sname  = pe['sector']
+            ticker = pe['ticker']
+            # 既に同業種を保有中はスキップ
+            if any(p['sector'] == sname for p in positions):
+                pending_entries.remove(pe)
+                continue
+            cp = current_price(ticker, sname, dt)
+            if cp and cp > 0 and cash >= slot_capital:
+                cash -= slot_capital
+                positions.append({
+                    'sector':      sname,
+                    'ticker':      ticker,
+                    'entry_price': cp,
+                    'entry_date':  dt,
+                    'alloc':       slot_capital,
+                })
+                pending_entries.remove(pe)
 
-        # ---- 今日のシグナル確認 ----
+        # ======== 今日のシグナル確認 & 損切りチェック ========
+        new_buy_signals = []  # (strength, sector, ticker)
+
         for sname in active_sectors:
             if dt not in sector_signals[sname].index:
                 continue
             sig = sector_signals[sname].loc[dt]
 
-            # 保有中業種の売りシグナル（または期末）
-            if position and position['sector'] == sname and (sig == -1 or is_last):
-                pending_exit  = True
-                pending_entry = None
-                waiting_sectors = []
+            # 保有中ポジションの確認
+            held = [p for p in positions if p['sector'] == sname]
+            for pos in held:
+                cp = current_price(pos['ticker'], sname, dt)
 
-            # 買いシグナル → 待機リストへ
+                # 損切りチェック（今日の終値が損切りラインを下回ったら翌日決済）
+                if cp and cp <= pos['entry_price'] * (1 - STOP_LOSS_PCT):
+                    if pos not in [pe['pos'] for pe in pending_exits]:
+                        pending_exits.append({'pos': pos, 'reason': 'stop_loss'})
+
+                # 売りシグナル or 期末 → 翌日決済（損切り予約と重複しない）
+                elif (sig == -1 or is_last):
+                    if pos not in [pe['pos'] for pe in pending_exits]:
+                        pending_exits.append({'pos': pos, 'reason': 'ma_signal' if sig == -1 else 'period_end'})
+
+            # 買いシグナル: 既に同業種保有中・決済予約中はスキップ
             if sig == 1:
-                largest = sector_results[sname]['largest_cap']
-                ticker_now = largest.loc[dt] if dt in largest.index else None
-                if ticker_now and ticker_now in sector_results[sname]['prices']:
-                    strength = signal_strength(sname, dt)
-                    waiting_sectors.append((strength, sname, ticker_now))
+                already_held    = any(p['sector'] == sname for p in positions)
+                already_pending = any(pe['sector'] == sname for pe in pending_entries)
+                if not already_held and not already_pending:
+                    largest = sector_results[sname]['largest_cap']
+                    ticker_now = largest.loc[dt] if dt in largest.index else None
+                    if ticker_now and ticker_now in sector_results[sname]['prices']:
+                        new_buy_signals.append((ma_strength(sname, dt), sname, ticker_now))
 
-        # フリーかつ待機リストがある → 最強シグナルの業種を翌日エントリー
-        if position is None and not pending_exit and not pending_entry and waiting_sectors:
-            waiting_sectors.sort(key=lambda x: x[0], reverse=True)
-            _, best_sector, best_ticker = waiting_sectors.pop(0)
-            pending_entry = {'sector': best_sector, 'ticker': best_ticker}
-            waiting_sectors = []  # 他の待機は破棄（1ポジションのみ）
+        # 空きスロットがあれば強度順に pending_entries へ追加
+        free_slots = MAX_POSITIONS - len(positions) - len(pending_entries)
+        if free_slots > 0 and new_buy_signals:
+            new_buy_signals.sort(key=lambda x: x[0], reverse=True)
+            for strength, sname, ticker in new_buy_signals[:free_slots]:
+                pending_entries.append({'sector': sname, 'ticker': ticker})
 
-        equity_vals.append(capital)
+        # ======== 時価評価でエクイティ計算 ========
+        open_value = 0.0
+        for pos in positions:
+            cp = current_price(pos['ticker'], pos['sector'], dt)
+            if cp:
+                open_value += pos['alloc'] * (cp / pos['entry_price'])
+            else:
+                open_value += pos['alloc']
+        equity_vals.append(cash + open_value)
         equity_dates.append(dt)
 
     equity_curve = pd.Series(equity_vals, index=equity_dates)
-    total_ret  = (equity_curve.iloc[-1] / initial_capital - 1) * 100
-    dr         = equity_curve.pct_change().dropna()
-    sharpe     = (dr.mean() / dr.std() * np.sqrt(252)) if dr.std() > 0 else 0.0
-    max_dd     = ((equity_curve - equity_curve.cummax()) / equity_curve.cummax()).min() * 100
-    win_rate   = sum(1 for t in trades if t['return_pct'] > 0) / len(trades) * 100 if trades else 0.0
+    total_ret = (equity_curve.iloc[-1] / initial_capital - 1) * 100
+    dr        = equity_curve.pct_change().dropna()
+    sharpe    = (dr.mean() / dr.std() * np.sqrt(252)) if dr.std() > 0 else 0.0
+    max_dd    = ((equity_curve - equity_curve.cummax()) / equity_curve.cummax()).min() * 100
+    win_rate  = sum(1 for t in trades if t['return_pct'] > 0) / len(trades) * 100 if trades else 0.0
 
     return dict(
         total_return_pct=total_ret, sharpe=sharpe,
@@ -866,7 +906,8 @@ def _plot_portfolio_equity(pf_train, pf_test, fast, slow):
     """ポートフォリオ（単一資金・1ポジション）のエクイティカーブを保存"""
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     fig.suptitle(
-        f'限られた資産向けポートフォリオ (同時1ポジション, MAクロス乖離率優先)\n'
+        f'限られた資産向けポートフォリオ '
+        f'(同時最大{MAX_POSITIONS}ポジション, 損切り-{STOP_LOSS_PCT*100:.0f}%, MAクロス乖離率優先)\n'
         f'MA({fast}/{slow}) / 翌営業日終値執行', fontsize=11
     )
     for ax, res, label, color in [
