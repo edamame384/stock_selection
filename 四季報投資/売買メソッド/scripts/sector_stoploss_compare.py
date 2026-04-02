@@ -17,7 +17,11 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 from pathlib import Path
+
+matplotlib.rcParams['font.family'] = 'IPAGothic'
+matplotlib.rcParams['axes.unicode_minus'] = False
 
 # ── メインモジュールから関数をインポート ──────────────────────────
 SCRIPT_DIR = Path(__file__).parent
@@ -348,7 +352,8 @@ def main():
     print("=" * 75)
 
     # ── 比較チャート ──
-    fig, axes = plt.subplots(2, 1, figsize=(14, 10))
+    import matplotlib.dates as mdates
+    fig, axes = plt.subplots(2, 1, figsize=(16, 12))
 
     colors = ['#333333', '#e74c3c', '#e67e22', '#2980b9', '#27ae60']
     ax = axes[0]
@@ -356,13 +361,16 @@ def main():
         r = results.get(label)
         if r and r['equity_curve'] is not None:
             ec = r['equity_curve']
-            ax.plot(ec.index, ec.values, label=label, color=color, lw=1.5)
-    ax.axhline(1_000_000, color='gray', linestyle='--', lw=0.8)
+            ax.plot(ec.index, ec.values, label=label, color=color, lw=2.0)
+    ax.axhline(1_000_000, color='gray', linestyle='--', lw=1.0)
     ax.set_title(f'損切り方式比較 エクイティカーブ (テスト期間: 2022-2025) MA({fast}/{slow})',
-                 fontsize=12)
-    ax.set_ylabel('資産 (円)', fontsize=10)
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'¥{x:,.0f}'))
-    ax.legend(fontsize=9)
+                 fontsize=14)
+    ax.set_ylabel('資産 (円)', fontsize=13)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x/1e4:.0f}万円'))
+    ax.xaxis.set_major_locator(mdates.YearLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    ax.tick_params(labelsize=12)
+    ax.legend(fontsize=12)
     ax.grid(True, alpha=0.3)
 
     # バー比較チャート
@@ -371,23 +379,25 @@ def main():
     returns = [results[l]['total_return_pct'] if results[l] else 0 for l in labels_short]
     sharpes = [results[l]['sharpe'] if results[l] else 0 for l in labels_short]
     x = np.arange(len(labels_short))
-    w = 0.35
-    bars1 = ax2.bar(x - w/2, returns, w, label='リターン (%)', color=colors, alpha=0.8)
+    w = 0.4
+    ax2.bar(x, returns, w, label='リターン (%)', color=colors, alpha=0.8)
     ax2_r = ax2.twinx()
-    ax2_r.plot(x, sharpes, 'o--', color='purple', lw=1.5, label='Sharpe')
-    ax2_r.set_ylabel('Sharpe ratio', fontsize=9, color='purple')
+    ax2_r.plot(x, sharpes, 'o--', color='purple', lw=2.0, markersize=8, label='Sharpe')
+    ax2_r.set_ylabel('Sharpe ratio', fontsize=13, color='purple')
+    ax2_r.tick_params(labelsize=12)
     ax2.set_xticks(x)
-    ax2.set_xticklabels(labels_short, fontsize=9)
-    ax2.set_ylabel('リターン (%)', fontsize=10)
-    ax2.set_title('リターン & Sharpe 比較', fontsize=11)
+    ax2.set_xticklabels(labels_short, fontsize=12)
+    ax2.set_ylabel('リターン (%)', fontsize=13)
+    ax2.set_title('リターン & Sharpe 比較', fontsize=14)
     ax2.axhline(0, color='gray', linestyle='--', lw=0.8)
+    ax2.tick_params(labelsize=12)
     ax2.grid(True, alpha=0.3)
-    ax2.legend(loc='upper left', fontsize=8)
-    ax2_r.legend(loc='upper right', fontsize=8)
+    ax2.legend(loc='upper left', fontsize=11)
+    ax2_r.legend(loc='upper right', fontsize=11)
 
     plt.tight_layout()
     out_path = OUT_DIR / 'stoploss_comparison.png'
-    plt.savefig(out_path, dpi=100, bbox_inches='tight')
+    plt.savefig(out_path, dpi=120, bbox_inches='tight')
     plt.close()
     print(f"\n比較チャート保存: {out_path}")
 

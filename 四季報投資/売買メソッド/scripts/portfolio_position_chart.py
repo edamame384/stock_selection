@@ -13,6 +13,12 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.font_manager as fm
+
+# 日本語フォント設定
+_jp_font = fm.FontProperties(family='IPAGothic')
+matplotlib.rcParams['font.family'] = 'IPAGothic'
+matplotlib.rcParams['axes.unicode_minus'] = False
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
@@ -204,12 +210,12 @@ def plot_position_chart(data, fast, slow, out_path):
     slot_colors = ['#2980b9', '#e67e22', '#27ae60', '#8e44ad']
     slot_labels = [f'ポジション {i+1}' for i in range(MAX_POSITIONS)]
 
-    fig, axes = plt.subplots(3, 1, figsize=(15, 14),
+    fig, axes = plt.subplots(3, 1, figsize=(18, 16),
                               gridspec_kw={'height_ratios': [3, 2, 1.5]})
     fig.suptitle(
         f'ポジション金額推移 (テスト期間: 2022-2025)\n'
         f'MA({fast}/{slow}) / 固定損切り-10% / 同時最大{MAX_POSITIONS}ポジション',
-        fontsize=12
+        fontsize=16
     )
 
     # ── 上段: スタック面グラフ ────────────────────────
@@ -219,65 +225,69 @@ def plot_position_chart(data, fast, slow, out_path):
         ax1.fill_between(dates, bottom, bottom + slot_vals[s_i],
                          label=slot_labels[s_i], color=slot_colors[s_i], alpha=0.75)
         bottom += slot_vals[s_i]
-    # 現金部分
     ax1.fill_between(dates, bottom, bottom + cash,
                      label='現金', color='#bdc3c7', alpha=0.6)
-    # 総資産ライン
-    ax1.plot(dates, total_equity, color='black', lw=1.5, label='総資産')
-    ax1.axhline(initial, color='gray', linestyle='--', lw=0.8, alpha=0.6)
+    ax1.plot(dates, total_equity, color='black', lw=2.0, label='総資産')
+    ax1.axhline(initial, color='gray', linestyle='--', lw=1.0, alpha=0.6)
 
-    ax1.set_ylabel('金額 (円)', fontsize=10)
-    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'¥{x/1e4:.0f}万'))
-    ax1.legend(loc='upper left', fontsize=8, ncol=3)
+    ax1.set_ylabel('金額', fontsize=13)
+    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x/1e4:.0f}万円'))
+    ax1.legend(loc='upper left', fontsize=11, ncol=3)
+    ax1.tick_params(labelsize=11)
     ax1.grid(True, alpha=0.3)
-    ax1.set_title('資産内訳 (現金 + ポジション別時価)', fontsize=10)
+    ax1.set_title('資産内訳 (現金 + ポジション別時価)', fontsize=13)
 
     # ── 中段: ポジション数と総投資額 ───────────────────
     ax2 = axes[1]
     n_pos = np.array([len(pv) for pv in pos_vals])
     invested = slot_vals.sum(axis=0)
     ax2.bar(dates, n_pos, color='steelblue', alpha=0.6, width=1, label='保有ポジション数')
-    ax2.set_ylabel('ポジション数', fontsize=10, color='steelblue')
+    ax2.set_ylabel('ポジション数', fontsize=13, color='steelblue')
     ax2.set_ylim(0, MAX_POSITIONS + 1)
     ax2.set_yticks(range(MAX_POSITIONS + 1))
-    ax2.legend(loc='upper left', fontsize=8)
+    ax2.tick_params(labelsize=11)
+    ax2.legend(loc='upper left', fontsize=11)
     ax2_r = ax2.twinx()
-    ax2_r.plot(dates, invested / 1e4, color='darkorange', lw=1.2, label='投資額 (万円)')
-    ax2_r.set_ylabel('投資額 (万円)', fontsize=10, color='darkorange')
-    ax2_r.legend(loc='upper right', fontsize=8)
+    ax2_r.plot(dates, invested / 1e4, color='darkorange', lw=1.5, label='投資額')
+    ax2_r.set_ylabel('投資額 (万円)', fontsize=13, color='darkorange')
+    ax2_r.tick_params(labelsize=11)
+    ax2_r.legend(loc='upper right', fontsize=11)
     ax2.grid(True, alpha=0.3)
-    ax2.set_title('保有ポジション数 & 投資金額', fontsize=10)
+    ax2.set_title('保有ポジション数 & 投資金額', fontsize=13)
 
-    # ── 下段: 取引ログ (エントリー/エグジット) ──────────
+    # ── 下段: 取引タイムライン ──────────────────────────
     ax3 = axes[2]
     df_trades = pd.DataFrame(trades)
     if len(df_trades):
         df_trades['entry_date'] = pd.to_datetime(df_trades['entry_date'])
         df_trades['exit_date']  = pd.to_datetime(df_trades['exit_date'])
-        # エントリー
         ax3.scatter(df_trades['entry_date'], [1]*len(df_trades),
-                    marker='^', color='green', s=60, label='エントリー', zorder=5)
-        # 損切りエグジット
+                    marker='^', color='green', s=80, label='エントリー', zorder=5)
         sl = df_trades[df_trades['exit_reason'] == 'stop_loss']
         ax3.scatter(sl['exit_date'], [0]*len(sl),
-                    marker='v', color='red', s=60, label='損切り', zorder=5)
-        # MAシグナルエグジット
-        ma = df_trades[df_trades['exit_reason'] != 'stop_loss']
-        ax3.scatter(ma['exit_date'], [0]*len(ma),
-                    marker='v', color='gray', s=60, label='MAシグナル', zorder=5)
+                    marker='v', color='red', s=80, label='損切り', zorder=5)
+        ma_exit = df_trades[df_trades['exit_reason'] != 'stop_loss']
+        ax3.scatter(ma_exit['exit_date'], [0]*len(ma_exit),
+                    marker='v', color='gray', s=80, label='MAシグナル', zorder=5)
 
     ax3.set_yticks([0, 1])
-    ax3.set_yticklabels(['決済', 'エントリー'], fontsize=8)
+    ax3.set_yticklabels(['決済', 'エントリー'], fontsize=12)
     ax3.set_ylim(-0.5, 1.5)
-    ax3.legend(loc='upper right', fontsize=8)
+    ax3.legend(loc='upper right', fontsize=11)
+    ax3.tick_params(labelsize=11)
     ax3.grid(True, alpha=0.2)
-    ax3.set_title(f'取引タイムライン (合計{len(trades)}件)', fontsize=10)
+    ax3.set_title(f'取引タイムライン (合計{len(trades)}件)', fontsize=13)
 
+    import matplotlib.dates as mdates
     for ax in axes:
         ax.set_xlim(pd.Timestamp(TEST_START), pd.Timestamp('2025-12-31'))
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        ax.xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[4, 7, 10]))
+        ax.tick_params(axis='x', labelsize=11)
 
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=100, bbox_inches='tight')
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    plt.savefig(out_path, dpi=120, bbox_inches='tight')
     plt.close()
     print(f"チャート保存: {out_path}")
 
