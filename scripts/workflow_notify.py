@@ -24,6 +24,12 @@ METHOD_LABELS = {
     "post_major_prev_high_break_entry": "暴落後全体上昇時メソッド",
     "post_major_multi_etf": "crash時ETFメソッド",
     "post_major_stock_prev_high_break": "暴落後全体上昇時メソッド",
+    "no_trade_runner_hard_detached": "no_trade短期追随メソッド",
+    "no_trade_runner_hard_detached_entry": "no_trade短期追随メソッド",
+    "crash_late_runner_hard_detached_entry": "crash後半短期追随メソッド",
+    "crash_late_runner_theme_or_hard_entry": "crash後半テーマ/需給追随メソッド",
+    "v38_post_crash_concentrated_etf_entry": "v3.8暴落後ETF集中メソッド",
+    "v38_post_crash_dispersed_prev_high_entry": "v3.8暴落後分散個別株メソッド",
 }
 
 REGIME_LABELS = {
@@ -46,6 +52,19 @@ REGIME_LABELS = {
     "rebound_confirmed_post_crash_high_vol": "暴落後反発確認済み高ボラ局面",
     "generic_high_vol": "一般高ボラ局面",
     "post_major_crash": "大暴落後回復モード",
+    "post_crash_stable": "大暴落後・安定局面",
+    "post_crash_uptrend": "大暴落後・上昇局面",
+    "post_crash_downtrend": "大暴落後・下降局面",
+    "post_crash_high_vol": "大暴落後・高ボラ局面",
+    "post_crash_capitulation_end": "大暴落後・投げ売り終盤局面",
+    "post_crash_settling": "大暴落後・落ち着き始め局面",
+    "post_crash_normal": "大暴落後・通常風局面",
+    "post_crash_reversal_up": "大暴落後・上方反転局面",
+    "post_crash_reversal_down": "大暴落後・下方反転局面",
+    "post_crash_overheated_range": "大暴落後・過熱持ち合い局面",
+    "post_crash_weak_uptrend": "大暴落後・弱い上昇局面",
+    "post_crash_raw_post_crash_high_vol": "大暴落後・直後高ボラ局面",
+    "post_crash_surge": "大暴落後・急騰局面",
 }
 
 BUY_RE = re.compile(
@@ -58,7 +77,7 @@ PICK_RE = re.compile(
     r"^\[PICK\]\[(?P<group>[^\]]+)\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+tp_prob=(?P<tp>[\d.]+)%\s+sector=(?P<sector>.+?)(?:\s+method=(?P<method>[A-Za-z0-9_.-]+))?(?:\s+company=(?P<company>.+))?$"
 )
 META_RE = re.compile(
-    r"^\[META\]\s+regime=(?P<regime>[a-zA-Z_]+)\s+method=(?P<method>[A-Za-z0-9_.-]+)\s+signal_date=(?P<signal_date>\d{4}-\d{2}-\d{2})\s+trade_date=(?P<trade_date>\d{4}-\d{2}-\d{2})$"
+    r"^\[META\]\s+regime=(?P<regime>[a-zA-Z_]+)\s+method=(?P<method>[A-Za-z0-9_.-]+)\s+signal_date=(?P<signal_date>\d{4}-\d{2}-\d{2})\s+trade_date=(?P<trade_date>\d{4}-\d{2}-\d{2})(?:\s+ssa_confirm_prior=(?P<ssa_confirm_prior>True|False))?(?:\s+ssa_available_prior=(?P<ssa_available_prior>True|False))?(?:\s+crash_late_active=(?P<crash_late_active>True|False))?(?:\s+crash_pos=(?P<crash_pos>\d*))?(?:\s+post_major_crash_mode=(?P<post_major_crash_mode>True|False))?(?:\s+post_major_phase=(?P<post_major_phase>[A-Za-z0-9_]+))?(?:\s+sector_mode=(?P<sector_mode>[A-Za-z0-9_]+))?(?:\s+effective_regime=(?P<effective_regime>[A-Za-z0-9_]+))?$"
 )
 
 
@@ -81,10 +100,29 @@ def display_method_name(method_name: str | None) -> str:
     return METHOD_LABELS.get(raw, METHOD_LABELS.get(method_name, method_name))
 
 
+def strategy_bucket(method_name: str | None) -> str:
+    if not method_name:
+        return "主戦略"
+    raw = method_name.removesuffix("_entry")
+    if raw == "no_trade_runner_hard_detached":
+        return "サブ戦略"
+    if raw == "crash_late_runner_hard_detached":
+        return "サブ戦略"
+    if raw == "crash_late_runner_theme_or_hard":
+        return "サブ戦略"
+    if raw.startswith("v38_post_crash_"):
+        return "サブ戦略"
+    return "主戦略"
+
+
 def display_regime_name(regime_name: str | None) -> str:
     if not regime_name:
         return ""
     return REGIME_LABELS.get(regime_name, regime_name)
+
+
+def meta_regime_name(meta: dict) -> str:
+    return meta.get("effective_regime") or meta.get("regime") or ""
 
 
 def build_run_url() -> str:
@@ -108,6 +146,7 @@ def notify_failure(webhook_url: str) -> int:
     if run_url:
         lines.append(run_url)
     send_discord_webhook(webhook_url, "\n".join(lines))
+    print("[DISCORD] failure notification sent.")
     return 0
 
 
@@ -202,16 +241,19 @@ def format_buy_line(symbol: str, company_name: str, sector: str, detail: dict, t
     sl_text_price = f"{stop_loss_price:,.2f}円" if isinstance(stop_loss_price, (int, float)) else "N/A"
     tp_text = f"{tp_prob:.2f}%" if isinstance(tp_prob, (int, float)) else "N/A"
     method_text = f"、手法{display_method_name(method_name)}" if method_name else ""
+    bucket_text = strategy_bucket(method_name)
+    kind_text = "継続" if detail.get("kind") == "HOLD" else "買い条件"
     return (
-        f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
-        f"逆指値{entry_text}、利確{tp_text_price}、損切{sl_text_price}、上昇シグナル{tp_text}{method_text}"
+        f"[{bucket_text}] {symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
+        f"{kind_text}トリガー{entry_text}、利確{tp_text_price}、損切{sl_text_price}、上昇シグナル{tp_text}{method_text}"
     )
 
 
 def format_sell_line(symbol: str, state_row: dict) -> str:
     company_name = state_row.get("company_name", symbol.removesuffix(".T"))
     sector = state_row.get("sector", "UNKNOWN")
-    return f"{symbol.removesuffix('.T')}[{company_name}] セクター{sector}：早期利確（購入シグナル消失）"
+    bucket_text = strategy_bucket(state_row.get("method"))
+    return f"[{bucket_text}] {symbol.removesuffix('.T')}[{company_name}] セクター{sector}：早期利確（購入シグナル消失）"
 
 
 def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, state_path: Path, take_profit_ratio: float) -> int:
@@ -234,6 +276,7 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
             "company_name": company_name,
             "sector": sector,
             "method": pick.get("method") or meta.get("method", ""),
+            "kind": "HOLD" if symbol in previous_symbols else "BUY",
             "tp_prob": pick.get("tp_prob", detail.get("tp_prob")),
             "entry_price": detail.get("entry_price"),
             "entry_ratio_pct": detail.get("entry_ratio_pct"),
@@ -243,21 +286,42 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
         }
 
     disappeared_symbols = sorted(previous_symbols - set(current_state_symbols.keys()))
+    main_symbols = [
+        s for s in chosen_symbols
+        if strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) == "主戦略"
+    ]
+    sub_symbols = [
+        s for s in chosen_symbols
+        if strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) == "サブ戦略"
+    ]
 
     lines = []
     header_suffix = ""
     if meta.get("method"):
         header_suffix += f" method={display_method_name(meta['method'])}"
-    if meta.get("regime"):
-        header_suffix += f" regime={display_regime_name(meta['regime'])}"
+    display_regime = meta_regime_name(meta)
+    if display_regime:
+        header_suffix += f" regime={display_regime_name(display_regime)}"
     if chosen_symbols:
-        lines.extend([f"[SIGNAL] {workflow}{header_suffix}", f"count={len(chosen_symbols)}"])
+        buckets = sorted({strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) for s in chosen_symbols})
+        lines.extend([f"[SIGNAL] {workflow}{header_suffix}", f"count={len(chosen_symbols)} strategy={','.join(buckets)}"])
         if meta.get("signal_date") or meta.get("trade_date"):
             lines.append(
                 f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
             )
-        if meta.get("regime"):
-            lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(meta.get('regime'))}")
+        if display_regime:
+            lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(display_regime)}")
+        if meta.get("post_major_crash_mode") is not None:
+            lines.append(
+                "crash_mode: "
+                f"{'ON' if str(meta.get('post_major_crash_mode')) == 'True' else 'OFF'}"
+                f" / base_phase={display_regime_name(meta.get('post_major_phase')) if meta.get('post_major_phase') not in (None, 'none') else 'N/A'}"
+                f" / sector_mode={meta.get('sector_mode', 'N/A')}"
+            )
+        if meta.get("ssa_confirm_prior") is not None:
+            lines.append(f"SSA回復確認: {'ON' if str(meta.get('ssa_confirm_prior')) == 'True' else 'OFF'}")
+        lines.append(f"主戦略シグナル: {'あり' if main_symbols else 'なし'} ({len(main_symbols)}件)")
+        lines.append(f"サブ戦略シグナル: {'あり' if sub_symbols else 'なし'} ({len(sub_symbols)}件)")
         for symbol in chosen_symbols[:max_lines]:
             state_row = current_state_symbols[symbol]
             lines.append(
@@ -278,8 +342,17 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
             lines.append(
                 f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
             )
-        if meta.get("regime"):
-            lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(meta.get('regime'))}")
+        if display_regime:
+            lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(display_regime)}")
+        if meta.get("post_major_crash_mode") is not None:
+            lines.append(
+                "crash_mode: "
+                f"{'ON' if str(meta.get('post_major_crash_mode')) == 'True' else 'OFF'}"
+                f" / base_phase={display_regime_name(meta.get('post_major_phase')) if meta.get('post_major_phase') not in (None, 'none') else 'N/A'}"
+                f" / sector_mode={meta.get('sector_mode', 'N/A')}"
+            )
+        lines.append("主戦略シグナル: なし (0件)")
+        lines.append("サブ戦略シグナル: なし (0件)")
 
     if disappeared_symbols:
         lines.append("")
@@ -292,6 +365,8 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
     if run_url:
         lines.append(run_url)
     send_discord_webhook(webhook_url, "\n".join(lines))
+    kind = "signal" if chosen_symbols else "no_signal"
+    print(f"[DISCORD] {kind} notification sent. count={len(chosen_symbols)} lost={len(disappeared_symbols)}")
     save_state(
         state_path,
         {
@@ -308,7 +383,7 @@ def main() -> int:
     parser.add_argument("--webhook-url", default=resolve_default_discord_webhook_url())
     parser.add_argument("--log-path", type=Path, default=Path("data/last_run_github.log"))
     parser.add_argument("--max-lines", type=int, default=12)
-    parser.add_argument("--state-path", type=Path, default=Path("data/last_signal_state_4q2.json"))
+    parser.add_argument("--state-path", type=Path, default=Path("data/last_signal_state_v38.json"))
     parser.add_argument("--take-profit-ratio", type=float, default=0.05)
     args = parser.parse_args()
 

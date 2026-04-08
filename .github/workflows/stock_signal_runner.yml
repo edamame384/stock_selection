@@ -1,4 +1,4 @@
-name: stock-signal-runner
+name: stock-signal-runner-v38
 
 on:
   schedule:
@@ -22,11 +22,18 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Build v3.6 signal log
+      - name: Update Nikkei phase inputs
+        run: |
+          mkdir -p data
+          python scripts/update_nikkei_phase.py
+      - name: Refresh v3.8 prices
+        run: |
+          python scripts/run_v38_signal.py --dataset 2026-2Q --refresh-only --max-stale-count 200 --max-selected-stale-count 0
+      - name: Build v3.8 signal log
         run: |
           mkdir -p data
           set +e
-          python scripts/run_v36_signal.py --dataset 2026-2Q > data/last_run_github.log 2>&1
+          python scripts/run_v38_signal.py --dataset 2026-2Q --skip-refresh --max-stale-count 25 --max-selected-stale-count 0 > data/last_run_github.log 2>&1
           status=$?
           cat data/last_run_github.log
           exit $status
@@ -34,13 +41,13 @@ jobs:
         if: ${{ success() }}
         env:
           STOCK_ML_DISCORD_WEBHOOK_URL: "https://discord.com/api/webhooks/1483032119466004601/iXlD3sc_dhLrppCBprbLO4899HNX7gD4s-MJFsLPam5ZmMOvP9PMzl8Yg5eqPSYdyxrR"
-        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log --state-path data/last_signal_state_v36.json --take-profit-ratio 0.06
+        run: python scripts/workflow_notify.py --mode signal-log --log-path data/last_run_github.log --state-path data/last_signal_state_v38.json --take-profit-ratio 0.06
       - name: Commit updated prices and logs
         if: ${{ success() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/prices/ data/external_market/ data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt data/last_signal_state_v36.json
+          git add data/prices/ data/external_market/ data/last_run_github.log data/last_run*.log data/auto_run.log data/last_auto_run_date.txt data/last_signal_state_v38.json projects/shikiho_text_parser/output/nikkei_market_phase_map/nikkei_market_phase_daily_labels.csv projects/shikiho_text_parser/output/nikkei_ssa_guard_candidate/nikkei_ssa_daily.csv
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
