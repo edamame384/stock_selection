@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +15,8 @@ if str(ROOT) not in sys.path:
 import yfinance as yf
 
 from src.stock_signal import resolve_default_discord_webhook_url, send_discord_webhook
+
+OUTBOX_DIR = ROOT / "data" / "notification_outbox"
 
 METHOD_LABELS = {
     "condition2": "上昇時メソッド",
@@ -26,10 +29,13 @@ METHOD_LABELS = {
     "post_major_stock_prev_high_break": "暴落後全体上昇時メソッド",
     "no_trade_runner_hard_detached": "no_trade短期追随メソッド",
     "no_trade_runner_hard_detached_entry": "no_trade短期追随メソッド",
-    "crash_late_runner_hard_detached_entry": "crash後半短期追随メソッド",
-    "crash_late_runner_theme_or_hard_entry": "crash後半テーマ/需給追随メソッド",
     "v38_post_crash_concentrated_etf_entry": "v3.8暴落後ETF集中メソッド",
     "v38_post_crash_dispersed_prev_high_entry": "v3.8暴落後分散個別株メソッド",
+    "v38_post_crash_rebound_daytrade_precheck": "v3.8暴落後normal/downtrendリバウンド・デイトレ仮候補",
+    "v38_post_crash_rebound_daytrade_precheck_entry": "v3.8暴落後normal/downtrendリバウンド・デイトレ仮候補",
+    "v38_post_crash_rebound_daytrade": "v3.8暴落後normal/downtrendリバウンド・デイトレメソッド",
+    "v38_post_crash_rebound_daytrade_entry": "v3.8暴落後normal/downtrendリバウンド・デイトレメソッド",
+    "v38_post_crash_surge_predict_moneyflow_daytrade_entry": "v3.8急反発予測デイトレメソッド（無効）",
 }
 
 REGIME_LABELS = {
@@ -77,7 +83,7 @@ PICK_RE = re.compile(
     r"^\[PICK\]\[(?P<group>[^\]]+)\]\s+(?P<symbol>[0-9A-Z]+\.T)\s+tp_prob=(?P<tp>[\d.]+)%\s+sector=(?P<sector>.+?)(?:\s+method=(?P<method>[A-Za-z0-9_.-]+))?(?:\s+company=(?P<company>.+))?$"
 )
 META_RE = re.compile(
-    r"^\[META\]\s+regime=(?P<regime>[a-zA-Z_]+)\s+method=(?P<method>[A-Za-z0-9_.-]+)\s+signal_date=(?P<signal_date>\d{4}-\d{2}-\d{2})\s+trade_date=(?P<trade_date>\d{4}-\d{2}-\d{2})(?:\s+ssa_confirm_prior=(?P<ssa_confirm_prior>True|False))?(?:\s+ssa_available_prior=(?P<ssa_available_prior>True|False))?(?:\s+crash_late_active=(?P<crash_late_active>True|False))?(?:\s+crash_pos=(?P<crash_pos>\d*))?(?:\s+post_major_crash_mode=(?P<post_major_crash_mode>True|False))?(?:\s+post_major_phase=(?P<post_major_phase>[A-Za-z0-9_]+))?(?:\s+sector_mode=(?P<sector_mode>[A-Za-z0-9_]+))?(?:\s+effective_regime=(?P<effective_regime>[A-Za-z0-9_]+))?$"
+    r"^\[META\]\s+regime=(?P<regime>[a-zA-Z_]+)\s+method=(?P<method>[A-Za-z0-9_.-]+)\s+signal_date=(?P<signal_date>\d{4}-\d{2}-\d{2})\s+trade_date=(?P<trade_date>\d{4}-\d{2}-\d{2})(?:\s+ssa_confirm_prior=(?P<ssa_confirm_prior>True|False))?(?:\s+ssa_available_prior=(?P<ssa_available_prior>True|False))?(?:\s+crash_late_active=(?P<crash_late_active>True|False))?(?:\s+crash_pos=(?P<crash_pos>\d*))?(?:\s+post_major_crash_mode=(?P<post_major_crash_mode>True|False))?(?:\s+post_major_phase=(?P<post_major_phase>[A-Za-z0-9_]+))?(?:\s+sector_mode=(?P<sector_mode>[A-Za-z0-9_]+))?(?:\s+effective_regime=(?P<effective_regime>[A-Za-z0-9_]+))?(?:\s+sp500_ret_prior=(?P<sp500_ret_prior>[-A-Za-z0-9_.]+))?(?:\s+sp500_available_prior=(?P<sp500_available_prior>True|False))?$"
 )
 
 
@@ -106,12 +112,10 @@ def strategy_bucket(method_name: str | None) -> str:
     raw = method_name.removesuffix("_entry")
     if raw == "no_trade_runner_hard_detached":
         return "サブ戦略"
-    if raw == "crash_late_runner_hard_detached":
-        return "サブ戦略"
-    if raw == "crash_late_runner_theme_or_hard":
-        return "サブ戦略"
+    if raw == "v38_post_crash_surge_predict_moneyflow_daytrade":
+        return "無効"
     if raw.startswith("v38_post_crash_"):
-        return "サブ戦略"
+        return "v3.8専用"
     return "主戦略"
 
 
@@ -125,6 +129,52 @@ def meta_regime_name(meta: dict) -> str:
     return meta.get("effective_regime") or meta.get("regime") or ""
 
 
+def format_sp500_meta(meta: dict) -> str | None:
+    raw = meta.get("sp500_ret_prior")
+    available = str(meta.get("sp500_available_prior")) == "True"
+    if raw in (None, "", "NA"):
+        return f"S&P500前日リターン: 取得なし ({'available' if available else 'unavailable'})"
+    try:
+        return f"S&P500前日リターン: {float(raw) * 100.0:+.2f}%"
+    except (TypeError, ValueError):
+        return f"S&P500前日リターン: {raw}"
+
+
+def daytrade_no_signal_reason(meta: dict) -> str | None:
+    method = str(meta.get("method") or "")
+    if method not in {"v38_post_crash_rebound_daytrade", "v38_post_crash_rebound_daytrade_precheck"}:
+        return None
+    precheck = method == "v38_post_crash_rebound_daytrade_precheck"
+    effective = meta_regime_name(meta)
+    base_phase = str(meta.get("post_major_phase") or meta.get("regime") or "")
+    raw_sp = meta.get("sp500_ret_prior")
+    if effective == "post_crash_surge" or base_phase == "surge":
+        return "デイトレ判定: 対象外（post_crash_surgeは取引しない）"
+    if base_phase not in {"normal", "downtrend"}:
+        return "デイトレ判定: 対象外（前営業日phaseがnormal/downtrendではない）"
+    if precheck:
+        return "デイトレ仮候補: なし（資金集中・前日高値ブレイク候補なし。S&P500確認前）"
+    try:
+        if raw_sp in (None, "", "NA") or float(raw_sp) < 0.01:
+            return "デイトレ判定: 条件未達（S&P500前日リターンが+1.0%未満または未取得）"
+    except (TypeError, ValueError):
+        return "デイトレ判定: 条件未達（S&P500前日リターンが判定不能）"
+    return "デイトレ判定: 条件未達（資金集中・前日高値ブレイク候補なし）"
+
+
+def is_daytrade_method(method_name: str | None) -> bool:
+    raw = str(method_name or "").removesuffix("_entry")
+    return raw in {
+        "v38_post_crash_rebound_daytrade",
+        "v38_post_crash_rebound_daytrade_precheck",
+    }
+
+
+def should_show_sp500_meta(meta: dict) -> bool:
+    method = str(meta.get("method") or "")
+    return is_daytrade_method(method) and method != "v38_post_crash_rebound_daytrade_precheck"
+
+
 def build_run_url() -> str:
     server = os.getenv("GITHUB_SERVER_URL", "https://github.com")
     repo = os.getenv("GITHUB_REPOSITORY", "")
@@ -134,19 +184,62 @@ def build_run_url() -> str:
     return ""
 
 
-def notify_failure(webhook_url: str) -> int:
+def save_notification_fallback(kind: str, message: str, out_dir: Path | None = None) -> Path:
+    target_dir = out_dir or OUTBOX_DIR
+    target_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    path = target_dir / f"{ts}_{kind}.txt"
+    path.write_text(message, encoding="utf-8")
+    return path
+
+
+def send_or_fallback(webhook_url: str, message: str, kind: str, out_dir: Path | None = None) -> str:
+    if not webhook_url:
+        fallback_path = save_notification_fallback(kind, message, out_dir=out_dir)
+        print(f"[LOCAL_NOTIFICATION] {kind} notification saved to {fallback_path}")
+        return "local"
+    try:
+        send_discord_webhook(webhook_url, message)
+        print(f"[DISCORD] {kind} notification sent.")
+        return "discord"
+    except Exception as exc:
+        fallback_path = save_notification_fallback(kind, message, out_dir=out_dir)
+        print(f"[DISCORD_FALLBACK] {kind} notification saved to {fallback_path}: {exc}")
+        return "fallback"
+
+
+def notify_failure(webhook_url: str, detail_file: Path | None = None, log_path: Path | None = None, out_dir: Path | None = None) -> int:
     workflow = os.getenv("GITHUB_WORKFLOW", "stock-signal-runner")
     ref = os.getenv("GITHUB_REF_NAME", "")
     actor = os.getenv("GITHUB_ACTOR", "")
+    sha = os.getenv("GITHUB_SHA", "")
     run_url = build_run_url()
     lines = [
         f"[FAIL] {workflow}",
         f"ref={ref} actor={actor}",
     ]
+    if sha:
+        lines.append(f"sha={sha[:10]}")
+    if detail_file and detail_file.exists():
+        try:
+            detail = detail_file.read_text(encoding="utf-8", errors="ignore").strip()
+            if detail:
+                lines.append(detail)
+        except Exception:
+            pass
+    if log_path and log_path.exists():
+        try:
+            tail = [ln.strip() for ln in log_path.read_text(encoding="utf-8", errors="ignore").splitlines() if ln.strip()]
+            tail = tail[-8:]
+            if tail:
+                lines.append("last_log_tail:")
+                lines.extend(tail)
+        except Exception:
+            pass
     if run_url:
         lines.append(run_url)
-    send_discord_webhook(webhook_url, "\n".join(lines))
-    print("[DISCORD] failure notification sent.")
+    message = "\n".join(lines)
+    send_or_fallback(webhook_url, message, "failure", out_dir=out_dir)
     return 0
 
 
@@ -243,6 +336,18 @@ def format_buy_line(symbol: str, company_name: str, sector: str, detail: dict, t
     method_text = f"、手法{display_method_name(method_name)}" if method_name else ""
     bucket_text = strategy_bucket(method_name)
     kind_text = "継続" if detail.get("kind") == "HOLD" else "買い条件"
+    if method_name and "daytrade_precheck" in method_name:
+        return (
+            f"[{bucket_text}] {symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
+            f"仮候補（S&P500前日リターン+1.0%以上なら翌朝GO判定）、"
+            f"逆指値価格{entry_text}、事前スコア{tp_text}{method_text}"
+        )
+    if method_name and "daytrade" in method_name:
+        return (
+            f"[{bucket_text}] {symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
+            f"デイトレ買いトリガー{entry_text}、同日引け成で手仕舞い、"
+            f"資金集中スコア{tp_text}{method_text}"
+        )
     return (
         f"[{bucket_text}] {symbol.removesuffix('.T')}[{company_name}] セクター{sector}："
         f"{kind_text}トリガー{entry_text}、利確{tp_text_price}、損切{sl_text_price}、上昇シグナル{tp_text}{method_text}"
@@ -256,13 +361,14 @@ def format_sell_line(symbol: str, state_row: dict) -> str:
     return f"[{bucket_text}] {symbol.removesuffix('.T')}[{company_name}] セクター{sector}：早期利確（購入シグナル消失）"
 
 
-def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, state_path: Path, take_profit_ratio: float) -> int:
+def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, state_path: Path, take_profit_ratio: float, out_dir: Path | None = None) -> int:
     if not log_path.exists():
         return 0
     buy_rows, pick_rows, detail_rows, meta = parse_signal_lines(log_path)
     workflow = os.getenv("GITHUB_WORKFLOW", "stock-signal-runner")
     run_url = build_run_url()
-    previous_state = load_state(state_path)
+    is_daytrade_precheck = str(meta.get("method") or "") == "v38_post_crash_rebound_daytrade_precheck"
+    previous_state = {"symbols": {}, "updated_at": ""} if is_daytrade_precheck else load_state(state_path)
     previous_symbols = set((previous_state.get("symbols") or {}).keys())
     chosen_symbols = [row["symbol"] for row in pick_rows] if pick_rows else [row["symbol"] for row in buy_rows]
     pick_map = {row["symbol"]: row for row in pick_rows}
@@ -285,7 +391,7 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
             "close_price": detail.get("close_price"),
         }
 
-    disappeared_symbols = sorted(previous_symbols - set(current_state_symbols.keys()))
+    disappeared_symbols = [] if is_daytrade_precheck else sorted(previous_symbols - set(current_state_symbols.keys()))
     main_symbols = [
         s for s in chosen_symbols
         if strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) == "主戦略"
@@ -293,6 +399,10 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
     sub_symbols = [
         s for s in chosen_symbols
         if strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) == "サブ戦略"
+    ]
+    v38_symbols = [
+        s for s in chosen_symbols
+        if strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) == "v3.8専用"
     ]
 
     lines = []
@@ -304,13 +414,19 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
         header_suffix += f" regime={display_regime_name(display_regime)}"
     if chosen_symbols:
         buckets = sorted({strategy_bucket(current_state_symbols[s].get("method") or meta.get("method", "")) for s in chosen_symbols})
-        lines.extend([f"[SIGNAL] {workflow}{header_suffix}", f"count={len(chosen_symbols)} strategy={','.join(buckets)}"])
+        header_tag = "[DAYTRADE_PRECHECK]" if is_daytrade_precheck else "[SIGNAL]"
+        lines.extend([f"{header_tag} {workflow}{header_suffix}", f"count={len(chosen_symbols)} strategy={','.join(buckets)}"])
         if meta.get("signal_date") or meta.get("trade_date"):
             lines.append(
                 f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
             )
         if display_regime:
             lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(display_regime)}")
+        sp500_text = format_sp500_meta(meta) if should_show_sp500_meta(meta) else None
+        if is_daytrade_precheck:
+            lines.append("仮候補条件: S&P500前日リターンが+1.0%以上なら翌朝GO判定")
+        elif sp500_text:
+            lines.append(sp500_text)
         if meta.get("post_major_crash_mode") is not None:
             lines.append(
                 "crash_mode: "
@@ -321,6 +437,7 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
         if meta.get("ssa_confirm_prior") is not None:
             lines.append(f"SSA回復確認: {'ON' if str(meta.get('ssa_confirm_prior')) == 'True' else 'OFF'}")
         lines.append(f"主戦略シグナル: {'あり' if main_symbols else 'なし'} ({len(main_symbols)}件)")
+        lines.append(f"v3.8専用シグナル: {'あり' if v38_symbols else 'なし'} ({len(v38_symbols)}件)")
         lines.append(f"サブ戦略シグナル: {'あり' if sub_symbols else 'なし'} ({len(sub_symbols)}件)")
         for symbol in chosen_symbols[:max_lines]:
             state_row = current_state_symbols[symbol]
@@ -337,13 +454,22 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
         if len(chosen_symbols) > max_lines:
             lines.append(f"... and {len(chosen_symbols) - max_lines} more")
     else:
-        lines.extend([f"[NO_SIGNAL] {workflow}{header_suffix}", "シグナル無し"])
+        header_tag = "[DAYTRADE_PRECHECK_NO_SIGNAL]" if is_daytrade_precheck else "[NO_SIGNAL]"
+        lines.extend([f"{header_tag} {workflow}{header_suffix}", "シグナル無し"])
         if meta.get("signal_date") or meta.get("trade_date"):
             lines.append(
                 f"signal_date={meta.get('signal_date', 'N/A')} trade_date={meta.get('trade_date', 'N/A')}"
             )
         if display_regime:
             lines.append(f"翌営業日の日経トレンド予測：{display_regime_name(display_regime)}")
+        sp500_text = format_sp500_meta(meta) if should_show_sp500_meta(meta) else None
+        if is_daytrade_precheck:
+            lines.append("仮候補条件: S&P500前日リターンが+1.0%以上なら翌朝GO判定")
+        elif sp500_text:
+            lines.append(sp500_text)
+        reason = daytrade_no_signal_reason(meta)
+        if reason:
+            lines.append(reason)
         if meta.get("post_major_crash_mode") is not None:
             lines.append(
                 "crash_mode: "
@@ -352,6 +478,7 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
                 f" / sector_mode={meta.get('sector_mode', 'N/A')}"
             )
         lines.append("主戦略シグナル: なし (0件)")
+        lines.append("v3.8専用シグナル: なし (0件)")
         lines.append("サブ戦略シグナル: なし (0件)")
 
     if disappeared_symbols:
@@ -364,16 +491,19 @@ def notify_signal_from_log(webhook_url: str, log_path: Path, max_lines: int, sta
 
     if run_url:
         lines.append(run_url)
-    send_discord_webhook(webhook_url, "\n".join(lines))
     kind = "signal" if chosen_symbols else "no_signal"
-    print(f"[DISCORD] {kind} notification sent. count={len(chosen_symbols)} lost={len(disappeared_symbols)}")
-    save_state(
-        state_path,
-        {
-            "updated_at": os.getenv("GITHUB_RUN_ID", ""),
-            "symbols": current_state_symbols,
-        },
-    )
+    message = "\n".join(lines)
+    delivery = send_or_fallback(webhook_url, message, kind, out_dir=out_dir)
+    if delivery == "discord":
+        print(f"[DISCORD] {kind} notification sent. count={len(chosen_symbols)} lost={len(disappeared_symbols)}")
+    if not is_daytrade_precheck:
+        save_state(
+            state_path,
+            {
+                "updated_at": os.getenv("GITHUB_RUN_ID", ""),
+                "symbols": current_state_symbols,
+            },
+        )
     return 0
 
 
@@ -382,18 +512,16 @@ def main() -> int:
     parser.add_argument("--mode", choices=["failure", "signal-log"], required=True)
     parser.add_argument("--webhook-url", default=resolve_default_discord_webhook_url())
     parser.add_argument("--log-path", type=Path, default=Path("data/last_run_github.log"))
+    parser.add_argument("--detail-file", type=Path, default=Path("data/github_failure_context.txt"))
     parser.add_argument("--max-lines", type=int, default=12)
     parser.add_argument("--state-path", type=Path, default=Path("data/last_signal_state_v38.json"))
     parser.add_argument("--take-profit-ratio", type=float, default=0.05)
+    parser.add_argument("--out-dir", type=Path, default=None)
     args = parser.parse_args()
 
-    if not args.webhook_url:
-        print("Discord webhook is not configured; skip notification.")
-        return 0
-
     if args.mode == "failure":
-        return notify_failure(args.webhook_url)
-    return notify_signal_from_log(args.webhook_url, args.log_path, args.max_lines, args.state_path, args.take_profit_ratio)
+        return notify_failure(args.webhook_url, args.detail_file, args.log_path, out_dir=args.out_dir)
+    return notify_signal_from_log(args.webhook_url, args.log_path, args.max_lines, args.state_path, args.take_profit_ratio, out_dir=args.out_dir)
 
 
 if __name__ == "__main__":
