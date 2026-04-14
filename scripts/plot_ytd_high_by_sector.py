@@ -1,8 +1,12 @@
 """
 週次セクター別 年初来高値更新銘柄数の分析・プロット
 
-ローカルの価格CSV (data/prices/) とセクターマスター (data/sector_master_template.csv) を使い、
-各週で年初来高値 (YTD high) を更新した銘柄数をセクター別に集計して積み上げ棒グラフを出力する。
+ローカルの価格CSV (data/prices/) とセクターマスターを使い、
+各週で年初来高値 (YTD high) を更新した銘柄数をセクター別に集計して折れ線グラフを出力する。
+
+セクター分類:
+  fine  (デフォルト): 四季報 scored_universe.csv の小分類 (92カテゴリ)
+  coarse           : 東証33業種 sector_master_template.csv
 """
 
 from __future__ import annotations
@@ -68,7 +72,7 @@ def _detect_japanese_font() -> str | None:
 # ---------------------------------------------------------------------------
 
 def load_sector_map(master_path: Path) -> dict[str, str]:
-    """セクターマスターを読み込み、セクターが '-' のエントリ (ETF等) を除外する。
+    """東証33業種マスターを読み込み、セクターが '-' のエントリ (ETF等) を除外する。
 
     Returns
     -------
@@ -79,21 +83,64 @@ def load_sector_map(master_path: Path) -> dict[str, str]:
     return {sym: sec for sym, sec in raw.items() if sec and sec != "-"}
 
 
+def load_fine_sector_map(path: Path) -> dict[str, str]:
+    """四季報 scored_universe.csv から細分類セクターマップを構築。
+
+    simple_sector 列は '大分類/小分類' 形式 (例: '情報通信/SI・ソフトウエア開発')。
+    '/' の右側（小分類）を抽出して返す。
+
+    Returns
+    -------
+    dict[str, str]
+        正規化済みシンボル -> 小分類セクター名 のマッピング
+    """
+    df = pd.read_csv(path, usecols=["ticker", "simple_sector"])
+    out: dict[str, str] = {}
+    for _, row in df.iterrows():
+        sym = normalize_symbol(str(row["ticker"]))
+        raw = str(row["simple_sector"]).strip()
+        if not raw or raw in ("nan", "-"):
+            continue
+        sub = raw.split("/", 1)[1].strip() if "/" in raw else raw
+        if sub:
+            out[sym] = sub
+    return out
+
+
+def build_sector_map(
+    sector_master: Path,
+    granularity: str,
+    fine_sector_csv: Path,
+) -> dict[str, str]:
+    """セクターマップを構築する。
+
+    fine モード: 四季報小分類を優先し、未収録銘柄は33業種にフォールバック。
+    coarse モード: 33業種のみ。
+    """
+    coarse_map = load_sector_map(sector_master)
+    if granularity == "coarse":
+        return coarse_map
+
+    fine_map = load_fine_sector_map(fine_sector_csv)
+    combined: dict[str, str] = {}
+    fine_hit = 0
+    for sym, coarse_sec in coarse_map.items():
+        if sym in fine_map:
+            combined[sym] = fine_map[sym]
+            fine_hit += 1
+        else:
+            combined[sym] = coarse_sec
+    fallback = len(coarse_map) - fine_hit
+    print(f"      細分類マッチ: {fine_hit}  フォールバック(33業種): {fallback}")
+    return combined
+
+
 # ---------------------------------------------------------------------------
 # 銘柄ごとの年初来高値更新日を取得
 # ---------------------------------------------------------------------------
 
 def compute_ytd_high_updates(symbol: str, price_path: Path, year: int) -> list[tuple[int, str]]:
     """指定銘柄について対象年に年初来高値を更新した週番号リストを返す。
-
-    Parameters
-    ----------
-    symbol : str
-        正規化済みシンボル (例: '1301.T')
-    price_path : Path
-        価格CSVファイルのパス
-    year : int
-        対象年
 
     Returns
     -------
@@ -109,7 +156,6 @@ def compute_ytd_high_updates(symbol: str, price_path: Path, year: int) -> list[t
     except Exception:
         return []
 
-    # 対象年のデータのみ抽出
     df = df[df["Date"].dt.year == year].copy()
     if df.empty:
         return []
@@ -121,9 +167,8 @@ def compute_ytd_high_updates(symbol: str, price_path: Path, year: int) -> list[t
 
     df = df.sort_values("Date").reset_index(drop=True)
 
-    # 当日を含む YTD high の cummax を計算し、1日シフトして「前日までの最高値」を得る
+    # 前日までのYTD最高値と比較して更新判定
     df["ytd_high_prev"] = df["High"].cummax().shift(1)
-    # 初日は比較対象なし → YTD高値更新とみなす
     df["is_new_ytd_high"] = (df["High"] >= df["ytd_high_prev"]) | df["ytd_high_prev"].isna()
 
     ytd_days = df[df["is_new_ytd_high"]].copy()
@@ -132,9 +177,10 @@ def compute_ytd_high_updates(symbol: str, price_path: Path, year: int) -> list[t
 
     # 週番号: 年初からの経過日数ベース (ISO週の年境界問題を回避)
     day_of_year = ytd_days["Date"].dt.dayofyear
+    ytd_days = ytd_days.copy()
     ytd_days["week"] = ((day_of_year - 1) // 7 + 1).clip(upper=52)
 
-    # 各週で重複排除 (同一週に複数回更新しても1回のみカウント)
+    # 各週で重複排除
     weeks_seen: set[int] = set()
     result: list[tuple[int, str]] = []
     for week in ytd_days["week"]:
@@ -164,33 +210,52 @@ def main() -> int:
         "--sector-master",
         type=Path,
         default=ROOT_DIR / "data" / "sector_master_template.csv",
-        help="セクターマスターCSVパス",
+        help="東証33業種マスターCSVパス",
+    )
+    parser.add_argument(
+        "--granularity",
+        choices=["coarse", "fine"],
+        default="fine",
+        help="セクター粒度: coarse=33業種, fine=四季報小分類 (デフォルト: fine)",
+    )
+    parser.add_argument(
+        "--fine-sector-csv",
+        type=Path,
+        default=ROOT_DIR / "projects" / "shikiho_text_parser" / "output" / "4q2_selection" / "4q2_scored_universe.csv",
+        help="細分類セクターCSV (四季報 scored_universe)",
     )
     parser.add_argument("--top-n", type=int, default=10, help="上位表示セクター数 (デフォルト: 10)")
+    parser.add_argument(
+        "--show-other",
+        action="store_true",
+        default=False,
+        help="折れ線グラフに「その他」集計線を表示する (デフォルト: 非表示)",
+    )
     parser.add_argument(
         "--output",
         type=Path,
         default=None,
-        help="出力PNGパス (デフォルト: data/ytd_high_by_sector_{year}.png)",
+        help="出力PNGパス (デフォルト: data/ytd_high_by_sector_{year}[_fine].png)",
     )
     parser.add_argument(
         "--csv-output",
         type=Path,
         default=None,
-        help="出力CSVパス (デフォルト: data/ytd_high_by_sector_{year}.csv)",
+        help="出力CSVパス (デフォルト: data/ytd_high_by_sector_{year}[_fine].csv)",
     )
     args = parser.parse_args()
 
     year: int = args.year
     price_dir: Path = args.price_dir
     top_n: int = args.top_n
-    output_png: Path = args.output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}.png"
-    output_csv: Path = args.csv_output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}.csv"
+    suffix = "_fine" if args.granularity == "fine" else ""
+    output_png: Path = args.output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.png"
+    output_csv: Path = args.csv_output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.csv"
 
-    # --- セクターマスター読込 ---
-    print(f"[1/4] セクターマスターを読み込み中: {args.sector_master}")
-    sector_map = load_sector_map(args.sector_master)
-    print(f"      対象銘柄数: {len(sector_map)} (ETF等を除外済み)")
+    # --- セクターマップ構築 ---
+    print(f"[1/4] セクターマップを構築中 (granularity={args.granularity}) ...")
+    sector_map = build_sector_map(args.sector_master, args.granularity, args.fine_sector_csv)
+    print(f"      対象銘柄数: {len(sector_map)}  ユニークセクター数: {len(set(sector_map.values()))}")
 
     # --- 各銘柄の年初来高値更新日を収集 ---
     print(f"[2/4] {year}年の年初来高値更新日を収集中 ...")
@@ -199,7 +264,6 @@ def main() -> int:
     total = len(sector_map)
 
     for idx, (symbol, sector) in enumerate(sector_map.items(), start=1):
-        # ファイル名: 1301.T -> 1301_T.csv
         fname = symbol.replace(".", "_") + ".csv"
         price_path = price_dir / fname
 
@@ -228,8 +292,7 @@ def main() -> int:
     pivot = result_df.groupby(["week", "sector"]).size().unstack(fill_value=0)
 
     # 全52週のインデックスを確保
-    all_weeks = range(1, 53)
-    pivot = pivot.reindex(all_weeks, fill_value=0)
+    pivot = pivot.reindex(range(1, 53), fill_value=0)
 
     # Top-N セクター選択
     sector_totals = pivot.sum(axis=0).sort_values(ascending=False)
@@ -240,7 +303,7 @@ def main() -> int:
     if other_sectors:
         plot_df["その他"] = pivot[other_sectors].sum(axis=1)
 
-    # CSV保存
+    # CSV保存 (第1週含む全データ)
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     plot_df.to_csv(output_csv)
     print(f"      CSVを保存しました: {output_csv}")
@@ -255,43 +318,68 @@ def main() -> int:
         use_japanese = False
         print("      警告: 日本語フォントが見つかりません。ラベルを英語表記にします。")
 
-    # カラーパレット (Top-10 + その他 = 最大11色)
-    cmap = plt.get_cmap("tab10")
-    colors = [cmap(i % 10) for i in range(len(plot_df.columns))]
+    # 第1週を除外してプロット (年始初日の全銘柄スパイクを回避)
+    # 「その他」は折れ線グラフでは非表示がデフォルト (--show-other で有効化)
+    cols_to_plot = list(plot_df.columns)
+    if not args.show_other and "その他" in cols_to_plot:
+        cols_to_plot = [c for c in cols_to_plot if c != "その他"]
+    plot_display = plot_df.loc[2:, cols_to_plot]
+
+    # カラーパレット (tab20: 最大20色、超過分はローテーション)
+    cmap = plt.get_cmap("tab20")
+    n_cols = len(plot_display.columns)
+    colors = [cmap(i % 20) for i in range(n_cols)]
     # 「その他」は灰色
-    if "その他" in plot_df.columns:
-        colors[-1] = (0.7, 0.7, 0.7, 1.0)
+    if "その他" in plot_display.columns:
+        colors[list(plot_display.columns).index("その他")] = (0.6, 0.6, 0.6, 1.0)
 
     fig, ax = plt.subplots(figsize=(16, 8))
-    plot_df.plot(kind="bar", stacked=True, ax=ax, width=0.85, color=colors)
+    plot_display.plot(
+        kind="line",
+        ax=ax,
+        color=colors,
+        marker="o",
+        markersize=4,
+        linewidth=1.5,
+    )
 
     if use_japanese:
-        ax.set_title(f"セクター別 年初来高値更新銘柄数の推移 ({year}年)", fontsize=14, pad=12)
+        granularity_label = "細分類" if args.granularity == "fine" else "33業種"
+        ax.set_title(
+            f"セクター別 年初来高値更新銘柄数の推移 ({year}年・{granularity_label})",
+            fontsize=14, pad=12,
+        )
         ax.set_xlabel("週番号", fontsize=11)
         ax.set_ylabel("年初来高値更新銘柄数", fontsize=11)
     else:
-        ax.set_title(f"Weekly YTD-High Update Count by Sector ({year})", fontsize=14, pad=12)
+        ax.set_title(
+            f"Weekly YTD-High Update Count by Sector ({year}, {args.granularity})",
+            fontsize=14, pad=12,
+        )
         ax.set_xlabel("Week Number", fontsize=11)
         ax.set_ylabel("Number of Stocks Hitting YTD Highs", fontsize=11)
 
-    # x軸ラベル: 4週ごとに表示
-    tick_positions = list(range(0, 52, 4)) + [51]
-    tick_labels = [str(w + 1) for w in tick_positions]
+    # x軸: 第2週から4週刻み
+    tick_positions = list(range(2, 53, 4))
+    if 52 not in tick_positions:
+        tick_positions.append(52)
     ax.set_xticks(tick_positions)
-    ax.set_xticklabels(tick_labels, rotation=0)
+    ax.set_xticklabels([str(w) for w in tick_positions], rotation=0)
 
-    # 凡例をプロット右外側に
+    ax.grid(axis="both", linestyle="--", alpha=0.3)
+
+    # 凡例: 12本以上なら2列
+    legend_ncol = 2 if n_cols >= 12 else 1
     ax.legend(
         title="セクター" if use_japanese else "Sector",
         bbox_to_anchor=(1.01, 1),
         loc="upper left",
         borderaxespad=0,
         fontsize=9,
+        ncol=legend_ncol,
     )
 
-    ax.grid(axis="y", linestyle="--", alpha=0.4)
     fig.tight_layout()
-
     output_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_png, dpi=150, bbox_inches="tight")
     plt.close(fig)
