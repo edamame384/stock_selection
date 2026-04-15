@@ -243,6 +243,12 @@ def main() -> int:
         help="selection=weekly のとき、Top-Nランクイン最低週数 (デフォルト: 2)",
     )
     parser.add_argument(
+        "--ma-window",
+        type=int,
+        default=3,
+        help="折れ線に適用する移動平均の週数 (0=平滑化なし、デフォルト: 3)",
+    )
+    parser.add_argument(
         "--show-other",
         action="store_true",
         default=False,
@@ -286,7 +292,8 @@ def main() -> int:
     top_n: int = args.top_n
     granularity_suffix = "_fine" if args.granularity == "fine" else ""
     selection_suffix = "_weekly" if args.selection == "weekly" else ""
-    suffix = f"{granularity_suffix}{selection_suffix}"
+    ma_suffix = f"_ma{args.ma_window}" if args.ma_window and args.ma_window > 1 else ""
+    suffix = f"{granularity_suffix}{selection_suffix}{ma_suffix}"
     output_png: Path = args.output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.png"
     output_csv: Path = args.csv_output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.csv"
 
@@ -397,17 +404,28 @@ def main() -> int:
         cols_to_plot = [c for c in cols_to_plot if c != "その他"]
     plot_display = plot_df.loc[2:, cols_to_plot]
 
+    # 移動平均で平滑化 (min_periods=1 で先頭週も値を保持)
+    if args.ma_window and args.ma_window > 1:
+        plot_display = plot_display.rolling(
+            window=args.ma_window, min_periods=1
+        ).mean()
+        ma_label = f"{args.ma_window}週移動平均" if True else ""
+    else:
+        ma_label = ""
+
     granularity_label = "細分類" if args.granularity == "fine" else "33業種"
     if args.selection == "weekly":
         selection_label = f"週次Top{top_n}に{args.min_weeks}週以上登場"
     else:
         selection_label = f"年間累計Top{top_n}"
+    ma_suffix_jp = f"・{ma_label}" if ma_label else ""
+    ma_suffix_en = f", MA={args.ma_window}w" if ma_label else ""
     base_title = (
         f"セクター別 年初来高値更新銘柄数の推移 "
-        f"({year}年・{granularity_label}・{selection_label})"
+        f"({year}年・{granularity_label}・{selection_label}{ma_suffix_jp})"
         if use_japanese else
         f"Weekly YTD-High Update Count by Sector "
-        f"({year}, {args.granularity}, selection={args.selection})"
+        f"({year}, {args.granularity}, selection={args.selection}{ma_suffix_en})"
     )
 
     # --- プロット分岐: バケット分割 or 単一グラフ ---
