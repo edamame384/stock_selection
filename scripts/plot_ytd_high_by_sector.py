@@ -249,6 +249,25 @@ def main() -> int:
         help="折れ線グラフに「その他」集計線を表示する (デフォルト: 非表示)",
     )
     parser.add_argument(
+        "--bucket-split",
+        dest="bucket_split",
+        action="store_true",
+        default=True,
+        help="selection=weekly のときランクイン週数でバケット分割プロット (デフォルト: 有効)",
+    )
+    parser.add_argument(
+        "--no-bucket-split",
+        dest="bucket_split",
+        action="store_false",
+        help="バケット分割を無効化し、単一グラフで全セクター表示",
+    )
+    parser.add_argument(
+        "--buckets",
+        type=str,
+        default="40,20,10,2",
+        help="バケット境界 (降順, カンマ区切り). デフォルト: '40,20,10,2'",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=None,
@@ -314,11 +333,11 @@ def main() -> int:
     pivot = pivot.reindex(range(1, 53), fill_value=0)
 
     # --- セクター選択 ---
+    top_n_counts: dict[str, int] = {}
     if args.selection == "annual":
         # 年間累計でTop-N
         sector_totals = pivot.sum(axis=0).sort_values(ascending=False)
         selected_sectors = sector_totals.head(top_n).index.tolist()
-        # 年間累計順で並べる
         ordered = selected_sectors
         print(
             f"      選択方式: annual  累計Top{top_n} セクター数: {len(selected_sectors)}"
@@ -326,7 +345,6 @@ def main() -> int:
     else:  # weekly
         # 第2週以降で各週Top-N にランクインした回数を集計
         weekly_pivot = pivot.loc[2:]
-        top_n_counts: dict[str, int] = {}
         for week, row in weekly_pivot.iterrows():
             if row.sum() == 0:
                 continue
@@ -379,8 +397,124 @@ def main() -> int:
         cols_to_plot = [c for c in cols_to_plot if c != "その他"]
     plot_display = plot_df.loc[2:, cols_to_plot]
 
-    # カラー & 線種を組み合わせて最大40本を識別可能に
-    # tab20 (20色) × 線種 (solid, dashed) = 40パターン
+    granularity_label = "細分類" if args.granularity == "fine" else "33業種"
+    if args.selection == "weekly":
+        selection_label = f"週次Top{top_n}に{args.min_weeks}週以上登場"
+    else:
+        selection_label = f"年間累計Top{top_n}"
+    base_title = (
+        f"セクター別 年初来高値更新銘柄数の推移 "
+        f"({year}年・{granularity_label}・{selection_label})"
+        if use_japanese else
+        f"Weekly YTD-High Update Count by Sector "
+        f"({year}, {args.granularity}, selection={args.selection})"
+    )
+
+    # --- プロット分岐: バケット分割 or 単一グラフ ---
+    use_bucket_split = (
+        args.selection == "weekly" and args.bucket_split and len(plot_display.columns) > 0
+    )
+
+    if use_bucket_split:
+        # ランクイン週数でバケット分割
+        try:
+            boundaries = sorted(
+                (int(x) for x in args.buckets.split(",") if x.strip()),
+                reverse=True,
+            )
+        except ValueError:
+            print(f"ERROR: --buckets の形式が不正です: {args.buckets}")
+            return 1
+
+        # バケットを構築: [(label, [sectors])]
+        # 例: boundaries=[40,20,10,2] → "40週以上", "20〜39週", "10〜19週", "2〜9週"
+        buckets: list[tuple[str, list[str]]] = []
+        # 「その他」は除外
+        rankable_cols = [c for c in plot_display.columns if c != "その他"]
+        for i, lower in enumerate(boundaries):
+            upper = boundaries[i - 1] - 1 if i > 0 else None
+            if use_japanese:
+                label = f"{lower}週以上" if upper is None else f"{lower}〜{upper}週"
+            else:
+                label = f">={lower}w" if upper is None else f"{lower}-{upper}w"
+            members = [
+                c for c in rankable_cols
+                if top_n_counts.get(c, 0) >= lower
+                and (upper is None or top_n_counts.get(c, 0) <= upper)
+            ]
+            # 既に上位バケットに含まれているものを除外 (累積にならないように)
+            used = {s for _, lst in buckets for s in lst}
+            members = [m for m in members if m not in used]
+            if members:
+                buckets.append((label, members))
+
+        n_buckets = len(buckets)
+        if n_buckets == 0:
+            print("WARN: 該当セクターがありません。単一グラフにフォールバックします。")
+            use_bucket_split = False
+        else:
+            fig, axes = plt.subplots(
+                n_buckets, 1,
+                figsize=(16, 3.2 * n_buckets + 1.5),
+                sharex=True,
+            )
+            if n_buckets == 1:
+                axes = [axes]
+
+            cmap = plt.get_cmap("tab10")
+            for ax_i, (label, members) in zip(axes, buckets):
+                for j, sec in enumerate(members):
+                    ax_i.plot(
+                        plot_display.index,
+                        plot_display[sec],
+                        color=cmap(j % 10),
+                        marker="o",
+                        markersize=4,
+                        linewidth=1.6,
+                        label=f"{sec} ({top_n_counts.get(sec, 0)}週)"
+                        if use_japanese else
+                        f"{sec} ({top_n_counts.get(sec, 0)}w)",
+                    )
+                bucket_title = (
+                    f"ランクイン {label} ({len(members)}セクター)"
+                    if use_japanese else
+                    f"Rank-in {label} ({len(members)} sectors)"
+                )
+                ax_i.set_title(bucket_title, fontsize=11, loc="left", pad=6)
+                ax_i.set_ylabel(
+                    "銘柄数" if use_japanese else "Count",
+                    fontsize=10,
+                )
+                ax_i.grid(axis="both", linestyle="--", alpha=0.3)
+                legend_ncol = 2 if len(members) >= 10 else 1
+                ax_i.legend(
+                    bbox_to_anchor=(1.01, 1),
+                    loc="upper left",
+                    borderaxespad=0,
+                    fontsize=8,
+                    ncol=legend_ncol,
+                )
+
+            # x軸ラベル (最下段のみ)
+            tick_positions = list(range(2, 53, 4))
+            if 52 not in tick_positions:
+                tick_positions.append(52)
+            axes[-1].set_xticks(tick_positions)
+            axes[-1].set_xticklabels([str(w) for w in tick_positions], rotation=0)
+            axes[-1].set_xlabel(
+                "週番号" if use_japanese else "Week Number",
+                fontsize=11,
+            )
+
+            fig.suptitle(base_title, fontsize=13, y=0.995)
+            fig.tight_layout(rect=[0, 0, 1, 0.99])
+            output_png.parent.mkdir(parents=True, exist_ok=True)
+            fig.savefig(output_png, dpi=150, bbox_inches="tight")
+            plt.close(fig)
+            print(f"      バケット分割グラフを保存しました: {output_png}")
+            return 0
+
+    # --- 単一グラフ（従来動作） ---
     cmap = plt.get_cmap("tab20")
     n_cols = len(plot_display.columns)
     linestyles = ["-", "--"]
@@ -394,7 +528,6 @@ def main() -> int:
         styles.append(linestyles[(i // 20) % len(linestyles)])
         marker_list.append(markers[i % len(markers)])
 
-    # 「その他」は灰色・点線
     if "その他" in plot_display.columns:
         idx = list(plot_display.columns).index("その他")
         colors[idx] = (0.6, 0.6, 0.6, 1.0)
@@ -413,29 +546,15 @@ def main() -> int:
             label=col,
         )
 
-    if use_japanese:
-        granularity_label = "細分類" if args.granularity == "fine" else "33業種"
-        if args.selection == "weekly":
-            selection_label = f"週次Top{top_n}に{args.min_weeks}週以上登場"
-        else:
-            selection_label = f"年間累計Top{top_n}"
-        ax.set_title(
-            f"セクター別 年初来高値更新銘柄数の推移 "
-            f"({year}年・{granularity_label}・{selection_label})",
-            fontsize=13, pad=12,
-        )
-        ax.set_xlabel("週番号", fontsize=11)
-        ax.set_ylabel("年初来高値更新銘柄数", fontsize=11)
-    else:
-        ax.set_title(
-            f"Weekly YTD-High Update Count by Sector "
-            f"({year}, {args.granularity}, selection={args.selection})",
-            fontsize=13, pad=12,
-        )
-        ax.set_xlabel("Week Number", fontsize=11)
-        ax.set_ylabel("Number of Stocks Hitting YTD Highs", fontsize=11)
+    ax.set_title(base_title, fontsize=13, pad=12)
+    ax.set_xlabel(
+        "週番号" if use_japanese else "Week Number", fontsize=11,
+    )
+    ax.set_ylabel(
+        "年初来高値更新銘柄数" if use_japanese else "Number of Stocks Hitting YTD Highs",
+        fontsize=11,
+    )
 
-    # x軸: 第2週から4週刻み
     tick_positions = list(range(2, 53, 4))
     if 52 not in tick_positions:
         tick_positions.append(52)
@@ -444,7 +563,6 @@ def main() -> int:
 
     ax.grid(axis="both", linestyle="--", alpha=0.3)
 
-    # 凡例: 12本以上なら2列
     legend_ncol = 2 if n_cols >= 12 else 1
     ax.legend(
         title="セクター" if use_japanese else "Sector",
