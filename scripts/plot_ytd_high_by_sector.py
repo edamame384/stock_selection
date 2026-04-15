@@ -224,7 +224,24 @@ def main() -> int:
         default=ROOT_DIR / "projects" / "shikiho_text_parser" / "output" / "4q2_selection" / "4q2_scored_universe.csv",
         help="細分類セクターCSV (四季報 scored_universe)",
     )
-    parser.add_argument("--top-n", type=int, default=10, help="上位表示セクター数 (デフォルト: 10)")
+    parser.add_argument("--top-n", type=int, default=10, help="週次/年間上位セクター数 (デフォルト: 10)")
+    parser.add_argument(
+        "--selection",
+        choices=["annual", "weekly"],
+        default="weekly",
+        help=(
+            "セクター選択方法: "
+            "annual=年間累計Top-N, "
+            "weekly=各週Top-N に --min-weeks 以上登場したセクター "
+            "(デフォルト: weekly)"
+        ),
+    )
+    parser.add_argument(
+        "--min-weeks",
+        type=int,
+        default=2,
+        help="selection=weekly のとき、Top-Nランクイン最低週数 (デフォルト: 2)",
+    )
     parser.add_argument(
         "--show-other",
         action="store_true",
@@ -248,7 +265,9 @@ def main() -> int:
     year: int = args.year
     price_dir: Path = args.price_dir
     top_n: int = args.top_n
-    suffix = "_fine" if args.granularity == "fine" else ""
+    granularity_suffix = "_fine" if args.granularity == "fine" else ""
+    selection_suffix = "_weekly" if args.selection == "weekly" else ""
+    suffix = f"{granularity_suffix}{selection_suffix}"
     output_png: Path = args.output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.png"
     output_csv: Path = args.csv_output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.csv"
 
@@ -294,12 +313,47 @@ def main() -> int:
     # 全52週のインデックスを確保
     pivot = pivot.reindex(range(1, 53), fill_value=0)
 
-    # Top-N セクター選択
-    sector_totals = pivot.sum(axis=0).sort_values(ascending=False)
-    top_sectors = sector_totals.head(top_n).index.tolist()
-    other_sectors = [c for c in pivot.columns if c not in top_sectors]
+    # --- セクター選択 ---
+    if args.selection == "annual":
+        # 年間累計でTop-N
+        sector_totals = pivot.sum(axis=0).sort_values(ascending=False)
+        selected_sectors = sector_totals.head(top_n).index.tolist()
+        # 年間累計順で並べる
+        ordered = selected_sectors
+        print(
+            f"      選択方式: annual  累計Top{top_n} セクター数: {len(selected_sectors)}"
+        )
+    else:  # weekly
+        # 第2週以降で各週Top-N にランクインした回数を集計
+        weekly_pivot = pivot.loc[2:]
+        top_n_counts: dict[str, int] = {}
+        for week, row in weekly_pivot.iterrows():
+            if row.sum() == 0:
+                continue
+            weekly_topn = row.sort_values(ascending=False).head(top_n).index.tolist()
+            for sec in weekly_topn:
+                top_n_counts[sec] = top_n_counts.get(sec, 0) + 1
 
-    plot_df = pivot[top_sectors].copy()
+        # min-weeks 以上ランクインしたセクターのみ採用
+        selected_sectors = [
+            sec for sec, cnt in top_n_counts.items() if cnt >= args.min_weeks
+        ]
+        # ランクイン週数の多い順で並べる (同数なら年間累計順)
+        annual_totals = pivot.sum(axis=0)
+        ordered = sorted(
+            selected_sectors,
+            key=lambda s: (-top_n_counts[s], -annual_totals.get(s, 0)),
+        )
+        print(
+            f"      選択方式: weekly  週次Top{top_n}に{args.min_weeks}週以上登場: "
+            f"{len(selected_sectors)} セクター"
+        )
+        # ログ: 各セクターのランクイン週数
+        for sec in ordered:
+            print(f"        {sec}: {top_n_counts[sec]}週")
+
+    other_sectors = [c for c in pivot.columns if c not in selected_sectors]
+    plot_df = pivot[ordered].copy()
     if other_sectors:
         plot_df["その他"] = pivot[other_sectors].sum(axis=1)
 
@@ -325,36 +379,58 @@ def main() -> int:
         cols_to_plot = [c for c in cols_to_plot if c != "その他"]
     plot_display = plot_df.loc[2:, cols_to_plot]
 
-    # カラーパレット (tab20: 最大20色、超過分はローテーション)
+    # カラー & 線種を組み合わせて最大40本を識別可能に
+    # tab20 (20色) × 線種 (solid, dashed) = 40パターン
     cmap = plt.get_cmap("tab20")
     n_cols = len(plot_display.columns)
-    colors = [cmap(i % 20) for i in range(n_cols)]
-    # 「その他」は灰色
-    if "その他" in plot_display.columns:
-        colors[list(plot_display.columns).index("その他")] = (0.6, 0.6, 0.6, 1.0)
+    linestyles = ["-", "--"]
+    markers = ["o", "s", "^", "D", "v"]
 
-    fig, ax = plt.subplots(figsize=(16, 8))
-    plot_display.plot(
-        kind="line",
-        ax=ax,
-        color=colors,
-        marker="o",
-        markersize=4,
-        linewidth=1.5,
-    )
+    colors: list[tuple] = []
+    styles: list[str] = []
+    marker_list: list[str] = []
+    for i in range(n_cols):
+        colors.append(cmap(i % 20))
+        styles.append(linestyles[(i // 20) % len(linestyles)])
+        marker_list.append(markers[i % len(markers)])
+
+    # 「その他」は灰色・点線
+    if "その他" in plot_display.columns:
+        idx = list(plot_display.columns).index("その他")
+        colors[idx] = (0.6, 0.6, 0.6, 1.0)
+        styles[idx] = ":"
+
+    fig, ax = plt.subplots(figsize=(16, 9))
+    for i, col in enumerate(plot_display.columns):
+        ax.plot(
+            plot_display.index,
+            plot_display[col],
+            color=colors[i],
+            linestyle=styles[i],
+            marker=marker_list[i],
+            markersize=4,
+            linewidth=1.4,
+            label=col,
+        )
 
     if use_japanese:
         granularity_label = "細分類" if args.granularity == "fine" else "33業種"
+        if args.selection == "weekly":
+            selection_label = f"週次Top{top_n}に{args.min_weeks}週以上登場"
+        else:
+            selection_label = f"年間累計Top{top_n}"
         ax.set_title(
-            f"セクター別 年初来高値更新銘柄数の推移 ({year}年・{granularity_label})",
-            fontsize=14, pad=12,
+            f"セクター別 年初来高値更新銘柄数の推移 "
+            f"({year}年・{granularity_label}・{selection_label})",
+            fontsize=13, pad=12,
         )
         ax.set_xlabel("週番号", fontsize=11)
         ax.set_ylabel("年初来高値更新銘柄数", fontsize=11)
     else:
         ax.set_title(
-            f"Weekly YTD-High Update Count by Sector ({year}, {args.granularity})",
-            fontsize=14, pad=12,
+            f"Weekly YTD-High Update Count by Sector "
+            f"({year}, {args.granularity}, selection={args.selection})",
+            fontsize=13, pad=12,
         )
         ax.set_xlabel("Week Number", fontsize=11)
         ax.set_ylabel("Number of Stocks Hitting YTD Highs", fontsize=11)
