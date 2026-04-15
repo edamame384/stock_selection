@@ -249,6 +249,12 @@ def main() -> int:
         help="折れ線に適用する移動平均の週数 (0=平滑化なし、デフォルト: 3)",
     )
     parser.add_argument(
+        "--y-metric",
+        choices=["count", "ratio"],
+        default="ratio",
+        help="Y軸: count=銘柄数, ratio=セクター内での割合 (%) (デフォルト: ratio)",
+    )
+    parser.add_argument(
         "--show-other",
         action="store_true",
         default=False,
@@ -293,7 +299,8 @@ def main() -> int:
     granularity_suffix = "_fine" if args.granularity == "fine" else ""
     selection_suffix = "_weekly" if args.selection == "weekly" else ""
     ma_suffix = f"_ma{args.ma_window}" if args.ma_window and args.ma_window > 1 else ""
-    suffix = f"{granularity_suffix}{selection_suffix}{ma_suffix}"
+    metric_suffix = "_ratio" if args.y_metric == "ratio" else ""
+    suffix = f"{granularity_suffix}{selection_suffix}{metric_suffix}{ma_suffix}"
     output_png: Path = args.output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.png"
     output_csv: Path = args.csv_output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.csv"
 
@@ -301,6 +308,13 @@ def main() -> int:
     print(f"[1/4] セクターマップを構築中 (granularity={args.granularity}) ...")
     sector_map = build_sector_map(args.sector_master, args.granularity, args.fine_sector_csv)
     print(f"      対象銘柄数: {len(sector_map)}  ユニークセクター数: {len(set(sector_map.values()))}")
+
+    # --- セクターサイズ (分母) を計算: 価格データが実在する銘柄のみカウント ---
+    sector_size: dict[str, int] = {}
+    for sym, sec in sector_map.items():
+        fname = sym.replace(".", "_") + ".csv"
+        if (price_dir / fname).exists():
+            sector_size[sec] = sector_size.get(sec, 0) + 1
 
     # --- 各銘柄の年初来高値更新日を収集 ---
     print(f"[2/4] {year}年の年初来高値更新日を収集中 ...")
@@ -338,6 +352,19 @@ def main() -> int:
 
     # 全52週のインデックスを確保
     pivot = pivot.reindex(range(1, 53), fill_value=0)
+
+    # --- y-metric=ratio のときはセクター選択前に割合へ変換 ---
+    # (絶対数ベースだと大型セクターが常に Top-N に入り、中小セクターが拾えないため)
+    # count_pivot は「その他」の正しい集計 (合計カウント ÷ 合計セクターサイズ) に使う
+    count_pivot = pivot.copy()
+    if args.y_metric == "ratio":
+        pivot = pivot.astype(float)
+        for sec in pivot.columns:
+            denom = sector_size.get(sec, 0)
+            if denom > 0:
+                pivot[sec] = pivot[sec] / denom * 100.0
+            else:
+                pivot[sec] = 0.0
 
     # --- セクター選択 ---
     top_n_counts: dict[str, int] = {}
@@ -380,7 +407,17 @@ def main() -> int:
     other_sectors = [c for c in pivot.columns if c not in selected_sectors]
     plot_df = pivot[ordered].copy()
     if other_sectors:
-        plot_df["その他"] = pivot[other_sectors].sum(axis=1)
+        if args.y_metric == "ratio":
+            # ratio では単純合計すると無意味なので、合計カウント ÷ 合計サイズ で算出
+            other_denom = sum(sector_size.get(s, 0) for s in other_sectors)
+            if other_denom > 0:
+                plot_df["その他"] = (
+                    count_pivot[other_sectors].sum(axis=1) / other_denom * 100.0
+                )
+            else:
+                plot_df["その他"] = 0.0
+        else:
+            plot_df["その他"] = pivot[other_sectors].sum(axis=1)
 
     # CSV保存 (第1週含む全データ)
     output_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -420,11 +457,13 @@ def main() -> int:
         selection_label = f"年間累計Top{top_n}"
     ma_suffix_jp = f"・{ma_label}" if ma_label else ""
     ma_suffix_en = f", MA={args.ma_window}w" if ma_label else ""
+    metric_label_jp = "セクター内割合" if args.y_metric == "ratio" else "銘柄数"
+    metric_label_en = "Ratio (%)" if args.y_metric == "ratio" else "Count"
     base_title = (
-        f"セクター別 年初来高値更新銘柄数の推移 "
+        f"セクター別 年初来高値更新{metric_label_jp}の推移 "
         f"({year}年・{granularity_label}・{selection_label}{ma_suffix_jp})"
         if use_japanese else
-        f"Weekly YTD-High Update Count by Sector "
+        f"Weekly YTD-High Update {metric_label_en} by Sector "
         f"({year}, {args.granularity}, selection={args.selection}{ma_suffix_en})"
     )
 
@@ -499,10 +538,11 @@ def main() -> int:
                     f"Rank-in {label} ({len(members)} sectors)"
                 )
                 ax_i.set_title(bucket_title, fontsize=11, loc="left", pad=6)
-                ax_i.set_ylabel(
-                    "銘柄数" if use_japanese else "Count",
-                    fontsize=10,
-                )
+                if args.y_metric == "ratio":
+                    y_unit = "割合 (%)" if use_japanese else "Ratio (%)"
+                else:
+                    y_unit = "銘柄数" if use_japanese else "Count"
+                ax_i.set_ylabel(y_unit, fontsize=10)
                 ax_i.grid(axis="both", linestyle="--", alpha=0.3)
                 legend_ncol = 2 if len(members) >= 10 else 1
                 ax_i.legend(
@@ -568,10 +608,17 @@ def main() -> int:
     ax.set_xlabel(
         "週番号" if use_japanese else "Week Number", fontsize=11,
     )
-    ax.set_ylabel(
-        "年初来高値更新銘柄数" if use_japanese else "Number of Stocks Hitting YTD Highs",
-        fontsize=11,
-    )
+    if args.y_metric == "ratio":
+        ylabel = (
+            "年初来高値更新銘柄率 (%)" if use_japanese
+            else "Share of Stocks Hitting YTD Highs (%)"
+        )
+    else:
+        ylabel = (
+            "年初来高値更新銘柄数" if use_japanese
+            else "Number of Stocks Hitting YTD Highs"
+        )
+    ax.set_ylabel(ylabel, fontsize=11)
 
     tick_positions = list(range(2, 53, 4))
     if 52 not in tick_positions:
