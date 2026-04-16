@@ -280,6 +280,12 @@ def main() -> int:
         help="バケット境界 (降順, カンマ区切り). デフォルト: '40,20,10,2'",
     )
     parser.add_argument(
+        "--bucket-top-n",
+        type=int,
+        default=10,
+        help="各バケット内で表示するセクター数の上限 (0=制限なし、デフォルト: 10)",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=None,
@@ -502,6 +508,10 @@ def main() -> int:
             # 既に上位バケットに含まれているものを除外 (累積にならないように)
             used = {s for _, lst in buckets for s in lst}
             members = [m for m in members if m not in used]
+            # ランクイン週数降順でソートし、上限で切る
+            members.sort(key=lambda s: -top_n_counts.get(s, 0))
+            if args.bucket_top_n > 0 and len(members) > args.bucket_top_n:
+                members = members[: args.bucket_top_n]
             if members:
                 buckets.append((label, members))
 
@@ -521,6 +531,11 @@ def main() -> int:
             cmap = plt.get_cmap("tab10")
             for ax_i, (label, members) in zip(axes, buckets):
                 for j, sec in enumerate(members):
+                    n_size = sector_size.get(sec, 0)
+                    if use_japanese:
+                        leg = f"{sec} ({top_n_counts.get(sec, 0)}週/{n_size}銘柄)"
+                    else:
+                        leg = f"{sec} ({top_n_counts.get(sec, 0)}w/{n_size})"
                     ax_i.plot(
                         plot_display.index,
                         plot_display[sec],
@@ -528,9 +543,7 @@ def main() -> int:
                         marker="o",
                         markersize=4,
                         linewidth=1.6,
-                        label=f"{sec} ({top_n_counts.get(sec, 0)}週)"
-                        if use_japanese else
-                        f"{sec} ({top_n_counts.get(sec, 0)}w)",
+                        label=leg,
                     )
                 bucket_title = (
                     f"ランクイン {label} ({len(members)}セクター)"
