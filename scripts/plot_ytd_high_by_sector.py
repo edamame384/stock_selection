@@ -191,6 +191,34 @@ def compute_ytd_high_updates(symbol: str, price_path: Path, year: int) -> list[t
     return result
 
 
+def compute_weekly_closes(price_path: Path, year: int) -> dict[int, float]:
+    try:
+        df = pd.read_csv(
+            price_path, usecols=["Date", "Close", "Volume"], parse_dates=["Date"],
+        )
+    except Exception:
+        return {}
+    df = df[(df["Date"].dt.year == year) & (df["Volume"] > 0)].copy()
+    if df.empty:
+        return {}
+    day_of_year = df["Date"].dt.dayofyear
+    df["week"] = ((day_of_year - 1) // 7 + 1).clip(upper=52)
+    df = df.sort_values("Date")
+    return df.groupby("week")["Close"].last().to_dict()
+
+
+def weekly_returns_from_closes(closes: dict[int, float]) -> dict[int, float]:
+    weeks = sorted(closes.keys())
+    out: dict[int, float] = {}
+    for i, w in enumerate(weeks):
+        if i == 0:
+            continue
+        prev_close = closes[weeks[i - 1]]
+        if prev_close and prev_close > 0:
+            out[w] = closes[w] / prev_close - 1.0
+    return out
+
+
 # ---------------------------------------------------------------------------
 # メイン処理
 # ---------------------------------------------------------------------------
@@ -255,6 +283,25 @@ def main() -> int:
         help="Y軸: count=銘柄数, ratio=セクター内での割合 (%) (デフォルト: ratio)",
     )
     parser.add_argument(
+        "--nikkei-symbol",
+        type=str,
+        default="1321.T",
+        help="日経平均の代用シンボル (デフォルト: 1321.T = Nikkei 225 ETF)",
+    )
+    parser.add_argument(
+        "--beat-nikkei",
+        dest="beat_nikkei",
+        action="store_true",
+        default=True,
+        help="週次リターンが日経平均を上回る週のみランクイン対象 (デフォルト: 有効)",
+    )
+    parser.add_argument(
+        "--no-beat-nikkei",
+        dest="beat_nikkei",
+        action="store_false",
+        help="日経平均ゲートを無効化 (従来動作)",
+    )
+    parser.add_argument(
         "--show-other",
         action="store_true",
         default=False,
@@ -306,7 +353,8 @@ def main() -> int:
     selection_suffix = "_weekly" if args.selection == "weekly" else ""
     ma_suffix = f"_ma{args.ma_window}" if args.ma_window and args.ma_window > 1 else ""
     metric_suffix = "_ratio" if args.y_metric == "ratio" else ""
-    suffix = f"{granularity_suffix}{selection_suffix}{metric_suffix}{ma_suffix}"
+    beat_suffix = "_beatnk" if args.beat_nikkei else ""
+    suffix = f"{granularity_suffix}{selection_suffix}{beat_suffix}{metric_suffix}{ma_suffix}"
     output_png: Path = args.output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.png"
     output_csv: Path = args.csv_output or ROOT_DIR / "data" / f"ytd_high_by_sector_{year}{suffix}.csv"
 
@@ -322,9 +370,22 @@ def main() -> int:
         if (price_dir / fname).exists():
             sector_size[sec] = sector_size.get(sec, 0) + 1
 
+    # --- 日経平均の週次リターン ---
+    nikkei_returns: dict[int, float] = {}
+    if args.beat_nikkei:
+        nikkei_fname = normalize_symbol(args.nikkei_symbol).replace(".", "_") + ".csv"
+        nikkei_path = price_dir / nikkei_fname
+        nikkei_closes = compute_weekly_closes(nikkei_path, year)
+        nikkei_returns = weekly_returns_from_closes(nikkei_closes)
+        if not nikkei_returns:
+            print(f"ERROR: 日経平均データが読めません: {nikkei_path}")
+            return 1
+        print(f"      日経平均 ({args.nikkei_symbol}) 週次リターン: {len(nikkei_returns)}週分")
+
     # --- 各銘柄の年初来高値更新日を収集 ---
     print(f"[2/4] {year}年の年初来高値更新日を収集中 ...")
     records: list[dict[str, object]] = []
+    sector_return_acc: dict[tuple[str, int], list[float]] = {}
     skipped = 0
     total = len(sector_map)
 
@@ -340,6 +401,12 @@ def main() -> int:
         for week, sym in updates:
             records.append({"symbol": sym, "sector": sector, "week": week})
 
+        if args.beat_nikkei:
+            closes = compute_weekly_closes(price_path, year)
+            stock_rets = weekly_returns_from_closes(closes)
+            for w, r in stock_rets.items():
+                sector_return_acc.setdefault((sector, w), []).append(r)
+
         if idx % 500 == 0 or idx == total:
             print(f"      処理済み: {idx}/{total}  スキップ: {skipped}")
 
@@ -348,6 +415,14 @@ def main() -> int:
         return 1
 
     print(f"      完了。スキップ銘柄数: {skipped}")
+
+    sector_weekly_return: dict[tuple[str, int], float] = {}
+    if args.beat_nikkei:
+        sector_weekly_return = {
+            key: sum(vals) / len(vals)
+            for key, vals in sector_return_acc.items()
+            if vals
+        }
 
     result_df = pd.DataFrame(records)
     print(f"      記録数: {len(result_df)}  週数: {result_df['week'].nunique()}  セクター数: {result_df['sector'].nunique()}")
@@ -388,8 +463,15 @@ def main() -> int:
         for week, row in weekly_pivot.iterrows():
             if row.sum() == 0:
                 continue
+            nk_ret = nikkei_returns.get(int(week))
             weekly_topn = row.sort_values(ascending=False).head(top_n).index.tolist()
             for sec in weekly_topn:
+                if args.beat_nikkei:
+                    if nk_ret is None:
+                        continue
+                    sec_ret = sector_weekly_return.get((sec, int(week)))
+                    if sec_ret is None or sec_ret <= nk_ret:
+                        continue
                 top_n_counts[sec] = top_n_counts.get(sec, 0) + 1
 
         # min-weeks 以上ランクインしたセクターのみ採用
@@ -458,7 +540,8 @@ def main() -> int:
 
     granularity_label = "細分類" if args.granularity == "fine" else "33業種"
     if args.selection == "weekly":
-        selection_label = f"週次Top{top_n}に{args.min_weeks}週以上登場"
+        gate_jp = "かつ日経超え" if args.beat_nikkei else ""
+        selection_label = f"週次Top{top_n}{gate_jp}に{args.min_weeks}週以上登場"
     else:
         selection_label = f"年間累計Top{top_n}"
     ma_suffix_jp = f"・{ma_label}" if ma_label else ""
