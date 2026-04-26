@@ -1,0 +1,13 @@
+﻿date,ticker,sector,action,price,shares,cash_after,table_name,phase,reason,signal_score
+2025-10-01,8006.T,卸売業,BUY,1780.0,200,2644000.0,uptrend,uptrend,entry,0.9000307092115343
+2025-10-02,8006.T,卸売業,SELL,1651.0,200,2974200.0,uptrend,uptrend,stop_loss,
+2025-10-22,6748.T,電気機器,BUY,792.85,1200,2022780.0,high_vol,high_vol,entry,0.6660332338218415
+2025-10-22,4752.T,情報・通信業,BUY,1655.39,1200,36311.99999999977,high_vol,high_vol,entry,0.5108180487498258
+2025-10-27,6748.T,電気機器,SELL,814.0,1200,1013111.9999999998,high_vol,surge,sell_signal,
+2025-10-27,4752.T,情報・通信業,SELL,1648.0,1200,2990712.0,high_vol,surge,sell_signal,
+2025-10-27,1909.T,機械,BUY,8330.0,300,491712.0,uptrend,surge,entry,0.8466941657179365
+2025-11-05,1909.T,機械,SELL,8150.0,300,2936712.0,uptrend,high_vol,sell_signal,
+2025-11-17,5644.T,鉄鋼,BUY,4476.15,600,251022.0,normal,normal,entry,0.6062586246159826
+2025-11-18,5644.T,鉄鋼,SELL,4475.0,600,2936022.0,normal,high_vol,sell_signal,
+2025-12-11,6366.T,建設業,BUY,721.665,4000,49362.0,normal,normal,entry,0.7974360382544938
+2025-12-18,6366.T,建設業,SELL,673.0,4000,2741362.0,normal,stable,stop_loss,

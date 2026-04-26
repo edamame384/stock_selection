@@ -1,0 +1,53 @@
+{
+  "mapping_name": "operational_regime_v1",
+  "mapping_ja": "運用実務レジームv1",
+  "dataset": "q4",
+  "core_count": 60,
+  "recovery_count": 60,
+  "defensive_count": 60,
+  "initial_capital": 3000000.0,
+  "final_capital": 3136289.0,
+  "total_return_pct": 4.54296666666667,
+  "num_buys": 11,
+  "phase_pnl": {
+    "high_vol": -1800.0,
+    "normal": 130596.5,
+    "stable": 100.0,
+    "surge": -16500.0,
+    "uptrend": 23892.5
+  },
+  "max_drawdown_pct": -0.9553733663442365,
+  "table_assignment": {
+    "defensive": [
+      "high_vol",
+      "crash"
+    ],
+    "recovery": [
+      "settling",
+      "reversal_up",
+      "capitulation_end"
+    ],
+    "core": "others"
+  },
+  "rule_assignment": {
+    "condition2": [
+      "normal",
+      "uptrend"
+    ],
+    "breakout_1p5": [
+      "stable"
+    ],
+    "q3_post_high_vol": [
+      "settling",
+      "reversal_up",
+      "capitulation_end"
+    ],
+    "no_trade": [
+      "high_vol",
+      "crash",
+      "surge",
+      "downtrend",
+      "reversal_down"
+    ]
+  }
+}

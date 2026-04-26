@@ -1,0 +1,73 @@
+[TIME] jst_now=2026-03-28 02:34:17 expected_hour=23
+[WARN] Running outside the expected JST hour for night-session feature capture.
+[SECTOR_SIGNAL] bullish=0 extra_enabled=False extra_max=10 signal_source=local ret_source=local
+[FUT] rows_nk=589 ticker_nk=NKD=F feature_nk=fut_nk_night_ret rows_dow=6035 ticker_dow=YM=F feature_dow=ret_dow_fut
+[GROUP] start=q4_regime symbols=60
+[ERROR][q4_regime] 6542.T: No price data from stooq: 6542.T
+[SECTOR][q4_regime] symbols=59 unique=8 index_loaded=7
+[ML][q4_regime] trained_rows=275203 symbols=59 features=28
+[OPTRET][q4_regime] threshold=0.75 stop_loss=15.00% limit=-3.00% win_rate=86.36% avg_fill=2.30% avg_signal=1.37% fills=88/148 fill_rate=59.46% max_dd=55.21% constraints(fill_rate>=10.00%, monthly_fills>=0.00, max_dd<=100.00%)
+[FALLBACK][q4_regime] threshold=0.75->0.61 buy_signals=3
+[HOLD] 4221.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.71% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3486.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=57.01% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8361.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=50.08% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 9691.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=55.16% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 7419.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=43.54% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 343A.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=48.43% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1384.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=48.03% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1893.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=55.14% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 4016.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=39.85% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 7110.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=47.17% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 4495.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=46.73% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8550.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=50.18% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 2981.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=56.93% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 9409.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.64% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 2975.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=50.45% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8600.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=50.16% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3449.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=55.95% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 5105.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=56.34% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[BUY] 1980.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=61.63% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00% sl_price=nan
+[BUY] 7235.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=62.70% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00% sl_price=nan
+[HOLD] 8057.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=48.42% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 5352.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=36.17% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6822.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=56.24% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 146A.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=58.58% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8515.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=52.36% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6231.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=48.85% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8393.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.93% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3922.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=54.91% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6745.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.59% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 7989.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=45.99% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8343.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.62% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 8345.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.83% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1847.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=60.22% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[BUY] 6332.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=61.14% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00% sl_price=nan
+[HOLD] 3935.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=51.85% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6853.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=57.71% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1815.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=50.33% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1961.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.93% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 4301.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=41.76% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 2970.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=55.25% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1975.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=58.77% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3712.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=45.30% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 1736.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=47.29% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 5971.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=46.27% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3242.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=41.96% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6331.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=58.00% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 256A.T | signal_date=2026-03-27 trade_date=2026-03-30 close=2232.00 tp_prob=52.77% lmt=-3.00% lmt_price=2298.96 tp=5.00% tp_price=2343.60 sl=15.00%
+[HOLD] 8336.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.65% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 7191.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=46.24% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3465.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=57.20% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6091.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=44.81% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 7130.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.68% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6488.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=46.25% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 4633.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=55.73% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3277.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=47.03% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 3467.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=47.00% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6743.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=53.00% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 7242.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=53.62% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[HOLD] 6489.T | signal_date=2026-03-27 trade_date=2026-03-30 close=nan tp_prob=49.23% lmt=-3.00% lmt_price=nan tp=5.00% tp_price=nan sl=15.00%
+[DIV][q4_regime] candidates=3 selected=3 max_corr=0.70 lookback=252
+[PICK][q4_regime] 7235.T tp_prob=62.70% sector=Consumer Cyclical
+[PICK][q4_regime] 1980.T tp_prob=61.63% sector=Industrials
+[PICK][q4_regime] 6332.T tp_prob=61.14% sector=Industrials

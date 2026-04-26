@@ -1,0 +1,17 @@
+{
+  "variant": "full_period",
+  "final_capital": 3150993.5,
+  "return_pct": 5.033116666666659,
+  "num_buys": 3,
+  "max_dd_pct": -0.6206883174820765,
+  "phase_pnl": {
+    "capitulation_end": 0.0,
+    "crash": 0.0,
+    "downtrend": 0.0,
+    "normal": -19080.0,
+    "overheated_range": 2400.0,
+    "stable": 87473.5,
+    "surge": 0.0,
+    "uptrend": 80200.0
+  }
+}

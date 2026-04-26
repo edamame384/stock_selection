@@ -1,0 +1,19 @@
+{
+  "variant": "tp6_sl4",
+  "take_profit_pct": 6.0,
+  "stop_loss_pct": 4.0,
+  "dataset": "2025_2q_low_concentration",
+  "final_capital": 3016431.5,
+  "total_return_pct": 0.5477166666666644,
+  "num_buys": 26,
+  "max_drawdown_pct": -2.7446980777697694,
+  "phase_pnl": {
+    "capitulation_end": 3150.0,
+    "crash": 10592.0,
+    "downtrend": -8350.0,
+    "normal": 24900.0,
+    "settling": -3037.0,
+    "stable": 18600.0,
+    "uptrend": -29423.5
+  }
+}

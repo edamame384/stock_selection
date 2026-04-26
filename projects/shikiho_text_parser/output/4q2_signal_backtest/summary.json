@@ -1,0 +1,12 @@
+{
+  "period_start": "2026-01-01",
+  "period_end": "2026-03-10",
+  "initial_capital": 3000000.0,
+  "final_capital": 3303100.0,
+  "total_return_pct": 10.103333333333332,
+  "num_buys": 41,
+  "num_roundtrips": 41,
+  "win_rate_pct": 41.46341463414634,
+  "avg_roundtrip_return_pct": 1.7404299511153578,
+  "max_drawdown_pct": -6.771883676749968
+}

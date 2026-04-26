@@ -1,0 +1,19 @@
+{
+  "condition_name": "condition1_limit_search",
+  "promising_score_min": 0.72,
+  "trend_r2_min": 0.6,
+  "sector_per_score_min": 0.55,
+  "take_profit_pct": 8.0,
+  "stop_loss_pct": 5.0,
+  "entry_limit_pct": -1.5,
+  "period_start": "2026-01-01",
+  "period_end": "2026-03-10",
+  "initial_capital": 3000000.0,
+  "final_capital": 2926621.0,
+  "total_return_pct": -2.4459666666666657,
+  "num_buys": 55,
+  "num_roundtrips": 55,
+  "win_rate_pct": 40.0,
+  "avg_roundtrip_return_pct": -0.05672072740440571,
+  "max_drawdown_pct": -11.765534148179324
+}

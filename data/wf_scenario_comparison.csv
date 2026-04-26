@@ -1,0 +1,4 @@
+lambda_dd,horizon,threshold,limit,take_profit,stop_loss,objective_mean,final_capital_mean,max_drawdown_mean,folds,scenario,fee_bps,entry_slippage_bps,exit_slippage_bps
+0.5,10.0,0.62,-0.0025,0.07,0.12,3108742.255821442,3109967.6567509025,0.0008169339529735,4.0,optimistic,5.0,2.0,2.0
+0.5,10.0,0.62,0.0,0.07,0.12,3107895.2626855774,3108467.4872692497,0.0003814830557817,4.0,neutral,10.0,5.0,5.0
+0.5,10.0,0.62,-0.0025,0.07,0.14,3097884.885939588,3099872.068174312,0.001324788156483,4.0,pessimistic,20.0,10.0,10.0

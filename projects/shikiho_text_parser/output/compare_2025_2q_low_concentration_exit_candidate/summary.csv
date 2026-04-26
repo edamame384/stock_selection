@@ -1,0 +1,5 @@
+﻿variant,take_profit_pct,stop_loss_pct,dataset,final_capital,total_return_pct,num_buys,max_drawdown_pct,phase_pnl
+tp6_sl3,6.0,3.0,2025_2q_low_concentration,3045631.5,1.5210500000000016,26,-1.8367225856212643,"{'capitulation_end': 3150.0, 'crash': 10592.0, 'downtrend': -8350.0, 'normal': 33300.0, 'settling': -3037.0, 'stable': 18600.0, 'uptrend': -8623.5}"
+tp6_sl4,6.0,4.0,2025_2q_low_concentration,3016431.5,0.5477166666666644,26,-2.7446980777697694,"{'capitulation_end': 3150.0, 'crash': 10592.0, 'downtrend': -8350.0, 'normal': 24900.0, 'settling': -3037.0, 'stable': 18600.0, 'uptrend': -29423.5}"
+tp5_sl4,5.0,4.0,2025_2q_low_concentration,3008141.5,0.2713833333333415,26,-2.7473165932990318,"{'capitulation_end': 3150.0, 'crash': 7702.0, 'downtrend': -8350.0, 'normal': 24900.0, 'settling': -3037.0, 'stable': 3800.0, 'uptrend': -20023.5}"
+baseline_tp8_sl5,8.0,5.0,2025_2q_low_concentration,2983731.5,-0.5422833333333377,26,-3.1740098213625667,"{'capitulation_end': 3150.0, 'crash': -308.0, 'downtrend': -38850.0, 'normal': 33600.0, 'settling': -3037.0, 'stable': 18600.0, 'uptrend': -29423.5}"

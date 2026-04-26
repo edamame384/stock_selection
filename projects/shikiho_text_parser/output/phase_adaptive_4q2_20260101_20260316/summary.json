@@ -1,0 +1,16 @@
+{
+  "method_name": "phase_adaptive_4q2",
+  "selected_csv": "projects\\shikiho_text_parser\\output\\4q2_selection\\4q2_selected_candidates.csv",
+  "phase_csv": "C:\\Users\\mitsu\\OneDrive\\ドキュメント\\stock_ml\\projects\\shikiho_text_parser\\output\\nikkei_market_phase_map\\nikkei_market_phase_daily_labels.csv",
+  "period_start": "2026-01-01",
+  "period_end": "2026-03-10",
+  "initial_capital": 3000000.0,
+  "final_capital": 3296591.5,
+  "total_return_pct": 9.886383333333338,
+  "selected_count": 75,
+  "num_buys": 28,
+  "num_roundtrips": 28,
+  "win_rate_pct": 75.0,
+  "avg_roundtrip_return_pct": 2.81228181739986,
+  "max_drawdown_pct": -1.8674271803284848
+}

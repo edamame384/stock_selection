@@ -1,0 +1,13 @@
+{
+  "dataset": "q2_2024",
+  "standard_count": 24,
+  "high_vol_count": 24,
+  "initial_capital": 3000000.0,
+  "final_capital": 2994238.0,
+  "total_return_pct": -0.19206666666666816,
+  "num_buys": 10,
+  "max_drawdown_pct": -14.864440628475029,
+  "standard_rule": "normal",
+  "high_vol_rule": "defensive",
+  "high_vol_table": "defensive_origcount"
+}

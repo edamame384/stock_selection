@@ -1,0 +1,13 @@
+{
+  "dataset": "q3",
+  "standard_count": 13,
+  "high_vol_count": 13,
+  "initial_capital": 3000000.0,
+  "final_capital": 3053300.0010986337,
+  "total_return_pct": 1.7766667032877992,
+  "num_buys": 8,
+  "max_drawdown_pct": -8.06898114972876,
+  "standard_rule": "normal",
+  "high_vol_rule": "defensive",
+  "high_vol_table": "post_high_vol_origcount"
+}

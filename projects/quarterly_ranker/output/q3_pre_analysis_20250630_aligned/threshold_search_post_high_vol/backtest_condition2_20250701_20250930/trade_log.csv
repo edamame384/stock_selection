@@ -1,0 +1,5 @@
+﻿date,ticker,simple_sector,sector_33,action,price,shares,cash_after,signal_score,macro_confirm_score,macro_corr_score,signal_basis_date,reason
+2025-09-30,7419.T,小売業,小売業,BUY,1365.175,100,2863482.5,0.6294242376025918,0.0,0.0,2025-09-29,buy_breakout_up
+2025-09-30,1972.T,建設業,建設業,BUY,1562.0,100,2707282.5,0.4247944942204248,0.0,0.0,2025-09-29,buy_breakout_up
+2025-09-30,7419.T,小売業,小売業,SELL_END,1351.6666259765625,100,2842449.1625976562,,,,,end_of_backtest
+2025-09-30,1972.T,建設業,建設業,SELL_END,1504.0,100,2992849.1625976562,,,,,end_of_backtest

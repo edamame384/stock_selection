@@ -1,0 +1,16 @@
+{
+  "variant": "top4_chart_v2_loose3",
+  "selected_count": 30,
+  "trend_r2_min": 0.7,
+  "annual_return_min": 5.0,
+  "quarter_return_min": 1.0,
+  "positive_month_ratio_min": 55.0,
+  "persistence_20d_min": 60.0,
+  "end_to_high_min": 84.0,
+  "sector_per_min": 0.15,
+  "ocr_per_max": 30.0,
+  "final_capital": 3015752.25,
+  "return_pct": 0.5250750000000082,
+  "num_buys": 9,
+  "max_dd_pct": -0.9035050021999114
+}

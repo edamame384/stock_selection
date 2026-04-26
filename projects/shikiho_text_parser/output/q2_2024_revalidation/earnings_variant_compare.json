@@ -1,0 +1,72 @@
+[
+  {
+    "final_capital": 2878449.277282715,
+    "total_return_pct": -4.051690757242843,
+    "num_buys": 56,
+    "max_drawdown_pct": -10.35563783625275,
+    "variant": "v31_equivalent_no_earnings"
+  },
+  {
+    "final_capital": 2999157.854675293,
+    "total_return_pct": -0.028071510823568513,
+    "num_buys": 49,
+    "max_drawdown_pct": -10.317442035665659,
+    "variant": "pre1_only"
+  },
+  {
+    "final_capital": 2878379.864868164,
+    "total_return_pct": -4.054004504394526,
+    "num_buys": 64,
+    "max_drawdown_pct": -12.879837247658621,
+    "variant": "pre1_post1"
+  },
+  {
+    "final_capital": 2527906.194946289,
+    "total_return_pct": -15.736460168457034,
+    "num_buys": 55,
+    "max_drawdown_pct": -17.050613470963583,
+    "variant": "pre1_post3"
+  },
+  {
+    "final_capital": 2605360.767272949,
+    "total_return_pct": -13.154641090901698,
+    "num_buys": 56,
+    "max_drawdown_pct": -16.361916128114895,
+    "variant": "pre1_post5"
+  },
+  {
+    "final_capital": 2593037.267272949,
+    "total_return_pct": -13.56542442423503,
+    "num_buys": 53,
+    "max_drawdown_pct": -17.040970694817513,
+    "variant": "pre1_post10"
+  },
+  {
+    "final_capital": 2965371.104675293,
+    "total_return_pct": -1.1542965108235714,
+    "num_buys": 53,
+    "max_drawdown_pct": -10.296626133555154,
+    "variant": "pre1_post5_except_crash"
+  },
+  {
+    "final_capital": 2965371.104675293,
+    "total_return_pct": -1.1542965108235714,
+    "num_buys": 53,
+    "max_drawdown_pct": -10.296626133555154,
+    "variant": "pre1_post5_except_crash_highvol"
+  },
+  {
+    "final_capital": 2965371.104675293,
+    "total_return_pct": -1.1542965108235714,
+    "num_buys": 53,
+    "max_drawdown_pct": -10.296626133555154,
+    "variant": "pre1_post3_except_crash"
+  },
+  {
+    "final_capital": 2954819.0294799805,
+    "total_return_pct": -1.506032350667319,
+    "num_buys": 53,
+    "max_drawdown_pct": -10.115060740913462,
+    "variant": "pre1_post1_except_crash"
+  }
+]

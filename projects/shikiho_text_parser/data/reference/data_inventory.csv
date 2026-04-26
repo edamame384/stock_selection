@@ -1,0 +1,7 @@
+﻿group,name,path,count,note
+included,raw_4q2_text,C:\Users\mitsu\OneDrive\ドキュメント\stock_ml\projects\shikiho_text_parser\data\raw\4Q-2,4223,4Q-2 text inputs
+included,prices_4q2,C:\Users\mitsu\OneDrive\ドキュメント\stock_ml\projects\shikiho_text_parser\data\prices_4q2,4220,subset price data for 4Q-2 universe
+included,prices_full,C:\Users\mitsu\OneDrive\ドキュメント\stock_ml\projects\shikiho_text_parser\data\prices_full,4411,full local price archive
+included,sector_master,C:\Users\mitsu\OneDrive\ドキュメント\stock_ml\projects\shikiho_text_parser\data\reference\sector_master_template.csv,4428,formal 33-sector master
+missing,night_futures_data,,0,actual futures dataset not found; only logs exist
+missing,global_index_futures_data,,0,DJI/GSPC/NKD futures csv not found

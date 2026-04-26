@@ -1,0 +1,7 @@
+﻿basket_type,label,source_count,count,avg_return_pct,median_return_pct,win_rate_pct
+theme_top20,electronics_semicap_proxy,486,20,-5.5905476174040425,-8.520859482397947,35.0
+theme_top20,construction_infra,137,20,-6.060717881403358,-5.762013216141659,30.0
+theme_top20,power_utilities,27,20,-7.879354618257639,-8.708824702111674,10.0
+theme_top20,cyber_security,10,10,-9.03397014961708,-10.34063260340633,40.0
+theme_top20,banks_insurance,91,20,-13.797055444107858,-15.681894937339319,5.0
+theme_top20,shipbuilding,5,5,-16.63814194577365,-19.198664440734557,20.0

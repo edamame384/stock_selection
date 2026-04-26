@@ -1,0 +1,30 @@
+{
+  "mapping_name": "practical_phase_adaptive_v31_pre1_post5_gold_switch",
+  "mapping_ja": "実務向け局面切替v3.1_決算前1営業日_決算後5営業日見送り_金ETF切替",
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "gold_ticker": "1489.T",
+  "gold_phases": [
+    "high_vol"
+  ],
+  "gold_allocation_ratio": 1.0,
+  "gold_signal_name": "rebound_open",
+  "gold_require_recent_phase": "crash",
+  "gold_require_recent_phase_days": 5,
+  "gold_phase_shift_days": 1,
+  "dataset": "q2_2024",
+  "final_capital": 3159613.3546752934,
+  "total_return_pct": 5.320445155843112,
+  "num_buys": 53,
+  "max_drawdown_pct": -9.431239478660668,
+  "phase_pnl": {
+    "capitulation_end": 6000.0,
+    "crash": 147631.32232666016,
+    "high_vol": -72338.06909179641,
+    "normal": -94346.748046875,
+    "overheated_range": -6111.650390625,
+    "stable": -6838.1749267578125,
+    "surge": 131250.0,
+    "uptrend": 54366.6748046875
+  }
+}

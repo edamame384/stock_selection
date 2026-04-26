@@ -1,0 +1,13 @@
+﻿metric,value
+count,20.0
+avg_ret_5d_pct,1.953
+median_ret_5d_pct,2.335
+avg_ret_10d_pct,2.884
+median_ret_10d_pct,3.416
+avg_ret_20d_pct,2.259
+median_ret_20d_pct,3.275
+positive_5d_rate_pct,78.95
+positive_10d_rate_pct,68.42
+positive_20d_rate_pct,68.42
+avg_max_close_20d_pct,5.277
+avg_min_close_20d_pct,-2.547

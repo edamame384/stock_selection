@@ -1,0 +1,202 @@
+[DATA] 1417.T -> data\prices\1417_T.csv
+[DATA] 1860.T -> data\prices\1860_T.csv
+[DATA] 1861.T -> data\prices\1861_T.csv
+[DATA] 1963.T -> data\prices\1963_T.csv
+[DATA] 1975.T -> data\prices\1975_T.csv
+[DATA] 2124.T -> data\prices\2124_T.csv
+[DATA] 2181.T -> data\prices\2181_T.csv
+[DATA] 2212.T -> data\prices\2212_T.csv
+[DATA] 2220.T -> data\prices\2220_T.csv
+[DATA] 2264.T -> data\prices\2264_T.csv
+[DATA] 2282.T -> data\prices\2282_T.csv
+[DATA] 2326.T -> data\prices\2326_T.csv
+[DATA] 2353.T -> data\prices\2353_T.csv
+[DATA] 2492.T -> data\prices\2492_T.csv
+[DATA] 2501.T -> data\prices\2501_T.csv
+[DATA] 2607.T -> data\prices\2607_T.csv
+[DATA] 2914.T -> data\prices\2914_T.csv
+[DATA] 2933.T -> data\prices\2933_T.csv
+[DATA] 2980.T -> data\prices\2980_T.csv
+[DATA] 2982.T -> data\prices\2982_T.csv
+[DATA] 2983.T -> data\prices\2983_T.csv
+[DATA] 3036.T -> data\prices\3036_T.csv
+[DATA] 3064.T -> data\prices\3064_T.csv
+[DATA] 3104.T -> data\prices\3104_T.csv
+[DATA] 3186.T -> data\prices\3186_T.csv
+[DATA] 3391.T -> data\prices\3391_T.csv
+[DATA] 3392.T -> data\prices\3392_T.csv
+[DATA] 3397.T -> data\prices\3397_T.csv
+[DATA] 3415.T -> data\prices\3415_T.csv
+[DATA] 3449.T -> data\prices\3449_T.csv
+[DATA] 3452.T -> data\prices\3452_T.csv
+[DATA] 3486.T -> data\prices\3486_T.csv
+[DATA] 3489.T -> data\prices\3489_T.csv
+[DATA] 3491.T -> data\prices\3491_T.csv
+[DATA] 3496.T -> data\prices\3496_T.csv
+[DATA] 3498.T -> data\prices\3498_T.csv
+[DATA] 3563.T -> data\prices\3563_T.csv
+[DATA] 3660.T -> data\prices\3660_T.csv
+[DATA] 3661.T -> data\prices\3661_T.csv
+[DATA] 3673.T -> data\prices\3673_T.csv
+[DATA] 3697.T -> data\prices\3697_T.csv
+[DATA] 3762.T -> data\prices\3762_T.csv
+[DATA] 3771.T -> data\prices\3771_T.csv
+[DATA] 3905.T -> data\prices\3905_T.csv
+[DATA] 4013.T -> data\prices\4013_T.csv
+[DATA] 4071.T -> data\prices\4071_T.csv
+[DATA] 4180.T -> data\prices\4180_T.csv
+[DATA] 4203.T -> data\prices\4203_T.csv
+[DATA] 4301.T -> data\prices\4301_T.csv
+[DATA] 4385.T -> data\prices\4385_T.csv
+[DATA] 4413.T -> data\prices\4413_T.csv
+[DATA] 4419.T -> data\prices\4419_T.csv
+[DATA] 4443.T -> data\prices\4443_T.csv
+[DATA] 4477.T -> data\prices\4477_T.csv
+[DATA] 4478.T -> data\prices\4478_T.csv
+[DATA] 4481.T -> data\prices\4481_T.csv
+[DATA] 4503.T -> data\prices\4503_T.csv
+[DATA] 4506.T -> data\prices\4506_T.csv
+[DATA] 4507.T -> data\prices\4507_T.csv
+[DATA] 4684.T -> data\prices\4684_T.csv
+[DATA] 4704.T -> data\prices\4704_T.csv
+[DATA] 5032.T -> data\prices\5032_T.csv
+[DATA] 5248.T -> data\prices\5248_T.csv
+[DATA] 6027.T -> data\prices\6027_T.csv
+[DATA] 6099.T -> data\prices\6099_T.csv
+[DATA] 6412.T -> data\prices\6412_T.csv
+[DATA] 6532.T -> data\prices\6532_T.csv
+[DATA] 6648.T -> data\prices\6648_T.csv
+[DATA] 6871.T -> data\prices\6871_T.csv
+[DATA] 7003.T -> data\prices\7003_T.csv
+[DATA] 7059.T -> data\prices\7059_T.csv
+[DATA] 7088.T -> data\prices\7088_T.csv
+[DATA] 7094.T -> data\prices\7094_T.csv
+[DATA] 7095.T -> data\prices\7095_T.csv
+[DATA] 7167.T -> data\prices\7167_T.csv
+[DATA] 7199.T -> data\prices\7199_T.csv
+[DATA] 7266.T -> data\prices\7266_T.csv
+[DATA] 7327.T -> data\prices\7327_T.csv
+[DATA] 7347.T -> data\prices\7347_T.csv
+[DATA] 7352.T -> data\prices\7352_T.csv
+[DATA] 7581.T -> data\prices\7581_T.csv
+[DATA] 7616.T -> data\prices\7616_T.csv
+[DATA] 7685.T -> data\prices\7685_T.csv
+[DATA] 7752.T -> data\prices\7752_T.csv
+[DATA] 7874.T -> data\prices\7874_T.csv
+[DATA] 7914.T -> data\prices\7914_T.csv
+[DATA] 7936.T -> data\prices\7936_T.csv
+[DATA] 8136.T -> data\prices\8136_T.csv
+[DATA] 8316.T -> data\prices\8316_T.csv
+[DATA] 8331.T -> data\prices\8331_T.csv
+[DATA] 8365.T -> data\prices\8365_T.csv
+[DATA] 8377.T -> data\prices\8377_T.csv
+[DATA] 9166.T -> data\prices\9166_T.csv
+[DATA] 9416.T -> data\prices\9416_T.csv
+[DATA] 9556.T -> data\prices\9556_T.csv
+[DATA] 9627.T -> data\prices\9627_T.csv
+[DATA] 9889.T -> data\prices\9889_T.csv
+[DATA] 135A.T -> data\prices\135A_T.csv
+[DATA] 247A.T -> data\prices\247A_T.csv
+[DATA] 285A.T -> data\prices\285A_T.csv
+[OPT] stop_loss=15.00% win_rate=77.13% avg_return=1.32% trades=68383
+Loaded 100 symbols from watchlist.csv
+[HOLD] 1417.T | date=2026-03-06 close=3722.00 tp_prob=51.95% sl=15.00%
+[HOLD] 1860.T | date=2026-03-06 close=1584.00 tp_prob=41.64% sl=15.00%
+[HOLD] 1861.T | date=2026-03-06 close=1746.00 tp_prob=54.66% sl=15.00%
+[HOLD] 1963.T | date=2026-03-06 close=2210.50 tp_prob=59.64% sl=15.00%
+[BUY] 1975.T | date=2026-03-06 close=4135.00 tp_prob=71.73% sl=15.00% sl_price=3514.75
+[HOLD] 2124.T | date=2026-03-06 close=880.00 tp_prob=52.95% sl=15.00%
+[HOLD] 2181.T | date=2026-03-06 close=243.80 tp_prob=57.45% sl=15.00%
+[HOLD] 2212.T | date=2026-03-06 close=3364.00 tp_prob=51.34% sl=15.00%
+[HOLD] 2220.T | date=2026-03-06 close=4360.00 tp_prob=29.94% sl=15.00%
+[HOLD] 2264.T | date=2026-03-06 close=4797.00 tp_prob=46.82% sl=15.00%
+[HOLD] 2282.T | date=2026-03-06 close=6857.00 tp_prob=37.07% sl=15.00%
+[HOLD] 2326.T | date=2026-03-06 close=5280.00 tp_prob=60.00% sl=15.00%
+[HOLD] 2353.T | date=2026-03-06 close=274.00 tp_prob=41.23% sl=15.00%
+[BUY] 2492.T | date=2026-03-06 close=420.00 tp_prob=62.68% sl=15.00% sl_price=357.00
+[HOLD] 2501.T | date=2026-03-06 close=1666.00 tp_prob=54.80% sl=15.00%
+[BUY] 2607.T | date=2026-03-06 close=3466.00 tp_prob=61.41% sl=15.00% sl_price=2946.10
+[HOLD] 2914.T | date=2026-03-06 close=5714.00 tp_prob=42.38% sl=15.00%
+[HOLD] 2933.T | date=2026-03-06 close=1053.00 tp_prob=18.13% sl=15.00%
+[BUY] 2980.T | date=2026-03-06 close=2845.00 tp_prob=75.29% sl=15.00% sl_price=2418.25
+[HOLD] 2982.T | date=2026-03-06 close=440.00 tp_prob=43.68% sl=15.00%
+[HOLD] 2983.T | date=2026-03-06 close=2100.00 tp_prob=49.92% sl=15.00%
+[BUY] 3036.T | date=2026-03-06 close=2956.00 tp_prob=71.02% sl=15.00% sl_price=2512.60
+[BUY] 3064.T | date=2026-03-06 close=1986.00 tp_prob=63.61% sl=15.00% sl_price=1688.10
+[HOLD] 3104.T | date=2026-03-06 close=10590.00 tp_prob=52.11% sl=15.00%
+[BUY] 3186.T | date=2026-03-06 close=3135.00 tp_prob=72.53% sl=15.00% sl_price=2664.75
+[BUY] 3391.T | date=2026-03-06 close=2272.50 tp_prob=67.30% sl=15.00% sl_price=1931.62
+[HOLD] 3392.T | date=2026-03-06 close=839.00 tp_prob=36.77% sl=15.00%
+[HOLD] 3397.T | date=2026-03-06 close=4253.00 tp_prob=40.54% sl=15.00%
+[HOLD] 3415.T | date=2026-03-06 close=453.00 tp_prob=56.93% sl=15.00%
+[BUY] 3449.T | date=2026-03-06 close=2476.00 tp_prob=62.31% sl=15.00% sl_price=2104.60
+[HOLD] 3452.T | date=2026-03-06 close=1587.00 tp_prob=50.17% sl=15.00%
+[HOLD] 3486.T | date=2026-03-06 close=2282.00 tp_prob=42.51% sl=15.00%
+[HOLD] 3489.T | date=2026-03-06 close=934.00 tp_prob=50.66% sl=15.00%
+[BUY] 3491.T | date=2026-03-06 close=1647.00 tp_prob=75.18% sl=15.00% sl_price=1399.95
+[HOLD] 3496.T | date=2026-03-06 close=4795.00 tp_prob=49.34% sl=15.00%
+[BUY] 3498.T | date=2026-03-06 close=7250.00 tp_prob=66.30% sl=15.00% sl_price=6162.50
+[BUY] 3563.T | date=2026-03-06 close=9260.00 tp_prob=71.74% sl=15.00% sl_price=7871.00
+[HOLD] 3660.T | date=2026-03-06 close=462.00 tp_prob=58.94% sl=15.00%
+[BUY] 3661.T | date=2026-03-06 close=703.00 tp_prob=66.02% sl=15.00% sl_price=597.55
+[HOLD] 3673.T | date=2026-03-06 close=829.00 tp_prob=51.07% sl=15.00%
+[BUY] 3697.T | date=2026-03-06 close=732.90 tp_prob=76.74% sl=15.00% sl_price=622.97
+[BUY] 3762.T | date=2026-03-06 close=1846.00 tp_prob=61.24% sl=15.00% sl_price=1569.10
+[HOLD] 3771.T | date=2026-03-06 close=1793.00 tp_prob=49.81% sl=15.00%
+[BUY] 3905.T | date=2026-03-06 close=1565.00 tp_prob=76.20% sl=15.00% sl_price=1330.25
+[HOLD] 4013.T | date=2026-03-06 close=734.00 tp_prob=59.88% sl=15.00%
+[HOLD] 4071.T | date=2026-03-06 close=2263.00 tp_prob=38.82% sl=15.00%
+[BUY] 4180.T | date=2026-03-06 close=833.00 tp_prob=79.74% sl=15.00% sl_price=708.05
+[HOLD] 4203.T | date=2026-03-06 close=5570.00 tp_prob=58.60% sl=15.00%
+[HOLD] 4301.T | date=2026-03-06 close=2038.00 tp_prob=42.36% sl=15.00%
+[BUY] 4385.T | date=2026-03-06 close=3491.00 tp_prob=69.28% sl=15.00% sl_price=2967.35
+[BUY] 4413.T | date=2026-03-06 close=1992.00 tp_prob=75.40% sl=15.00% sl_price=1693.20
+[HOLD] 4419.T | date=2026-03-06 close=957.00 tp_prob=16.98% sl=15.00%
+[BUY] 4443.T | date=2026-03-06 close=1240.00 tp_prob=67.02% sl=15.00% sl_price=1054.00
+[HOLD] 4477.T | date=2026-03-06 close=315.00 tp_prob=46.58% sl=15.00%
+[BUY] 4478.T | date=2026-03-06 close=2415.00 tp_prob=76.26% sl=15.00% sl_price=2052.75
+[HOLD] 4481.T | date=2026-03-06 close=3350.00 tp_prob=53.44% sl=15.00%
+[HOLD] 4503.T | date=2026-03-06 close=2404.00 tp_prob=46.69% sl=15.00%
+[BUY] 4506.T | date=2026-03-06 close=1920.50 tp_prob=92.24% sl=15.00% sl_price=1632.42
+[HOLD] 4507.T | date=2026-03-06 close=3451.00 tp_prob=50.77% sl=15.00%
+[HOLD] 4684.T | date=2026-03-06 close=4136.00 tp_prob=45.99% sl=15.00%
+[HOLD] 4704.T | date=2026-03-06 close=5508.00 tp_prob=49.31% sl=15.00%
+[BUY] 5032.T | date=2026-03-06 close=3970.00 tp_prob=74.79% sl=15.00% sl_price=3374.50
+[HOLD] 5248.T | date=2026-03-06 close=538.00 tp_prob=13.50% sl=15.00%
+[BUY] 6027.T | date=2026-03-06 close=2801.00 tp_prob=71.42% sl=15.00% sl_price=2380.85
+[HOLD] 6099.T | date=2026-03-06 close=763.00 tp_prob=44.68% sl=15.00%
+[HOLD] 6412.T | date=2026-03-06 close=1985.00 tp_prob=26.95% sl=15.00%
+[BUY] 6532.T | date=2026-03-06 close=4766.00 tp_prob=65.26% sl=15.00% sl_price=4051.10
+[BUY] 6648.T | date=2026-03-06 close=2302.00 tp_prob=60.77% sl=15.00% sl_price=1956.70
+[BUY] 6871.T | date=2026-03-06 close=11270.00 tp_prob=67.79% sl=15.00% sl_price=9579.50
+[BUY] 7003.T | date=2026-03-06 close=6840.00 tp_prob=65.57% sl=15.00% sl_price=5814.00
+[BUY] 7059.T | date=2026-03-06 close=964.00 tp_prob=61.28% sl=15.00% sl_price=819.40
+[HOLD] 7088.T | date=2026-03-06 close=1698.00 tp_prob=8.47% sl=15.00%
+[BUY] 7094.T | date=2026-03-06 close=1664.00 tp_prob=65.30% sl=15.00% sl_price=1414.40
+[HOLD] 7095.T | date=2026-03-06 close=1414.00 tp_prob=58.78% sl=15.00%
+[HOLD] 7167.T | date=2026-03-06 close=1255.50 tp_prob=47.13% sl=15.00%
+[HOLD] 7199.T | date=2026-03-06 close=1882.00 tp_prob=53.71% sl=15.00%
+[HOLD] 7266.T | date=2026-03-06 close=970.00 tp_prob=50.98% sl=15.00%
+[HOLD] 7327.T | date=2026-03-06 close=2048.00 tp_prob=36.04% sl=15.00%
+[BUY] 7347.T | date=2026-03-06 close=804.00 tp_prob=63.25% sl=15.00% sl_price=683.40
+[BUY] 7352.T | date=2026-03-06 close=542.00 tp_prob=72.26% sl=15.00% sl_price=460.70
+[HOLD] 7581.T | date=2026-03-06 close=6760.00 tp_prob=47.93% sl=15.00%
+[HOLD] 7616.T | date=2026-03-06 close=1869.50 tp_prob=30.21% sl=15.00%
+[BUY] 7685.T | date=2026-03-06 close=6260.00 tp_prob=69.72% sl=15.00% sl_price=5321.00
+[BUY] 7752.T | date=2026-03-06 close=1373.50 tp_prob=67.56% sl=15.00% sl_price=1167.47
+[BUY] 7874.T | date=2026-03-06 close=1191.00 tp_prob=64.75% sl=15.00% sl_price=1012.35
+[HOLD] 7914.T | date=2026-03-06 close=1685.00 tp_prob=40.20% sl=15.00%
+[HOLD] 7936.T | date=2026-03-06 close=4607.00 tp_prob=52.95% sl=15.00%
+[BUY] 8136.T | date=2026-03-06 close=5816.00 tp_prob=66.73% sl=15.00% sl_price=4943.60
+[BUY] 8316.T | date=2026-03-06 close=5423.00 tp_prob=73.64% sl=15.00% sl_price=4609.55
+[BUY] 8331.T | date=2026-03-06 close=2116.50 tp_prob=67.90% sl=15.00% sl_price=1799.02
+[BUY] 8365.T | date=2026-03-06 close=2367.00 tp_prob=63.59% sl=15.00% sl_price=2011.95
+[HOLD] 8377.T | date=2026-03-06 close=6031.00 tp_prob=51.75% sl=15.00%
+[BUY] 9166.T | date=2026-03-06 close=656.00 tp_prob=70.46% sl=15.00% sl_price=557.60
+[HOLD] 9416.T | date=2026-03-06 close=1232.00 tp_prob=57.94% sl=15.00%
+[BUY] 9556.T | date=2026-03-06 close=2902.00 tp_prob=63.48% sl=15.00% sl_price=2466.70
+[BUY] 9627.T | date=2026-03-06 close=5627.00 tp_prob=61.82% sl=15.00% sl_price=4782.95
+[HOLD] 9889.T | date=2026-03-06 close=1322.00 tp_prob=50.66% sl=15.00%
+[HOLD] 135A.T | date=2026-03-06 close=2471.00 tp_prob=48.53% sl=15.00%
+[BUY] 247A.T | date=2026-03-06 close=1313.00 tp_prob=87.73% sl=15.00% sl_price=1116.05
+[BUY] 285A.T | date=2026-03-06 close=19975.00 tp_prob=97.41% sl=15.00% sl_price=16978.75

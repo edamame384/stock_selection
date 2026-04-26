@@ -1,0 +1,18 @@
+{
+  "condition_name": "q4_full_regime_switch_relaxed",
+  "period_start": "2025-10-01",
+  "period_end": "2025-12-30",
+  "initial_capital": 3000000.0,
+  "final_capital": 3152012.5,
+  "total_return_pct": 5.067083333333344,
+  "num_buys": 16,
+  "num_roundtrips": 16,
+  "win_rate_pct": 56.25,
+  "avg_roundtrip_return_pct": 0.8749875658250215,
+  "max_drawdown_pct": -5.650867823765015,
+  "regime_counts": {
+    "up": 44,
+    "sideways": 17,
+    "down": 1
+  }
+}

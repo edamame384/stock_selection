@@ -1,0 +1,6 @@
+﻿table_name,selection_logic,tickers,notes,final_capital,total_return_pct,num_buys,num_roundtrips,win_rate_pct,max_drawdown_pct
+standard_aligned,q2_2024 aligned standard,24,defensive backtest not rerun on aligned 24; nearest existing result is original full standard with 25 tickers and 0 trades,,,,,,
+standard_full_nearest,q2_2024 full standard,25,nearest baseline for standard table under defensive rule,3000000.0,0.0,0.0,0.0,0.0,0.0
+post_high_vol_full,post_high_vol,47,high-vol recovery style table,3000000.0,0.0,0.0,0.0,0.0,0.0
+bad_regime_defensive_aligned,bad_regime_defensive,113,full-based search result; 115 rows / 113 unique,2978135.0,-0.7288333333333341,4.0,4.0,25.0,-1.3221666666666687
+q3_like_aligned,q3_post_high_vol_like,116,118 rows / 116 unique,3305099.9349365234,10.169997831217458,,33.0,,-12.297605797298628

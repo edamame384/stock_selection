@@ -1,0 +1,20 @@
+{
+  "condition_name": "q4_full_up0p01_side0p05",
+  "period_start": "2025-10-01",
+  "period_end": "2025-12-30",
+  "initial_capital": 3000000.0,
+  "final_capital": 3152012.5,
+  "total_return_pct": 5.067083333333344,
+  "num_buys": 16,
+  "num_roundtrips": 16,
+  "win_rate_pct": 56.25,
+  "avg_roundtrip_return_pct": 0.8749875658250215,
+  "max_drawdown_pct": -5.650867823765015,
+  "up_ret20_threshold": 0.01,
+  "sideways_abs_ret20_threshold": 0.05,
+  "regime_counts": {
+    "up": 40,
+    "sideways": 21,
+    "down": 1
+  }
+}

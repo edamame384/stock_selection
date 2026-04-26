@@ -1,0 +1,17 @@
+{
+  "variant": "high_vol_only_phase_exit",
+  "final_capital": 3000000.0,
+  "return_pct": 0.0,
+  "num_buys": 0,
+  "max_dd_pct": 0.0,
+  "phase_pnl": {
+    "capitulation_end": 0.0,
+    "crash": 0.0,
+    "downtrend": 0.0,
+    "normal": 0.0,
+    "overheated_range": 0.0,
+    "stable": 0.0,
+    "surge": 0.0,
+    "uptrend": 0.0
+  }
+}

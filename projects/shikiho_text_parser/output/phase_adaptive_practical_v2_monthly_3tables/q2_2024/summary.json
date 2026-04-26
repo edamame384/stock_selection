@@ -1,0 +1,35 @@
+{
+  "mapping_name": "practical_phase_adaptive_v2_monthly_3tables",
+  "mapping_ja": "実務向け局面切替v2_月次3テーブル",
+  "dataset": "q2_2024",
+  "standard_count": 24,
+  "intermediate_count": 24,
+  "high_vol_count": 24,
+  "initial_capital": 3000000.0,
+  "final_capital": 2967911.3740234375,
+  "total_return_pct": -1.0696208658854123,
+  "num_buys": 22,
+  "phase_pnl": {
+    "capitulation_end": 0.0,
+    "crash": -33364.0,
+    "high_vol": 3507.50390625,
+    "normal": -37303.3779296875,
+    "overheated_range": -23833.251953125,
+    "stable": -242.5,
+    "surge": 2100.0,
+    "uptrend": 57047.0
+  },
+  "max_drawdown_pct": -6.960465491736933,
+  "table_assignment": {
+    "high_vol": [
+      "high_vol",
+      "crash"
+    ],
+    "intermediate": [
+      "settling",
+      "reversal_up",
+      "capitulation_end"
+    ],
+    "standard": "others"
+  }
+}

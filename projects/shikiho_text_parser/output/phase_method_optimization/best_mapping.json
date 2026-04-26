@@ -1,0 +1,14 @@
+{
+  "uptrend": "no_trade",
+  "normal": "condition2",
+  "stable": "breakout_1p5",
+  "overheated_range": "q3_post_high_vol",
+  "reversal_up": "q3_post_high_vol",
+  "capitulation_end": "q3_post_high_vol",
+  "surge": "no_trade",
+  "downtrend": "no_trade",
+  "crash": "condition2",
+  "high_vol": "q3_post_high_vol",
+  "settling": "q3_post_high_vol",
+  "reversal_down": "no_trade"
+}

@@ -1,0 +1,23 @@
+{
+  "mapping_name": "practical_phase_adaptive_v2_table_switch",
+  "mapping_ja": "実務向け局面切替v2_テーブル切替",
+  "table_switch": {
+    "high_vol": "defensive_origcount",
+    "other": "standard_table"
+  },
+  "standard_count": 13,
+  "high_vol_count": 13,
+  "dataset": "q3",
+  "final_capital": 2983548.362121583,
+  "total_return_pct": -0.5483879292805693,
+  "num_buys": 13,
+  "phase_pnl": {
+    "high_vol": 0.0,
+    "normal": -77733.251953125,
+    "overheated_range": 14132.6259765625,
+    "settling": -2547.6624145507812,
+    "stable": -27033.251953125,
+    "uptrend": 76729.90246582124
+  },
+  "max_drawdown_pct": -7.730046798640222
+}

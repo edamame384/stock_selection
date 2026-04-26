@@ -1,0 +1,20 @@
+{
+  "dataset": "q2_2024",
+  "final_capital": 2791737.9998779297,
+  "total_return_pct": -6.942066670735681,
+  "num_buys": 28,
+  "max_drawdown_pct": -9.698524119384189,
+  "phase_pnl": {
+    "capitulation_end": -12300.0,
+    "crash": -47483.3251953125,
+    "downtrend": -36980.68701171875,
+    "normal": -174879.951171875,
+    "overheated_range": -7008.349609375,
+    "stable": 25171.300537109375,
+    "surge": 7919.0123291015625,
+    "uptrend": 37300.0
+  },
+  "sector_variant": "top4_chart_v2_balanced",
+  "post_crash_trading_days": 20,
+  "alloc_cap": 500000.0
+}

@@ -1,0 +1,2 @@
+﻿name,trend_r2_min,annual_min,quarter_min,pmr_min,persist_min,dd_max,avg_range_max,end_high_min,sector_min,per_max,sort_col,sort_asc,top_n,entry,tp,sl,final_capital,ret_pct,num_buys,num_sells,max_dd_pct,selected_count
+sector_adjusted_per_score_top5,0.35,0.0,-10.0,35.0,35.0,18.0,14.0,88.0,0.35,18.0,sector_adjusted_per_score,False,5,1.0,5,4,3938520.0,31.284,5,5,-7.105731835859408,5

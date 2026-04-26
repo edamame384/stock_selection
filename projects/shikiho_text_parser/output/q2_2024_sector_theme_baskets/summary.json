@@ -1,0 +1,150 @@
+{
+  "sector_best": [
+    {
+      "basket_type": "sector_top20",
+      "label": "サービス業",
+      "source_count": 502,
+      "count": 20,
+      "avg_return_pct": 5.477797899712828,
+      "median_return_pct": 1.8800682466685537,
+      "win_rate_pct": 55.00000000000001
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "不動産業",
+      "source_count": 127,
+      "count": 20,
+      "avg_return_pct": 5.255985784433989,
+      "median_return_pct": -5.8075827841510055,
+      "win_rate_pct": 30.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "陸運業",
+      "source_count": 53,
+      "count": 20,
+      "avg_return_pct": 3.107697763910801,
+      "median_return_pct": -3.8516512902794506,
+      "win_rate_pct": 45.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "情報・通信業",
+      "source_count": 560,
+      "count": 20,
+      "avg_return_pct": 2.4719958375747404,
+      "median_return_pct": -2.140462427745665,
+      "win_rate_pct": 35.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "医薬品",
+      "source_count": 74,
+      "count": 20,
+      "avg_return_pct": 1.6875711907647684,
+      "median_return_pct": -1.248499838243422,
+      "win_rate_pct": 50.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "食料品",
+      "source_count": 121,
+      "count": 20,
+      "avg_return_pct": 1.449892695493649,
+      "median_return_pct": 0.7903279131976859,
+      "win_rate_pct": 50.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "繊維製品",
+      "source_count": 46,
+      "count": 20,
+      "avg_return_pct": -0.8696949676714212,
+      "median_return_pct": -2.443478260869564,
+      "win_rate_pct": 30.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "電気機器",
+      "source_count": 225,
+      "count": 20,
+      "avg_return_pct": -2.500139898125522,
+      "median_return_pct": -5.340198187505408,
+      "win_rate_pct": 35.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "倉庫・運輸関連業",
+      "source_count": 31,
+      "count": 20,
+      "avg_return_pct": -2.903611367601323,
+      "median_return_pct": -4.769529250009175,
+      "win_rate_pct": 40.0
+    },
+    {
+      "basket_type": "sector_top20",
+      "label": "非鉄金属",
+      "source_count": 32,
+      "count": 20,
+      "avg_return_pct": -3.658595295392049,
+      "median_return_pct": -9.165264339277035,
+      "win_rate_pct": 15.0
+    }
+  ],
+  "theme_best": [
+    {
+      "basket_type": "theme_top20",
+      "label": "electronics_semicap_proxy",
+      "source_count": 486,
+      "count": 20,
+      "avg_return_pct": -5.5905476174040425,
+      "median_return_pct": -8.520859482397947,
+      "win_rate_pct": 35.0
+    },
+    {
+      "basket_type": "theme_top20",
+      "label": "construction_infra",
+      "source_count": 137,
+      "count": 20,
+      "avg_return_pct": -6.060717881403358,
+      "median_return_pct": -5.762013216141659,
+      "win_rate_pct": 30.0
+    },
+    {
+      "basket_type": "theme_top20",
+      "label": "power_utilities",
+      "source_count": 27,
+      "count": 20,
+      "avg_return_pct": -7.879354618257639,
+      "median_return_pct": -8.708824702111674,
+      "win_rate_pct": 10.0
+    },
+    {
+      "basket_type": "theme_top20",
+      "label": "cyber_security",
+      "source_count": 10,
+      "count": 10,
+      "avg_return_pct": -9.03397014961708,
+      "median_return_pct": -10.34063260340633,
+      "win_rate_pct": 40.0
+    },
+    {
+      "basket_type": "theme_top20",
+      "label": "banks_insurance",
+      "source_count": 91,
+      "count": 20,
+      "avg_return_pct": -13.797055444107858,
+      "median_return_pct": -15.681894937339319,
+      "win_rate_pct": 5.0
+    },
+    {
+      "basket_type": "theme_top20",
+      "label": "shipbuilding",
+      "source_count": 5,
+      "count": 5,
+      "avg_return_pct": -16.63814194577365,
+      "median_return_pct": -19.198664440734557,
+      "win_rate_pct": 20.0
+    }
+  ]
+}

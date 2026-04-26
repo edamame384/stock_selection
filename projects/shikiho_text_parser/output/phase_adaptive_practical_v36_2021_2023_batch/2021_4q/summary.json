@@ -1,0 +1,18 @@
+{
+  "mapping_name": "phase_adaptive_practical_v36",
+  "mapping_ja": "実務向け局面切替v3.6_50万分割_post_major_crash価格集中ETF拡張",
+  "dataset": "q4",
+  "final_capital": 3168989.324005127,
+  "total_return_pct": 5.632977466837574,
+  "num_buys": 52,
+  "max_drawdown_pct": -5.291958995766666,
+  "phase_pnl": {
+    "crash": -115118.74633789062,
+    "downtrend": -700.0,
+    "normal": 121808.57034301758,
+    "overheated_range": -3600.0,
+    "settling": 28757.0,
+    "stable": 61917.5,
+    "uptrend": 75925.0
+  }
+}

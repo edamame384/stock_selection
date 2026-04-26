@@ -1,0 +1,28 @@
+{
+  "mode": "major_notrade_minor_defensive",
+  "major_crash_rule": "no_trade",
+  "minor_crash_rule": "q2_defensive",
+  "major_crash_definition": "phase=crash and (ret5<=-0.08 or dd20<=-0.14)",
+  "dataset": "q2_2024",
+  "final_capital": 2768135.8961791997,
+  "total_return_pct": -7.728803460693346,
+  "num_buys": 29,
+  "max_drawdown_pct": -10.331079880347016,
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "phase_shift_days": 1,
+  "phase_proxy_mode": "difficult_v11",
+  "rebuild_interval_trading_days": 10,
+  "high_vol_take_profit_pct": null,
+  "weak_uptrend_take_profit_pct": null,
+  "phase_pnl": {
+    "capitulation_end": -93664.99999999953,
+    "crash": -95690.35369873047,
+    "downtrend": 9650.0,
+    "normal": -86078.55078125,
+    "overheated_range": -175.349609375,
+    "stable": 14295.150268554688,
+    "surge": 0.0,
+    "uptrend": 19800.0
+  }
+}

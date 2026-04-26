@@ -1,0 +1,26 @@
+{
+  "mapping_name": "practical_phase_adaptive_v31_pre1_post5_except_crash",
+  "mapping_ja": "実務向け局面切替v3.1_決算前1営業日_決算後5営業日見送り_crash除外",
+  "earnings_pre_days": 1,
+  "earnings_post_days": 5,
+  "phase_shift_days": 1,
+  "phase_proxy_mode": "difficult_v11",
+  "rebuild_interval_trading_days": 10,
+  "high_vol_take_profit_pct": null,
+  "weak_uptrend_take_profit_pct": null,
+  "dataset": "q2_2024",
+  "final_capital": 2914184.2517089844,
+  "total_return_pct": -2.8605249430338486,
+  "num_buys": 56,
+  "max_drawdown_pct": -9.950346753256344,
+  "phase_pnl": {
+    "capitulation_end": 14600.0,
+    "crash": -7250.248046875,
+    "downtrend": 27600.0,
+    "normal": -176228.451171875,
+    "overheated_range": -7008.349609375,
+    "stable": 25171.300537109375,
+    "surge": 0.0,
+    "uptrend": 37300.0
+  }
+}

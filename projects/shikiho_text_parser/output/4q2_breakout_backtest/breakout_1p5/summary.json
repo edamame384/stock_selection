@@ -1,0 +1,20 @@
+{
+  "condition_name": "breakout_1.5",
+  "promising_score_min": 0.72,
+  "trend_r2_min": 0.6,
+  "sector_per_score_min": 0.55,
+  "take_profit_pct": 8.0,
+  "stop_loss_pct": 5.0,
+  "entry_limit_pct": 1.5,
+  "entry_mode": "breakout_up",
+  "period_start": "2026-01-01",
+  "period_end": "2026-03-10",
+  "initial_capital": 3000000.0,
+  "final_capital": 3306960.5000000005,
+  "total_return_pct": 10.232016666666688,
+  "num_buys": 28,
+  "num_roundtrips": 28,
+  "win_rate_pct": 64.28571428571429,
+  "avg_roundtrip_return_pct": 2.556208324404938,
+  "max_drawdown_pct": -7.502842756490269
+}

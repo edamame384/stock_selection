@@ -1,0 +1,27 @@
+{
+  "variant": "alloc50_post_major_multi_etf_expanded_or_stock_prev_high_break",
+  "dataset": "q3",
+  "concentrated_mode": "2516 base; others only if stronger by threshold under weekly strength + signal gap",
+  "dispersed_mode": "stock prev_high_break top2 tp6/sl3",
+  "etf_universe": [
+    "1306.T",
+    "1321.T",
+    "1328.T",
+    "1489.T",
+    "1593.T",
+    "2516.T"
+  ],
+  "final_capital": 3255102.424169922,
+  "total_return_pct": 8.5034141389974,
+  "num_buys": 69,
+  "max_drawdown_pct": -3.2411601165103443,
+  "phase_pnl": {
+    "capitulation_end": 17289.0,
+    "crash": 53163.0,
+    "downtrend": 119585.589807129,
+    "normal": 88581.35560302716,
+    "settling": 34200.0,
+    "stable": 8796.5,
+    "uptrend": -66513.02124023438
+  }
+}

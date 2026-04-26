@@ -1,0 +1,13 @@
+﻿phase,japanese_name,recommended_method,recommended_alias,note
+stable,安定期間,method_breakout_1p5,横ばい順張り,レンジ内では厳しめ順張りでノイズを減らす
+uptrend,上昇期間,method_condition2,上向き標準,広めに拾ってトレンド継続を取る
+surge,急騰期間,no_trade_or_small,新規抑制,過熱が強く追いかけ買いは不利になりやすい
+downtrend,下落期間,no_trade,新規停止,順張り買い手法とは相性が悪い
+crash,急落期間,no_trade,新規停止,リスク回避を優先
+high_vol,高ボラ期間,no_trade,新規停止,方向感が崩れやすく通常手法は不安定
+settling,収束期間,watch_only,監視,次のトレンド発生待ち
+reversal_up,反転初動(上),watch_or_q3_post_high_vol,監視/高ボラ通過後,高ボラ後の選定手法を組み合わせる余地がある
+reversal_down,反転初動(下),no_trade,新規停止,下向き転換の初期で買い優位性が低い
+overheated_range,過熱もみ合い,method_breakout_1p5,横ばい順張り,condition2 より絞った方がよい
+capitulation_end,投げ売り終盤,watch_or_q3_post_high_vol,監視/高ボラ通過後,反発狙いは別手法で扱う
+normal,通常,method_condition2,上向き標準,明確な異常が無い通常局面

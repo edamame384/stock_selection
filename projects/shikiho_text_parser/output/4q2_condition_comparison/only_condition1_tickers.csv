@@ -1,0 +1,13 @@
+﻿ticker,trades_cond1,pnl_cond1,avg_ret_cond1,trades_cond2,pnl_cond2,avg_ret_cond2,present_cond1,present_cond2,status,pnl_diff_cond2_minus_cond1
+9063.T,1.0,10000.0,2.280501710376281,0.0,0.0,0.0,True,False,only_condition1,-10000.0
+7971.T,1.0,6800.0,9.176788124156545,0.0,0.0,0.0,True,False,only_condition1,-6800.0
+8515.T,1.0,-2600.0,-2.3381294964028743,0.0,0.0,0.0,True,False,only_condition1,2600.0
+6743.T,1.0,-3500.0,-0.8495145631068013,0.0,0.0,0.0,True,False,only_condition1,3500.0
+1808.T,1.0,-5500.0,-1.731738035264485,0.0,0.0,0.0,True,False,only_condition1,5500.0
+9034.T,1.0,-6300.0,-1.3059701492537323,0.0,0.0,0.0,True,False,only_condition1,6300.0
+8154.T,2.0,-10500.0,-1.3055287216318767,0.0,0.0,0.0,True,False,only_condition1,10500.0
+9791.T,3.0,-13300.0,-0.8051867018054862,0.0,0.0,0.0,True,False,only_condition1,13300.0
+1946.T,1.0,-15800.0,-7.355679702048413,0.0,0.0,0.0,True,False,only_condition1,15800.0
+7102.T,1.0,-20500.0,-5.26992287917738,0.0,0.0,0.0,True,False,only_condition1,20500.0
+1814.T,2.0,-32500.0,-4.038259038259034,0.0,0.0,0.0,True,False,only_condition1,32500.0
+6357.T,1.0,-58800.0,-1.9253438113948973,0.0,0.0,0.0,True,False,only_condition1,58800.0

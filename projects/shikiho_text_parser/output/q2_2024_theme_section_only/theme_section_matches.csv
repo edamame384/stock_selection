@@ -1,0 +1,23 @@
+﻿quarter,rank,ticker,company_name,sector,score,annual_return_pct,quarter_return_pct,avg_monthly_high_low_change_pct,max_monthly_high_low_change_pct,trend_r2,max_drawdown_pct,positive_month_ratio_pct,end_to_trailing_high_pct,persistence_20d_pct,quarter_end_close,price_rows,trailing_return_pct,learning_date,training_cutoff_date,ocr_per,ocr_pbr,ocr_roe,ocr_roa,ocr_yield,ocr_per_confidence,ocr_pbr_confidence,ocr_roe_confidence,ocr_roa_confidence,ocr_yield_confidence,ocr_metrics_text,image_file,sector_adjusted_per_score,finance_quality_score,growth_quality_score,overall_score,simple_sector,headline_score_raw,shikiho_score_overall,forecast_per,promising_score,company_name_theme,sector_theme,theme_text_raw,theme_text_compact_only,section_groups
+2024Q2_PRE_ALIGNED,318,8714.T,池田泉州ホールディングス,銀行業,0.8120672159179232,70.94017094017093,1.522842639593902,11.33826297264594,18.783068783068792,0.7997794584282094,18.29896907216495,75.0,89.086859688196,35.0,400.0,6276,70.94017094017093,2024-06-30,2024-06-30,9.9,9.9,25.3,9.9,9.9,medium,medium,low,low,low,"株伍指标
+予想PER
+（倍）
+<25.3>
+9.9
+(26.3>
+8'6
+实PER
+高值平均
+8.1
+安值平均
+4.8
+PBR
+0.46
+株倡(5/27)
+400P
+最低購人额
+24
+4万内
+4.6
+8714
+銀",7345.png,0.6296296296296297,0.572714907508161,0.7848279629588505,0.7070596295885057,銀行業,0.0,3.0,9.9,0.8120672159179232,池田泉州ホールディングス,銀行業,". 4 ( 5 ) (O A 6 2 ( 6 8 日 本 マ ス タ —i 日 本 カ ス 務 く 輒 わ , 物 社 グ ル ー 己 ・ 本 410 き 比 世 モ ル ガ こ 03N 伊 月 応 ー DFAInt1 冫 く 企 績 2 プ バ リ 。 ロ ー は 「 第 1",".4(5)(OA62(68日本マスタ—i日本カス務く輒わ,物社グルー己・本410き比世モルガこ03N伊月応ーDFAInt1冫く企績2プバリ。ローは「第1",ai_datacenter

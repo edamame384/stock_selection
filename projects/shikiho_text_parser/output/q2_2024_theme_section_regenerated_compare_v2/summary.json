@@ -1,0 +1,77 @@
+{
+  "themes": [
+    {
+      "theme": "power_energy",
+      "source_count": 3,
+      "count": 3,
+      "avg_return_pct": 9.545331520979913,
+      "median_return_pct": 11.79775280898876,
+      "win_rate_pct": 66.66666666666666
+    },
+    {
+      "theme": "finance",
+      "source_count": 343,
+      "count": 343,
+      "avg_return_pct": -2.42908318330344,
+      "median_return_pct": -3.152492668621698,
+      "win_rate_pct": 34.69387755102041
+    },
+    {
+      "theme": "real_estate",
+      "source_count": 5,
+      "count": 5,
+      "avg_return_pct": -2.956980243677352,
+      "median_return_pct": -1.2682926829268304,
+      "win_rate_pct": 20.0
+    },
+    {
+      "theme": "retail_consumer",
+      "source_count": 6,
+      "count": 6,
+      "avg_return_pct": -4.363916834498268,
+      "median_return_pct": -1.1878432747366496,
+      "win_rate_pct": 33.33333333333333
+    },
+    {
+      "theme": "healthcare_bio",
+      "source_count": 6,
+      "count": 6,
+      "avg_return_pct": -6.305583144150963,
+      "median_return_pct": -4.535415034774148,
+      "win_rate_pct": 33.33333333333333
+    },
+    {
+      "theme": "construction_infra",
+      "source_count": 10,
+      "count": 10,
+      "avg_return_pct": -7.417039068857891,
+      "median_return_pct": -4.368602718076025,
+      "win_rate_pct": 20.0
+    },
+    {
+      "theme": "ai_datacenter",
+      "source_count": 15,
+      "count": 15,
+      "avg_return_pct": -8.10140142279343,
+      "median_return_pct": -6.155303030303028,
+      "win_rate_pct": 20.0
+    },
+    {
+      "theme": "cyber_security",
+      "source_count": 14,
+      "count": 14,
+      "avg_return_pct": -10.912404350609693,
+      "median_return_pct": -10.34063260340633,
+      "win_rate_pct": 14.285714285714285
+    },
+    {
+      "theme": "auto_battery",
+      "source_count": 2,
+      "count": 2,
+      "avg_return_pct": -23.948082580234807,
+      "median_return_pct": -23.948082580234807,
+      "win_rate_pct": 0.0
+    }
+  ],
+  "covered_tickers": 1474
+}

@@ -1,0 +1,2 @@
+﻿variant,dataset,concentrated_mode,dispersed_mode,etf_universe,final_capital,total_return_pct,num_buys,max_drawdown_pct,phase_pnl
+alloc50_post_major_multi_etf_expanded_or_stock_prev_high_break,4q2,2516 base; others only if stronger by threshold under weekly strength + signal gap,stock prev_high_break top2 tp6/sl3,"['1306.T', '1321.T', '1328.T', '1489.T', '1593.T', '2516.T']",3234196.500000001,7.806550000000034,66,-5.235434425202912,"{'crash': -46672.0, 'high_vol': 47054.5, 'normal': 132428.00000000047, 'settling': 102689.50000000047, 'stable': -18403.5, 'surge': 17100.0}"

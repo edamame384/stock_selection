@@ -1,0 +1,18 @@
+{
+  "variant": "q2_2024_post_major_stock_break0p2_top2_cool0",
+  "dataset": "q2_2024",
+  "final_capital": 3018342.0346923824,
+  "total_return_pct": 0.6114011564127386,
+  "num_buys": 105,
+  "max_drawdown_pct": -9.950346753256344,
+  "phase_pnl": {
+    "capitulation_end": 13985.008154296782,
+    "crash": 48647.4267578125,
+    "downtrend": 130063.80002441397,
+    "normal": -241417.1511718752,
+    "overheated_range": -7008.349609375,
+    "stable": 25171.300537109375,
+    "surge": 11600.0,
+    "uptrend": 37300.0
+  }
+}

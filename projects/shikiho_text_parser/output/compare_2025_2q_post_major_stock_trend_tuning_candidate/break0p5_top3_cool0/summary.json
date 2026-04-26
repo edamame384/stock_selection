@@ -1,0 +1,17 @@
+{
+  "variant": "break0p5_top3_cool0",
+  "dataset": "2025_2q",
+  "final_capital": 3232148.2377929688,
+  "total_return_pct": 7.738274593098948,
+  "num_buys": 83,
+  "max_drawdown_pct": -3.4041443284654416,
+  "phase_pnl": {
+    "capitulation_end": 25203.5,
+    "crash": -70027.0,
+    "downtrend": 73999.0,
+    "normal": 171132.25,
+    "settling": 55644.5,
+    "stable": 26496.5,
+    "uptrend": -50300.51220703125
+  }
+}

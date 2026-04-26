@@ -1,0 +1,13 @@
+﻿date,ticker,action,price,shares,reason
+2024-07-01,9709.T,BUY,877.69,200,defensive_entry
+2024-07-01,9438.T,BUY,882.74,300,defensive_entry
+2024-07-01,4792.T,BUY,2116.0,100,defensive_entry
+2024-07-01,2329.T,BUY,505.0,1100,defensive_entry
+2024-07-01,5535.T,BUY,620.8975,900,defensive_entry
+2024-07-01,6543.T,BUY,662.5600000000001,900,defensive_entry
+2024-07-02,5535.T,SELL,562.03,900,crash_early_exit
+2024-07-03,2329.T,SELL,537.0,1100,take_profit
+2024-07-04,9438.T,SELL,887.88,300,crash_early_exit
+2024-07-09,4792.T,SELL,2154.04,100,crash_early_exit
+2024-07-11,6543.T,SELL,712.0,900,take_profit
+2024-07-25,9709.T,SELL,872.1999999999999,200,crash_early_exit

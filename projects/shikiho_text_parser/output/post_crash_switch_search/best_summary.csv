@@ -1,0 +1,2 @@
+﻿post_table_name,other_table_name,post_rule_name,other_rule_name,total_final_capital,total_return_pct,avg_max_drawdown_pct,q2_2024_return_pct,q2_2024_final_capital,q3_return_pct,q3_final_capital,q4_return_pct,q4_final_capital,4q2_return_pct,4q2_final_capital
+defensive_top5,momentum_top20,defensive,defensive,12898478.024414062,7.487316870117189,-6.257270450916341,13.203167480468746,3396095.0244140625,25.187699999999992,3755631.0,-6.703599999999998,2798892.0,-1.737999999999995,2947860.0

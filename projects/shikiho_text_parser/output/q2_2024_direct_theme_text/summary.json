@@ -1,0 +1,119 @@
+{
+  "ocr_covered_tickers": 92,
+  "theme_counts": [
+    {
+      "theme": "defense",
+      "source_count": 3
+    },
+    {
+      "theme": "semiconductor",
+      "source_count": 5
+    },
+    {
+      "theme": "ship_heavy",
+      "source_count": 2
+    },
+    {
+      "theme": "infra_construction",
+      "source_count": 6
+    },
+    {
+      "theme": "ai_datacenter",
+      "source_count": 6
+    },
+    {
+      "theme": "power_grid",
+      "source_count": 1
+    },
+    {
+      "theme": "cyber_security",
+      "source_count": 1
+    }
+  ],
+  "top_themes": [
+    {
+      "theme": "defense",
+      "source_count": 3,
+      "all_count": 3,
+      "all_avg_return_pct": 23.193547963219174,
+      "all_median_return_pct": 21.80040264595915,
+      "all_win_rate_pct": 100.0,
+      "top20_count": 3,
+      "top20_avg_return_pct": 23.193547963219174,
+      "top20_median_return_pct": 21.80040264595915,
+      "top20_win_rate_pct": 100.0
+    },
+    {
+      "theme": "semiconductor",
+      "source_count": 5,
+      "all_count": 5,
+      "all_avg_return_pct": 17.878049420240753,
+      "all_median_return_pct": 21.44535840188013,
+      "all_win_rate_pct": 60.0,
+      "top20_count": 5,
+      "top20_avg_return_pct": 17.878049420240753,
+      "top20_median_return_pct": 21.44535840188013,
+      "top20_win_rate_pct": 60.0
+    },
+    {
+      "theme": "ship_heavy",
+      "source_count": 2,
+      "all_count": 2,
+      "all_avg_return_pct": 12.644770118239613,
+      "all_median_return_pct": 12.644770118239613,
+      "all_win_rate_pct": 100.0,
+      "top20_count": 2,
+      "top20_avg_return_pct": 12.644770118239613,
+      "top20_median_return_pct": 12.644770118239613,
+      "top20_win_rate_pct": 100.0
+    },
+    {
+      "theme": "infra_construction",
+      "source_count": 6,
+      "all_count": 6,
+      "all_avg_return_pct": 2.747566656874319,
+      "all_median_return_pct": 0.724662918553165,
+      "all_win_rate_pct": 50.0,
+      "top20_count": 6,
+      "top20_avg_return_pct": 2.747566656874319,
+      "top20_median_return_pct": 0.724662918553165,
+      "top20_win_rate_pct": 50.0
+    },
+    {
+      "theme": "ai_datacenter",
+      "source_count": 6,
+      "all_count": 6,
+      "all_avg_return_pct": -1.7506796428138034,
+      "all_median_return_pct": -6.141834995092216,
+      "all_win_rate_pct": 16.666666666666664,
+      "top20_count": 6,
+      "top20_avg_return_pct": -1.7506796428138034,
+      "top20_median_return_pct": -6.141834995092216,
+      "top20_win_rate_pct": 16.666666666666664
+    },
+    {
+      "theme": "power_grid",
+      "source_count": 1,
+      "all_count": 1,
+      "all_avg_return_pct": -17.86941580756014,
+      "all_median_return_pct": -17.86941580756014,
+      "all_win_rate_pct": 0.0,
+      "top20_count": 1,
+      "top20_avg_return_pct": -17.86941580756014,
+      "top20_median_return_pct": -17.86941580756014,
+      "top20_win_rate_pct": 0.0
+    },
+    {
+      "theme": "cyber_security",
+      "source_count": 1,
+      "all_count": 1,
+      "all_avg_return_pct": -22.851296043656212,
+      "all_median_return_pct": -22.851296043656212,
+      "all_win_rate_pct": 0.0,
+      "top20_count": 1,
+      "top20_avg_return_pct": -22.851296043656212,
+      "top20_median_return_pct": -22.851296043656212,
+      "top20_win_rate_pct": 0.0
+    }
+  ]
+}

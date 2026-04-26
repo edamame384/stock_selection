@@ -1,0 +1,2 @@
+﻿dataset,final_capital,total_return_pct,num_buys,max_drawdown_pct,earnings_pre_days,earnings_post_days,phase_shift_days,phase_proxy_mode,rebuild_interval_trading_days,high_vol_take_profit_pct,weak_uptrend_take_profit_pct,phase_pnl,variant
+q3,3569332.4694519043,18.977748981730148,83,-2.7644491556153006,1,5,1,difficult_v11,10,,,"{'downtrend': 76500.0, 'normal': 143142.4998474121, 'overheated_range': 25855.0, 'settling': 152214.150390625, 'stable': -65215.656494140625, 'uptrend': 236836.4757080078}",normal_after_highvol10_no_trade

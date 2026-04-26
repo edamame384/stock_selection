@@ -1,0 +1,11 @@
+{
+  "latest_date": "2026-03-16",
+  "latest_close": 53751.1484375,
+  "latest_rule_phase": "crash",
+  "nearest_neighbor_inferred_phase": "high_vol",
+  "phase_vote_share": {
+    "high_vol": 0.7,
+    "crash": 0.2,
+    "normal": 0.1
+  }
+}

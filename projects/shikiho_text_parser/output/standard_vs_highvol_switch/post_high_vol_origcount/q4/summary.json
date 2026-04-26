@@ -1,0 +1,13 @@
+{
+  "dataset": "q4",
+  "standard_count": 60,
+  "high_vol_count": 60,
+  "initial_capital": 3000000.0,
+  "final_capital": 3069176.000000002,
+  "total_return_pct": 2.3058666666667227,
+  "num_buys": 13,
+  "max_drawdown_pct": -20.070829173456882,
+  "standard_rule": "normal",
+  "high_vol_rule": "defensive",
+  "high_vol_table": "post_high_vol_origcount"
+}

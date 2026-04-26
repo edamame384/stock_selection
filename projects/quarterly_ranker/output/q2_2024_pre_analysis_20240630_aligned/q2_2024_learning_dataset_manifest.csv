@@ -1,0 +1,3 @@
+﻿dataset_id,learning_date,training_cutoff_date,price_axis,image_count_total,selected_count,output_dir,source_image_dir,source_library_csv
+q2_2024_pre_analysis_20240630_aligned,2024-06-30,2024-06-30,aligned_252_63_trading_days,3919,24.0,projects\quarterly_ranker\output\q2_2024_pre_analysis_20240630_aligned,C:\Users\mitsu\OneDrive\ドキュメント\四季報DB2025\2024-2Q,projects\quarterly_ranker\output\q2_2024_pre_analysis_20240630_full\q2_2024_image_library.csv
+q2_2024_pre_analysis_20240630_full,2024-06-30,2024-06-30,ytd_plus_calendar_quarter,3919,,projects/quarterly_ranker/output/q2_2024_pre_analysis_20240630_full,C:\Users\mitsu\OneDrive\ドキュメント\四季報DB2025\2024-2Q,projects\quarterly_ranker\output\q2_2024_pre_analysis_20240630_full\q2_2024_image_library.csv

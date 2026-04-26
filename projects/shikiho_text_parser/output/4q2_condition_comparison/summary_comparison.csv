@@ -1,0 +1,3 @@
+﻿condition_name,promising_score_min,trend_r2_min,sector_per_score_min,take_profit_pct,stop_loss_pct,entry_limit_pct,period_start,period_end,initial_capital,final_capital,total_return_pct,num_buys,num_roundtrips,win_rate_pct,avg_roundtrip_return_pct,max_drawdown_pct,entry_mode
+condition1,0.72,0.6,0.55,8.0,5.0,0.0,2026-01-01,2026-03-10,3000000.0,2825250.0,-5.825000000000003,34,34,41.17647058823529,0.3997685880155534,-18.632596079348605,
+condition2,0.66,0.5,0.55,8.0,5.0,1.5,2026-01-01,2026-03-10,3000000.0,3306960.5000000005,10.232016666666688,28,28,64.28571428571429,2.556208324404938,-7.502842756490269,breakout_up

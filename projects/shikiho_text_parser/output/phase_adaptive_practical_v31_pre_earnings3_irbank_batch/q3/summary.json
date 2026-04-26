@@ -1,0 +1,18 @@
+{
+  "mapping_name": "practical_phase_adaptive_v31_pre_earnings3",
+  "mapping_ja": "実務向け局面切替v3.1_決算前3営業日",
+  "earnings_pre_days": 3,
+  "dataset": "q3",
+  "final_capital": 3656422.3006591806,
+  "total_return_pct": 21.88074335530603,
+  "num_buys": 36,
+  "max_drawdown_pct": -2.038796561503231,
+  "phase_pnl": {
+    "high_vol": 117724.50000000047,
+    "normal": 18794.3740234375,
+    "overheated_range": 34860.31298828125,
+    "settling": 210687.0,
+    "stable": -71881.6259765625,
+    "uptrend": 346237.7396240239
+  }
+}

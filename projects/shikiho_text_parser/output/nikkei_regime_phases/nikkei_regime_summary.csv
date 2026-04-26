@@ -1,0 +1,7 @@
+﻿metric,value
+vol10_high_threshold_pct,1.38
+vol10_settle_threshold_pct,1.163
+episodes,37.0
+crash_initial_periods,20.0
+high_vol_continuation_periods,20.0
+settling_periods,12.0

@@ -1,0 +1,91 @@
+{
+  "observed_phases": [
+    "crash",
+    "high_vol",
+    "normal",
+    "overheated_range",
+    "settling",
+    "stable",
+    "surge",
+    "uptrend"
+  ],
+  "baseline_mapping": {
+    "uptrend": "condition2",
+    "normal": "condition2",
+    "stable": "breakout_1p5",
+    "overheated_range": "breakout_1p5",
+    "reversal_up": "q3_post_high_vol",
+    "capitulation_end": "q3_post_high_vol",
+    "surge": "no_trade",
+    "downtrend": "no_trade",
+    "crash": "no_trade",
+    "high_vol": "no_trade",
+    "settling": "no_trade",
+    "reversal_down": "no_trade"
+  },
+  "best_mapping": {
+    "uptrend": "no_trade",
+    "normal": "condition2",
+    "stable": "breakout_1p5",
+    "overheated_range": "q3_post_high_vol",
+    "reversal_up": "q3_post_high_vol",
+    "capitulation_end": "q3_post_high_vol",
+    "surge": "no_trade",
+    "downtrend": "no_trade",
+    "crash": "condition2",
+    "high_vol": "q3_post_high_vol",
+    "settling": "q3_post_high_vol",
+    "reversal_down": "no_trade"
+  },
+  "baseline_objective": {
+    "objective_total_pnl": 542004.5001220703,
+    "objective_total_return_pct": 6.022272223578562
+  },
+  "best_objective": {
+    "objective_total_pnl": 1433889.6749267578,
+    "objective_total_return_pct": 15.932107499186188
+  },
+  "datasets": [
+    {
+      "dataset": "q3",
+      "final_capital": 3547912.1749267583,
+      "total_return_pct": 18.263739164225278,
+      "num_buys": 31,
+      "phase_pnl": {
+        "high_vol": 89488.650390625,
+        "normal": 79865.17480468797,
+        "overheated_range": 45737.0,
+        "settling": 182889.6748046875,
+        "stable": 24215.012329101562,
+        "uptrend": 125716.66259765625
+      }
+    },
+    {
+      "dataset": "q4",
+      "final_capital": 3354116.0,
+      "total_return_pct": 11.803866666666663,
+      "num_buys": 22,
+      "phase_pnl": {
+        "high_vol": 171906.5,
+        "normal": 195109.5,
+        "stable": -14300.0,
+        "surge": 1400.0,
+        "uptrend": 0.0
+      }
+    },
+    {
+      "dataset": "4q2",
+      "final_capital": 3531861.500000001,
+      "total_return_pct": 17.72871666666669,
+      "num_buys": 46,
+      "phase_pnl": {
+        "crash": -49700.0,
+        "high_vol": 232131.00000000093,
+        "normal": 290389.0,
+        "settling": 62291.5,
+        "surge": 54150.0,
+        "uptrend": -57400.0
+      }
+    }
+  ]
+}

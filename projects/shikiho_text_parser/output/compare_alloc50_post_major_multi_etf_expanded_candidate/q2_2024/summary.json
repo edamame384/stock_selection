@@ -1,0 +1,28 @@
+{
+  "variant": "alloc50_post_major_multi_etf_expanded_or_stock_prev_high_break",
+  "dataset": "q2_2024",
+  "concentrated_mode": "2516 base; others only if stronger by threshold under weekly strength + signal gap",
+  "dispersed_mode": "stock prev_high_break top2 tp6/sl3",
+  "etf_universe": [
+    "1306.T",
+    "1321.T",
+    "1328.T",
+    "1489.T",
+    "1593.T",
+    "2516.T"
+  ],
+  "final_capital": 3171065.0933349608,
+  "total_return_pct": 5.702169777832022,
+  "num_buys": 60,
+  "max_drawdown_pct": -9.950346753256344,
+  "phase_pnl": {
+    "capitulation_end": 61220.15380859375,
+    "crash": 141211.13659667922,
+    "downtrend": 134841.45180664072,
+    "normal": -221670.5998046873,
+    "overheated_range": -7008.349609375,
+    "stable": 25171.300537109375,
+    "surge": 0.0,
+    "uptrend": 37300.0
+  }
+}

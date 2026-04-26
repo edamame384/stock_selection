@@ -1,0 +1,4 @@
+﻿variant,final_capital,return_pct,num_buys,max_dd_pct,phase_pnl
+full_period,3150993.5,5.033116666666659,3,-0.6206883174820765,"{'capitulation_end': 0.0, 'crash': 0.0, 'downtrend': 0.0, 'normal': -19080.0, 'overheated_range': 2400.0, 'stable': 87473.5, 'surge': 0.0, 'uptrend': 80200.0}"
+high_vol_entry_only_hold,3000000.0,0.0,0,0.0,"{'capitulation_end': 0.0, 'crash': 0.0, 'downtrend': 0.0, 'normal': 0.0, 'overheated_range': 0.0, 'stable': 0.0, 'surge': 0.0, 'uptrend': 0.0}"
+high_vol_only_phase_exit,3000000.0,0.0,0,0.0,"{'capitulation_end': 0.0, 'crash': 0.0, 'downtrend': 0.0, 'normal': 0.0, 'overheated_range': 0.0, 'stable': 0.0, 'surge': 0.0, 'uptrend': 0.0}"
